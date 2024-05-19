@@ -59,10 +59,7 @@ img.avatar {
   padding: 16px;
 }
 
-.error {
-  color: red;
-  display: none;
-}
+
 
 /* Change styles for span and cancel button on extra small screens */
 @media screen and (max-width: 300px) {
@@ -80,7 +77,7 @@ img.avatar {
 
 <h2>Login Admin</h2>
 
-<form id="loginForm">
+<form action="#" method="post">
   <div class="imgcontainer">
     <img src="img/img_avatar2.png" alt="Avatar" class="avatar">
   </div>
@@ -91,39 +88,20 @@ img.avatar {
 
     <label for="psw"><b>Password</b></label>
     <input type="password" placeholder="Enter Password" name="psw" required>
-    
+        
     <button type="submit">Login</button>
     <label>
       <input type="checkbox" checked="checked" name="remember"> Remember me
     </label>
-    <p id="error" class="error">Incorrect username or password.</p>
   </div>
 
   <div class="container" style="background-color:#f1f1f1">
-    <button type="button" class="cancelbtn"><a href="index.html" style="color: white; text-decoration: none;">Cancel</a></button>
+    <button type="button " class="cancelbtn"><a href="index.html">Cancel</button>
+
+    
+    
   </div>
 </form>
-
-<script>
-document.getElementById('loginForm').addEventListener('submit', function(event) {
-  event.preventDefault(); // Prevent form from submitting normally
-
-  // Hardcoded correct credentials
-  const correctUsername = 'admin';
-  const correctPassword = 'password123';
-
-  // Get entered credentials
-  const enteredUsername = document.querySelector('input[name="uname"]').value;
-  const enteredPassword = document.querySelector('input[name="psw"]').value;
-
-  // Check if entered credentials match the correct ones
-  if (enteredUsername === correctUsername && enteredPassword === correctPassword) {
-    window.location.href = 'dashboard.html'; // Redirect to the specified page
-  } else {
-    document.getElementById('error').style.display = 'block'; // Show error message
-  }
-});
-</script>
 
 </body>
 </html>
