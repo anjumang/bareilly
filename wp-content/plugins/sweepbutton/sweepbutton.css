@@ -1,0 +1,105 @@
+
+<style>
+  
+
+  .sweepButton-container {
+    float: right;
+    width: 50%; /* Adjust the width as needed */
+  }
+
+  .sweepButton {
+    position: right;
+    margin: 15px 150px;
+    overflow: hidden;
+    background: linear-gradient(90deg, #4a90e2, #36d1dc);
+    font-size: 20px;
+    padding: 12px;
+    border: none;
+    border-radius: 90px;
+    cursor: pointer;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+    text-decoration: none;
+    display: block;
+    color: #fff; /* Changed text color to white */
+    font-weight: bold;
+  }
+
+  .sweepButton::before {
+    content: '';
+    position: right;
+    top: 0;
+    left: 20%;
+    width: 70%;
+    height: 90%;
+    background: linear-gradient(45deg, #5f27cd, #ffc0cb);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease; /* Added transform transition for fade-in effect */
+  }
+
+  .sweepButton:hover::before {
+    opacity: 1;
+    transform: translateY(-100%); /* Fade-in effect by moving the gradient from top to bottom */
+  }
+
+  .sweepButton:hover {
+    box-shadow: 0 0 10px rgba(70, 130, 180, 0.8);
+    color: #fff;
+    transform: scale(1.1);
+    text-decoration: none;
+  }
+
+  .sweepButton:active {
+    transform: scale(0.95);
+    text-decoration: none;
+  }
+
+  
+</style>
+
+
+
+
+<style>
+  .sweepButton-container {
+    width: 100%;
+    text-align: center;
+  }
+
+  .sweepButton {
+    margin: 15px;
+    padding: 12px;
+    font-size: 20px;
+    border-radius: 90px;
+    background: linear-gradient(90deg, #4a90e2, #36d1dc);
+    color: #fff;
+    text-decoration: none;
+    display: inline-block;
+    transition: transform 0.3s ease, box-shadow 0.3s ease, color 0.3s ease;
+    cursor: pointer;
+  }
+
+  .sweepButton:hover {
+    box-shadow: 0 0 10px rgba(70, 130, 180, 0.8);
+    transform: scale(1.1);
+  }
+
+  .sweepButton:active {
+    transform: scale(0.95);
+  }
+
+  /* Media queries */
+  @media (max-width: 768px) {
+    .sweepButton {
+      font-size: 18px;
+      padding: 10px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .sweepButton {
+      font-size: 16px;
+      padding: 8px;
+      margin: 10px;
+    }
+  }
+</style>
