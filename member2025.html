@@ -33,13 +33,9 @@
 
     <div class='dis-info'>
         <div class='container-fluid'>
-            <div class='d-flex align-items-center '>
-           
-
+            <div class='d-flex align-items-center'>
                 <h6 class='mb-0 mx-2'>Disclaimer:-</h6>
-             
-               In the blessed month of Rabi' al-Awwal, your support can bring new light to the noble works of Anjuman-e-Ghulaman-e-Mustafa. On this special occasion, we are committed to spreading the message of goodness, peace, and unity in society. Anjuman-e-Ghulaman-e-Mustafa will utilize your donations with complete transparency and responsibility. Details of every contribution will be available on our website so that you can see how your generosity is bringing change to the community. Join us on this journey of goodness in this sacred month, and become a part of the rewards and blessings with your assistance. Your small contribution can be the cause of great change. Become a part of Anjuman-e-Ghulaman-e-Mustafa's blessed initiative today."</p>
-                
+                <p>In the blessed month of Rabi' al-Awwal, your support can bring new light to the noble works of Anjuman-e-Ghulaman-e-Mustafa...</p>
             </div>
         </div>
     </div>
@@ -52,17 +48,14 @@
             </div>
 
             <div class='middle-head'>
-    <div class="roundBtn">&nbsp;</div>
-    <div class='round-status'>Month:-   <span> 5 </span> / 12 </div>
-    <div class='switch-list'>
-        <ul>
-
-            <li><a href="index.html"><img src='img/home.png' alt='' title="html"></a>Home</li>
-
-         </ul>
-    </div>
-</div>
-
+                <div class="roundBtn">&nbsp;</div>
+                <div class='round-status'>Month:- <span> 5 </span> / 12 </div>
+                <div class='switch-list'>
+                    <ul>
+                        <li><a href="index.html"><img src='img/home.png' alt='' title="html"></a>Home</li>
+                    </ul>
+                </div>
+            </div>
 
             <div class="box-wraper box-boarder">
                 <div class="container-fluid">
@@ -92,80 +85,82 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/custom-jQuery.js"></script>
 
-<script>
-    // ✅ Google Sheets API Configuration
-    const sheetId = "1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw";
-    const apiKey = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
-    const range = "Sheet1!A2:D"; // Fetch all rows starting from A2
-    const refreshInterval = 30000; // 🔄 Auto-refresh every 30 seconds
+    <script>
+        // ✅ Google Sheets API Configuration
+        const sheetId = "1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw";
+        const apiKey = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
+        const range = "Sheet1!A2:D"; // Fetch all rows starting from A2
+        const refreshInterval = 30000; // 🔄 Auto-refresh every 30 seconds
 
-    function loadData() {
-        const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
-        const container = document.getElementById('dynamic-data');
+        function loadData() {
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+            const container = document.getElementById('dynamic-data');
 
-        container.innerHTML = "<p>Loading data, please wait...</p>"; // Show loading message
+            container.innerHTML = "<p>Loading data, please wait...</p>"; // Show loading message
 
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                if (data.values) {
-                    renderData(data.values);
-                } else {
-                    container.innerHTML = "<p>No data available.</p>";
-                }
-            })
-            .catch(error => {
-                console.error("Error fetching data:", error);
-                container.innerHTML = "<p>Error fetching data. Please try again later.</p>";
-            });
-    }
-
-    function renderData(data) {
-        const container = document.getElementById('dynamic-data');
-        container.innerHTML = ""; // ✅ Clear previous data
-
-        if (!data || data.length === 0) {
-            container.innerHTML = "<p>No data available.</p>";
-            return;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.values) {
+                        renderData(data.values);
+                    } else {
+                        container.innerHTML = "<p>No data available.</p>";
+                    }
+                })
+                .catch(error => {
+                    console.error("Error fetching data:", error);
+                    container.innerHTML = "<p>Error fetching data. Please try again later.</p>";
+                });
         }
 
-        const fragment = document.createDocumentFragment();
+        function renderData(data) {
+            const container = document.getElementById('dynamic-data');
+            container.innerHTML = ""; // ✅ Clear previous data
 
-        data.forEach((row, index) => {
-            const [name, phone, points, image] = row;
-            const rank = index + 1;
+            if (!data || data.length === 0) {
+                container.innerHTML = "<p>No data available.</p>";
+                return;
+            }
 
-            const card = document.createElement('div');
-            card.className = 'col-md-4 col-12';
-            card.innerHTML = `
-                <div class='cand-box'>
-                    <figure>
-                        <img src='${image}' alt='Candidate Image' loading='lazy'>
-                    </figure>
-                    <div class='cand-info'>
-                        <div class='status member'>
-                            <div style='text-transform: capitalize'>Rank #${rank}</div>
-                            <div>Total Points: <span>(${points || 0})</span></div>
+            // ✅ Convert points to number and sort in descending order
+            data.sort((a, b) => (parseInt(b[2]) || 0) - (parseInt(a[2]) || 0));
+
+            const fragment = document.createDocumentFragment();
+
+            data.forEach((row, index) => {
+                const [name, phone, points, image] = row;
+                const rank = index + 1;
+
+                const card = document.createElement('div');
+                card.className = 'col-md-4 col-12';
+                card.innerHTML = `
+                    <div class='cand-box'>
+                        <figure>
+                            <img src='${image}' alt='Member Image' loading='lazy'>
+                        </figure>
+                        <div class='cand-info'>
+                            <div class='status member'>
+                                <div style='text-transform: capitalize'>Rank #${rank}</div>
+                                <div>Total Points: <span>(${points || 0})</span></div>
+                            </div>
+                            <div class='nme-prty'>
+                                <h5>${name || "N/A"}</h5>
+                                <h6>${phone || "N/A"}</h6>
+                            </div>
                         </div>
-                        <div class='nme-prty'>
-                            <h5>${name || "N/A"}</h5>
-                            <h6>${phone || "N/A"}</h6>
-                        </div>
-                    </div>
-                </div>`;
-            fragment.appendChild(card);
-        });
+                    </div>`;
+                fragment.appendChild(card);
+            });
 
-        container.appendChild(fragment);
-    }
+            container.appendChild(fragment);
+        }
 
-    // ✅ Auto-refresh every 30 seconds
-    setInterval(loadData, refreshInterval);
+        // ✅ Auto-refresh every 30 seconds
+        setInterval(loadData, refreshInterval);
 
-    // ✅ Load data on page load
-    window.onload = loadData;
-</script>
+        // ✅ Load data on page load
+        window.onload = loadData;
+    </script>
 
 </body>
-
 </html>
