@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Barafat Committee - Payment Collection Dashboard</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 20px 0;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            color: var(--primary-color);
+            margin: 10px 0;
+        }
+        
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        
+        .teams-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .team-card {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .team-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .team-header {
+            background: var(--secondary-color);
+            color: white;
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .team-name {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        
+        .collection-amount {
+            background: var(--accent-color);
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        .team-members {
+            padding: 15px;
+        }
+        
+        .member-list {
+            list-style-type: none;
+        }
+        
+        .member-item {
+            padding: 10px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .member-item:last-child {
+            border-bottom: none;
+        }
+        
+        .member-name {
+            font-weight: 500;
+        }
+        
+        .member-collector {
+            color: var(--secondary-color);
+            font-size: 14px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .search-box {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            width: 250px;
+        }
+        
+        .filter-select {
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: white;
+        }
+        
+        .export-btn {
+            background: var(--success-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .export-btn:hover {
+            background: #219653;
+        }
+        
+        .sync-btn {
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .sync-btn:hover {
+            background: #2980b9;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #7f8c8d;
+        }
+
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .payment-cell {
+            padding: 8px;
+            text-align: center;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .paid {
+            background-color: var(--success-color);
+            color: white;
+        }
+
+        .unpaid {
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .month-label {
+            font-size: 12px;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+
+        /* New styles for payment tracking */
+        .payment-status {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .payment-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        .paid-dot {
+            background-color: var(--success-color);
+        }
+
+        .unpaid-dot {
+            background-color: #e0e0e0;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            .search-box, .filter-select, .export-btn, .sync-btn {
+                width: 100%;
+            }
+
+            .payment-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div>
+                    <h1>Barafat Committee</h1>
+                    <p class="subtitle">Payment Collection Dashboard</p>
+                </div>
+                <div>
+                    <p>Last Updated: <span id="last-updated">Loading...</span></p>
+                </div>
+            </div>
+        </header>
+        
+        <div class="stats-container">
+            <div class="stat-card">
+                <div class="stat-label">Total Teams</div>
+                <div class="stat-value" id="total-teams">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Total Members</div>
+                <div class="stat-value" id="total-members">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Monthly Target</div>
+                <div class="stat-value" id="monthly-target">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Collection Progress</div>
+                <div class="stat-value" id="collection-progress">0%</div>
+            </div>
+        </div>
+        
+        <div class="controls">
+            <input type="text" class="search-box" placeholder="Search team or member..." id="search-input">
+            <select class="filter-select" id="team-filter">
+                <option value="all">All Teams</option>
+                <!-- Team options will be populated by JavaScript -->
+            </select>
+            <select class="filter-select" id="month-filter">
+                <option value="all">All Months</option>
+                <!-- Month options will be populated by JavaScript -->
+            </select>
+            <button class="sync-btn" id="sync-btn">Sync with Google Sheets</button>
+            <button class="export-btn" id="export-btn">Export to Excel</button>
+        </div>
+        
+        <div class="teams-container" id="teams-container">
+            <!-- Team cards will be populated by JavaScript -->
+        </div>
+        
+        <footer>
+            <p>Barafat Committee Payment Collection System &copy; 2023</p>
+        </footer>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="payment-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Payment Details</h2>
+                <button class="close-btn" id="close-modal">&times;</button>
+            </div>
+            <div id="modal-body">
+                <!-- Payment details will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Google Sheets configuration (आपके दिए हुए values)
+        const SPREADSHEET_ID = '1JQpmcl8UTThTw1LdZFyYg5ODRk661FN78RCYEXJV8bM';
+        const API_KEY = 'AIzaSyBctVRUojwdq6x2M_AozCvwl_YfIAC3XvA';
+        const SHEET_NAME = 'Sheet1'; // आपने पहले बताया था यही नाम
+
+        // teamData structure used by rest of the app
+        let teamData = [];
+
+        // Utility: read cell value and treat 'Paid' (case-insensitive) as true
+        function cellIsPaid(val) {
+            if (val === undefined || val === null) return false;
+            const s = String(val).trim().toLowerCase();
+            return s === 'paid' || s === 'yes' || s === 'true' || s === '1' || s === 'p';
+        }
+
+        // Load data from Google Sheets using Sheets v4 API (read-only with API key)
+        async function loadDataFromSheets() {
+            try {
+                // Build request URL
+                const range = encodeURIComponent(`${SHEET_NAME}`); // whole sheet
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${range}?key=${API_KEY}`;
+
+                const resp = await fetch(url);
+                if (!resp.ok) throw new Error('Failed to fetch sheet: ' + resp.statusText);
+                const json = await resp.json();
+
+                const rows = json.values || [];
+                if (rows.length === 0) {
+                    teamData = [];
+                    renderTeams(teamData);
+                    populateTeamFilter();
+                    populateMonthFilter();
+                    updateStatistics();
+                    document.getElementById('last-updated').textContent = new Date().toLocaleString();
+                    return teamData;
+                }
+
+                // First row assumed headers
+                const headers = rows[0].map(h => (h || '').toString().trim());
+                // Find month columns (try short names then full names)
+                const monthShort = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+                const monthIndexes = [];
+                // Try to find consecutive 12 month-like columns; fallback to header positions matching short names
+                for (let i = 0; i < headers.length; i++) {
+                    const hh = headers[i].toLowerCase();
+                    if (monthShort.includes(hh.slice(0,3))) {
+                        monthIndexes.push(i);
+                    }
+                }
+                // If we didn't find 12 via direct match, try searching for standard month names anywhere
+                if (monthIndexes.length < 12) {
+                    monthIndexes.length = 0;
+                    const monthFull = ['january','february','march','april','may','june','july','august','september','october','november','december'];
+                    monthFull.forEach((m) => {
+                        const idx = headers.findIndex(h => h && h.toString().trim().toLowerCase().startsWith(m.slice(0,3)));
+                        monthIndexes.push(idx);
+                    });
+                }
+                // Clean up monthIndexes: ensure values are numbers and valid
+                const validMonthIdx = monthIndexes.filter(i => typeof i === 'number' && i >= 0);
+
+                // Determine which columns are Collector and Member - try common header names
+                const collectorHeaderCandidates = ['collector','team','collector name','collector_name'];
+                const memberHeaderCandidates = ['member','member name','name','full name','member_name'];
+                let collectorIdx = headers.findIndex(h => collectorHeaderCandidates.includes(h.toLowerCase()));
+                let memberIdx = headers.findIndex(h => memberHeaderCandidates.includes(h.toLowerCase()));
+
+                // Fallbacks: if not found, assume first column = collector, second = member
+                if (collectorIdx === -1) collectorIdx = 0;
+                if (memberIdx === -1) memberIdx = 1;
+
+                // Optional note column index (if exists)
+                let noteIdx = headers.findIndex(h => h && h.toLowerCase().includes('note'));
+                if (noteIdx === -1) noteIdx = null;
+
+                // Build grouped data: collector -> members
+                const grouped = {};
+                for (let r = 1; r < rows.length; r++) {
+                    const row = rows[r];
+                    const collector = (row[collectorIdx] || '').toString().trim() || 'Unknown';
+                    const name = (row[memberIdx] || '').toString().trim() || `Member ${r}`;
+
+                    // build payments array of length 12
+                    const payments = [];
+                    if (validMonthIdx.length >= 12) {
+                        for (let m = 0; m < 12; m++) {
+                            const idx = validMonthIdx[m];
+                            const cell = (typeof idx === 'number' && row[idx] !== undefined) ? row[idx] : null;
+                            payments.push(cellIsPaid(cell));
+                        }
+                    } else {
+                        // If month columns not determinable, try columns 2..13 (0-based)
+                        for (let m = 0; m < 12; m++) {
+                            const idx = 2 + m;
+                            const cell = row[idx] !== undefined ? row[idx] : null;
+                            payments.push(cellIsPaid(cell));
+                        }
+                    }
+
+                    const note = noteIdx !== null && row[noteIdx] ? row[noteIdx] : '';
+
+                    if (!grouped[collector]) grouped[collector] = { collector, members: [], note: note };
+                    grouped[collector].members.push({ name, payments });
+                }
+
+                // Convert grouped to teamData array
+                teamData = Object.keys(grouped).map(k => {
+                    return {
+                        collector: grouped[k].collector,
+                        members: grouped[k].members,
+                        note: grouped[k].note || ''
+                    };
+                });
+
+                // Update UI
+                renderTeams(teamData);
+                populateTeamFilter();
+                populateMonthFilter();
+                updateStatistics();
+                document.getElementById('last-updated').textContent = new Date().toLocaleString();
+
+                return teamData;
+            } catch (err) {
+                console.error('Error loading data from Google Sheets:', err);
+                alert('Error loading data from Google Sheets. Check sheet name, sheet permissions (must be viewable), and API key.');
+                return [];
+            }
+        }
+
+        // Function to calculate team amount based on payments
+        function calculateTeamAmount(team) {
+            const monthlyPayment = 100; // Each member pays 100 per month
+            let total = 0;
+            
+            team.members.forEach(member => {
+                const paidMonths = member.payments.filter(payment => payment).length;
+                total += paidMonths * monthlyPayment;
+            });
+            
+            return total;
+        }
+
+        // Function to render team cards (unchanged design)
+        function renderTeams(teams) {
+            const container = document.getElementById('teams-container');
+            container.innerHTML = '';
+            
+            teams.forEach(team => {
+                const teamCard = document.createElement('div');
+                teamCard.className = 'team-card';
+                
+                const teamAmount = calculateTeamAmount(team);
+                
+                teamCard.innerHTML = `
+                    <div class="team-header">
+                        <div class="team-name">${team.collector}</div>
+                        <div class="collection-amount">${teamAmount}</div>
+                    </div>
+                    <div class="team-members">
+                        <ul class="member-list">
+                            ${team.members.map(member => `
+                                <li class="member-item" data-member="${member.name}" data-collector="${team.collector}">
+                                    <span class="member-name">${member.name}</span>
+                                    <div class="payment-status">
+                                        <span class="payment-dot ${member.payments[0] ? 'paid-dot' : 'unpaid-dot'}"></span>
+                                        <span class="member-collector">${team.collector}</span>
+                                    </div>
+                                </li>
+                            `).join('')}
+                        </ul>
+                        <div style="margin-top: 15px; font-size: 14px; color: #7f8c8d;">
+                            ${team.note || ''}
+                        </div>
+                    </div>
+                `;
+                
+                container.appendChild(teamCard);
+            });
+            
+            // Add click event listeners to member items (rebind after render)
+            document.querySelectorAll('.member-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const memberName = this.getAttribute('data-member');
+                    const collector = this.getAttribute('data-collector');
+                    showPaymentModal(memberName, collector);
+                });
+            });
+        }
+
+        // Function to show payment modal
+        function showPaymentModal(memberName, collector) {
+            const modal = document.getElementById('payment-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalBody = document.getElementById('modal-body');
+            
+            // Find the team and member
+            const team = teamData.find(t => t.collector === collector);
+            if (!team) return;
+            const member = team.members.find(m => m.name === memberName);
+            if (!member) return;
+            
+            modalTitle.textContent = `Payment Details - ${memberName}`;
+            
+            // Create payment grid
+            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+            
+            let paymentGridHTML = '<div class="payment-grid">';
+            
+            member.payments.forEach((isPaid, index) => {
+                paymentGridHTML += `
+                    <div>
+                        <div class="month-label">${monthNames[index]}</div>
+                        <div class="payment-cell ${isPaid ? 'paid' : 'unpaid'}" data-month="${index}">
+                            ${isPaid ? 'Paid' : 'Unpaid'}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            paymentGridHTML += '</div>';
+            
+            modalBody.innerHTML = paymentGridHTML;
+            
+            // Add click event to payment cells (client-side toggle only)
+            modalBody.querySelectorAll('.payment-cell').forEach(cell => {
+                cell.addEventListener('click', function() {
+                    const monthIndex = parseInt(this.getAttribute('data-month'));
+                    member.payments[monthIndex] = !member.payments[monthIndex];
+                    this.classList.toggle('paid');
+                    this.classList.toggle('unpaid');
+                    this.textContent = this.classList.contains('paid') ? 'Paid' : 'Unpaid';
+                    
+                    // Update the main view (re-render teams to reflect change)
+                    renderTeams(teamData);
+                    updateStatistics();
+                });
+            });
+            
+            modal.style.display = 'flex';
+        }
+
+        // Close modal helper
+        document.addEventListener('click', function(e){
+            const modal = document.getElementById('payment-modal');
+            if (e.target && e.target.id === 'close-modal') modal.style.display = 'none';
+        });
+
+        // Close when clicking outside
+        document.getElementById('payment-modal').addEventListener('click', function(e){
+            if (e.target === this) this.style.display = 'none';
+        });
+
+        // Function to update statistics
+        function updateStatistics() {
+            document.getElementById('total-teams').textContent = teamData.length;
+            
+            const totalMembers = teamData.reduce((total, team) => total + (team.members ? team.members.length : 0), 0);
+            document.getElementById('total-members').textContent = totalMembers;
+            
+            // Monthly target is total members * 100
+            document.getElementById('monthly-target').textContent = totalMembers * 100;
+            
+            // Calculate total collected amount
+            const totalCollected = teamData.reduce((total, team) => total + calculateTeamAmount(team), 0);
+            
+            // Calculate progress percentage
+            const totalPossible = totalMembers * 100 * 12; // 12 months
+            const progressPercentage = totalPossible > 0 ? Math.round((totalCollected / totalPossible) * 100) : 0;
+            document.getElementById('collection-progress').textContent = `${progressPercentage}%`;
+        }
+
+        // Function to populate team filter
+        function populateTeamFilter() {
+            const filter = document.getElementById('team-filter');
+            const prev = filter.value || 'all';
+            filter.innerHTML = '<option value="all">All Teams</option>';
+            
+            teamData.forEach(team => {
+                const option = document.createElement('option');
+                option.value = team.collector;
+                option.textContent = team.collector;
+                filter.appendChild(option);
+            });
+
+            // restore previous selection if still present
+            if ([...filter.options].some(opt => opt.value === prev)) filter.value = prev;
+        }
+
+        // Function to populate month filter
+        function populateMonthFilter() {
+            const filter = document.getElementById('month-filter');
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June', 
+                               'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            filter.innerHTML = '<option value="all">All Months</option>';
+            
+            monthNames.forEach((month, index) => {
+                const option = document.createElement('option');
+                option.value = index;
+                option.textContent = month;
+                filter.appendChild(option);
+            });
+        }
+
+        // Function to filter teams (search/team/month)
+        function filterTeams() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const selectedTeam = document.getElementById('team-filter').value;
+            const selectedMonth = document.getElementById('month-filter').value;
+            
+            // work on a copy so original teamData not mutated
+            const filteredTeams = teamData.map(team => ({
+                collector: team.collector,
+                members: team.members.slice(),
+                note: team.note
+            })).filter(team => {
+                const matchesTeam = selectedTeam === 'all' || team.collector === selectedTeam;
+                if (!matchesTeam) return false;
+
+                // filter members by search term
+                const membersFilteredBySearch = team.members.filter(member => {
+                    return member.name.toLowerCase().includes(searchTerm);
+                });
+
+                // if no search term, keep original members for month check
+                const membersToCheck = searchTerm ? membersFilteredBySearch : team.members;
+
+                // if month filter applied, check payment status for that month
+                if (selectedMonth !== 'all') {
+                    const monthIndex = parseInt(selectedMonth);
+                    const membersWithMonth = membersToCheck.filter(m => m.payments[monthIndex] === true);
+                    team.members = membersWithMonth;
+                } else {
+                    team.members = membersToCheck;
+                }
+
+                return team.members.length > 0;
+            });
+
+            renderTeams(filteredTeams);
+        }
+
+        // Function to sync with Google Sheets (button)
+        async function syncWithGoogleSheets() {
+            const syncBtn = document.getElementById('sync-btn');
+            syncBtn.textContent = 'Syncing...';
+            syncBtn.disabled = true;
+            
+            try {
+                await loadDataFromSheets();
+                // small visual feedback
+            } catch (error) {
+                console.error('Error syncing data:', error);
+                alert('Error syncing data. Please try again.');
+            } finally {
+                syncBtn.textContent = 'Sync with Google Sheets';
+                syncBtn.disabled = false;
+            }
+        }
+
+        // Function to export data to CSV
+        function exportToExcel() {
+            let csvContent = "Collector,Member,Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec\n";
+            
+            teamData.forEach(team => {
+                (team.members || []).forEach(member => {
+                    const payments = member.payments.map(p => p ? 'Paid' : 'Unpaid').join(',');
+                    csvContent += `"${team.collector}","${member.name}",${payments}\n`;
+                });
+            });
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'barafat_committee_payments.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            alert('Data exported successfully!');
+        }
+
+        // Initialize the dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load initial data
+            loadDataFromSheets();
+            
+            // Auto refresh every 10 seconds
+            setInterval(loadDataFromSheets, 10000);
+
+            // Add event listeners
+            document.getElementById('search-input').addEventListener('input', filterTeams);
+            document.getElementById('team-filter').addEventListener('change', filterTeams);
+            document.getElementById('month-filter').addEventListener('change', filterTeams);
+            document.getElementById('sync-btn').addEventListener('click', syncWithGoogleSheets);
+            document.getElementById('export-btn').addEventListener('click', exportToExcel);
+            
+            // Close modal when clicking the close button
+            document.getElementById('close-modal').addEventListener('click', function() {
+                document.getElementById('payment-modal').style.display = 'none';
+            });
+            
+            // Close modal when clicking outside
+            document.getElementById('payment-modal').addEventListener('click', function(e) {
+                if (e.target === this) {
+                    this.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
