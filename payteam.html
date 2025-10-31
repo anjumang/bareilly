@@ -84,8 +84,8 @@ footer{text-align:center;margin-top:40px;padding:20px;color:#7f8c8d;font-size:14
     <div class="stats-container">
         <div class="stat-card"><div class="stat-label">Total Teams</div><div class="stat-value" id="total-teams">0</div></div>
         <div class="stat-card"><div class="stat-label">Total Members</div><div class="stat-value" id="total-members">0</div></div>
-        <div class="stat-card"><div class="stat-label">Monthly Target</div><div class="stat-value" id="monthly-target">0</div></div>
-        <div class="stat-card"><div class="stat-label">Collection Progress</div><div class="stat-value" id="collection-progress">0%</div></div>
+        <div class="stat-card"><div class="stat-label">Cumulative Target</div><div class="stat-value" id="monthly-target">₹0</div></div>
+        <div class="stat-card"><div class="stat-label">Total Received</div><div class="stat-value" id="total-received">₹0</div></div>
     </div>
 
     <div class="controls">
@@ -98,7 +98,7 @@ footer{text-align:center;margin-top:40px;padding:20px;color:#7f8c8d;font-size:14
 
     <div class="teams-container" id="teams-container"></div>
 
-    <footer><p>Barafat Committee Payment Collection System &copy; 2025</p></footer>
+    <footer><p>Anjuman Ghulaman E Mustafa Payment Collection System &copy; 2025</p></footer>
 </div>
 
 <div class="modal" id="payment-modal">
@@ -117,6 +117,9 @@ const API_KEY = 'AIzaSyDyYGbNGoxSmOCxM3AWIByds9g0zbOUY-g';
 const SHEET_RANGE = 'Sheet1';
 
 let teamData = [];
+
+// Committee months from October to September
+const COMMITTEE_MONTHS = ['Oct', 'Nov', 'Dec', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
 
 function cellStatus(val){
     if(!val) return 'unpaid';
@@ -195,6 +198,64 @@ function calculateTeamAmount(team){
     return total;
 }
 
+function calculateCumulativeTarget(totalMembers) {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth(); // 0-11 (Jan-Dec)
+    const currentYear = currentDate.getFullYear();
+    const currentDay = currentDate.getDate();
+    
+    // Committee starts from October 2025
+    const startMonth = 9; // October (0-indexed)
+    const startYear = 2025;
+    
+    let monthsPassed = 0;
+    
+    if (currentYear === startYear) {
+        // Same year - count months from October to current month
+        // Only count the month if we're past the 1st day
+        if (currentMonth > startMonth || (currentMonth === startMonth && currentDay >= 1)) {
+            monthsPassed = currentMonth - startMonth + 1;
+        }
+    } else if (currentYear > startYear) {
+        // Next year - count all months from Oct to Dec (3 months) plus current year months
+        monthsPassed = 3; // Oct, Nov, Dec
+        
+        // Add months from current year (only if we're past the 1st day of the month)
+        if (currentDay >= 1) {
+            monthsPassed += currentMonth + 1;
+        } else {
+            monthsPassed += currentMonth;
+        }
+    }
+    
+    // Cap at 12 months maximum (Oct to Sep)
+    monthsPassed = Math.min(monthsPassed, 12);
+    
+    // Ensure at least 1 month is counted from October 1st
+    if (currentYear === startYear && currentMonth === startMonth && currentDay >= 1) {
+        monthsPassed = Math.max(monthsPassed, 1);
+    }
+    
+    return totalMembers * 100 * monthsPassed;
+}
+
+function getCurrentCommitteeMonth() {
+    const currentDate = new Date();
+    const currentMonth = currentDate.getMonth(); // 0-11 (Jan-Dec)
+    const currentYear = currentDate.getFullYear();
+    
+    // Committee months mapping
+    // Oct (9), Nov (10), Dec (11), Jan (0), Feb (1), Mar (2), Apr (3), May (4), Jun (5), Jul (6), Aug (7), Sep (8)
+    
+    if (currentYear === 2025) {
+        if (currentMonth >= 9) return currentMonth - 9; // Oct=0, Nov=1, Dec=2
+    } else if (currentYear === 2026) {
+        if (currentMonth <= 8) return currentMonth + 3; // Jan=3, Feb=4, ..., Sep=11
+    }
+    
+    return 0; // Default to first month if before committee start
+}
+
 function renderTeams(teams){
     const container=document.getElementById('teams-container');
     container.innerHTML='';
@@ -257,10 +318,9 @@ function showPaymentModal(memberName,collector){
     if(!member) return;
 
     modalTitle.textContent=`Payment Details - ${memberName}`;
-    const months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     let html='<div class="payment-grid">';
     member.payments.forEach((p,i)=>{
-        html+=`<div><div class="month-label">${months[i]}</div>
+        html+=`<div><div class="month-label">${COMMITTEE_MONTHS[i]}</div>
         <div class="payment-cell ${p}">${p==='paid'?'Paid':p==='inprogress'?'In Progress':'Unpaid'}</div></div>`;
     });
     html+='</div>';
@@ -277,10 +337,13 @@ function updateStatistics(){
     document.getElementById('total-teams').textContent=teamData.length;
     const totalMembers=teamData.reduce((t,team)=>t+(team.members?team.members.length:0),0);
     document.getElementById('total-members').textContent=totalMembers;
-    document.getElementById('monthly-target').textContent=totalMembers*100;
+    
+    // Calculate cumulative target based on months passed
+    const cumulativeTarget = calculateCumulativeTarget(totalMembers);
+    document.getElementById('monthly-target').textContent='₹' + cumulativeTarget;
+    
     const totalCollected=teamData.reduce((t,team)=>t+calculateTeamAmount(team),0);
-    const totalPossible=totalMembers*100*12;
-    document.getElementById('collection-progress').textContent=totalPossible>0?Math.round((totalCollected/totalPossible)*100)+'%':'0%';
+    document.getElementById('total-received').textContent='₹' + totalCollected;
 }
 
 function populateTeamFilter(){
@@ -296,9 +359,8 @@ function populateTeamFilter(){
 
 function populateMonthFilter(){
     const f=document.getElementById('month-filter');
-    const mNames=['January','February','March','April','May','June','July','August','September','October','November','December'];
     f.innerHTML='<option value="all">All Months</option>';
-    mNames.forEach((m,i)=>{
+    COMMITTEE_MONTHS.forEach((m,i)=>{
         const o=document.createElement('option');
         o.value=i;o.textContent=m;f.appendChild(o);
     });
@@ -333,7 +395,7 @@ function filterTeams(){
 }
 
 function exportToExcel(){
-    let csv="Collector,Member,Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec\n";
+    let csv="Collector,Member," + COMMITTEE_MONTHS.join(',') + "\n";
     teamData.forEach(t=>{
         t.members.forEach(m=>{
             const pay=m.payments.map(p=>p==='paid'?'Paid':p==='inprogress'?'In Progress':'Unpaid').join(',');
