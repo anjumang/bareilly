@@ -629,7 +629,10 @@
                 <i class="material-icons">assignment</i>
                 फॉर्म के माध्यम से सुझाव दें
             </h3>
-            <p>यदि उपरोक्त फॉर्म काम नहीं कर रहा है, तो आप Google Form के माध्यम से भी सुझाव दे सकते हैं:</p>
+            <p>
+        “बाराफ़त के लिए इस बार 9 अलग-अलग सजावट आइडियाज़ तैयार करे!
+50 मीटर के हर एरिया में सिर्फ 5000 के बजट में खूबसूरती और स्टाइल का कमाल हो। 
+कुल 450 मीटर एरिया को शानदार तरीके से सजाया जाए। आपकी राय और सुझाव हमारे लिए महत्वपूर्ण हैं। आइए, अपनी पसंद साझा करें और सजावट को और भी ख़ास बनाने में मदद करें।”</p>
             
             <div class="form-options">
                 <div class="form-option">
@@ -710,6 +713,16 @@
     <script>  
         // Your Google Apps Script Web App URL - यहाँ अपनी नई URL डालें
         const GOOGLE_SCRIPT_URL = 'https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLgTu3_fGHB8Tf9DB9riEfpYbIHa7lnktOSq1DI8OtRf76QgVuO3o1omPdj9IAhnwN55POC4zRBLfGhWoHysa_ZAQn3vP1zr3ZaV-etF-HD33zzCXyzPlxnxplY8kUhOtfFEDSpHkWOweHdaPTRVdYe8s_n3hxEnSOhFtBxDkjXWvgcFhiSITOWVuf_HrGOvkXrOO2s0L7o7HdYRS74bYbQ8-Kdxdtw92x4lhwZksEd-TXfb5fNjquGMZ5r3O7Xd6YVHJozCaLEOKzVsIrOY9_4EWpHXLQ&lib=MTF7K1p6lIO18CBwhBt27vOKkGZzaX1Ik'; 
+
+
+        // NEW: Google Form URL - अपना Google Form URL यहाँ डालें
+        const GOOGLE_FORM_URL = 'https://forms.gle/mx4gRTd9ebskrv9aA';
+
+        // NEW: Google Form Functions
+        function openGoogleForm() {
+            window.open(GOOGLE_FORM_URL, '_blank', 'noopener,noreferrer');
+            showNotification('Google Form नई विंडो में खुल रहा है...');
+        }
 
         // Function to fetch data from Google Sheets  
         async function fetchDataFromGoogleSheets() {  
