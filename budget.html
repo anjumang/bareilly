@@ -1,9 +1,11 @@
-<!DOCTYPE html>  
-<html lang="hi">  
-<head>  
-    <meta charset="UTF-8">  
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">  
-    <title>बारण रबी उल अव्वल इवेंट मैनेजमेंट</title>  
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>बारण रबी उल अव्वल इवेंट मैनेजमेंट</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
     <style>  
         /* आपका सारा CSS यहाँ रहेगा */
         :root {  
@@ -254,20 +256,6 @@
             border-radius: 5px;  
         }  
         
-        .feedback-panel {  
-            background: white;  
-            border-radius: 10px;  
-            padding: 20px;  
-            margin-top: 30px;  
-            box-shadow: var(--shadow);  
-        }  
-        
-        .feedback-controls {  
-            display: flex;  
-            gap: 10px;  
-            margin-bottom: 20px;  
-            flex-wrap: wrap;  
-        }  
         
         button {  
             background: var(--primary);  
@@ -308,59 +296,119 @@
             background: #5a6268;  
         }
 
-        /* NEW: Google Form Button Styles */
-        .btn-google-form {
-            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
-            color: white;
-            border: none;
-            padding: 12px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(66, 133, 244, 0.3);
-        }
-
-        .btn-google-form:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(66, 133, 244, 0.4);
-        }
-
-        .btn-google-form i {
-            font-size: 1.2rem;
-        }
-
+        /* UPDATED: Google Form Section Styles */
         .google-form-section {
-            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
-            padding: 25px;
-            border-radius: 10px;
-            margin-top: 20px;
-            border-left: 4px solid #4285f4;
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            padding: 30px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border-left: 5px solid #4285f4;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .google-form-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, rgba(66, 133, 244, 0.1), rgba(52, 168, 83, 0.1));
+            border-radius: 0 0 0 100%;
+            z-index: 0;
+        }
+
+        .google-form-section:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
         }
 
         .google-form-section h3 {
             color: #4285f4;
-            margin-bottom: 15px;
+            margin-bottom: 18px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            font-size: 1.4rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .google-form-section p {
+            color: #5f6368;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            font-size: 1.05rem;
+            position: relative;
+            z-index: 1;
+            text-align: justify;
         }
 
         .form-options {
             display: flex;
             gap: 15px;
             flex-wrap: wrap;
-            margin-top: 15px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
         }
 
         .form-option {
             flex: 1;
             min-width: 200px;
+        }
+
+        /* UPDATED: Google Form Button Styles */
+        .btn-google-form {
+            background: linear-gradient(135deg, #4285f4, #34a853, #fbbc05, #ea4335);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(66, 133, 244, 0.3);
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-google-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.7s;
+        }
+
+        .btn-google-form:hover::before {
+            left: 100%;
+        }
+
+        .btn-google-form:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(66, 133, 244, 0.4);
+        }
+
+        .btn-google-form:active {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 10px rgba(66, 133, 244, 0.3);
+        }
+
+        .btn-google-form i {
+            font-size: 1.3rem;
         }
         
         .form-group {  
@@ -532,10 +580,6 @@
             .budget-item {  
                 margin-bottom: 15px;  
             }  
-            
-            .feedback-controls {  
-                flex-direction: column;  
-            }
 
             .form-options {
                 flex-direction: column;
@@ -544,21 +588,58 @@
             .form-option {
                 min-width: 100%;
             }
+            
+            /* UPDATED: Responsive adjustments for Google Form Section */
+            .google-form-section {
+                padding: 20px;
+                margin-top: 20px;
+            }
+            
+            .google-form-section h3 {
+                font-size: 1.2rem;
+            }
+            
+            .google-form-section p {
+                font-size: 1rem;
+            }
+            
+            .btn-google-form {
+                padding: 12px 20px;
+                font-size: 1rem;
+            }
         }  
     </style>
-<!-- Google Icons -->
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-</head>  
+</head>
 <body>   
     <div class="container">  
         <header>  
-            <h1>आप की कमेटी, आप की सजावट</h1>  
-            <p class="subtitle">बाराफ़त की सजावट को और भी खूबसूरत बनाने के लिए कमेटी के सभी सदस्यों के सुझावों का इंतज़ार रहेगा!</p>  
+            <h1>आप की कमेटी, आप की सजावट</h1>
+
+            <div class="google-form-section">
+                <h3>
+                    <i class="material-icons">assignment</i>
+                    फॉर्म के माध्यम से सुझाव दें
+                </h3>
+                <p>
+                    “बाराफ़त के लिए इस बार 9 अलग-अलग सजावट आइडियाज़ तैयार करे!
+                    50 मीटर के हर एरिया में सिर्फ 5000 रुपये के बजट में खूबसूरती और स्टाइल का कमाल हो। 
+                    कुल 450 मीटर एरिया को शानदार तरीके से सजाया जाए। आपकी राय और सुझाव हमारे लिए महत्वपूर्ण हैं। आइए, अपनी पसंद साझा करें और सजावट को और भी ख़ास बनाने में मदद करें।”
+                </p>
+                
+                <div class="form-options">
+                    <div class="form-option">
+                        <button class="btn-google-form" onclick="openGoogleForm()">
+                            <i class="material-icons">assignment</i>
+                            सुझाव दें फॉर्म खोलें
+                        </button>
+                    </div>
+                </div>
+            </div> 
         </header>  
 
         <div class="dashboard">  
             <div class="card budget-card">  
-                <h2>बजट सारांश</h2>  
+                <h2><i class="material-icons">account_balance</i>बजट डिटेल्स</h2>  
                 <div class="budget-summary">  
                     <div class="budget-item" id="total-budget">  
                         <h3>कुल बजट</h3>  
@@ -568,7 +649,7 @@
                         </div>  
                     </div>  
                     <div class="budget-item" id="reserved-amount">  
-                        <h3>आरक्षित राशि</h3>  
+                        <h3>रिजर्व रुपये</h3>  
                         <div class="budget-amount reserved">Loading...</div>  
                         <div class="progress-bar">  
                             <div class="progress reserved-progress"></div>  
@@ -591,62 +672,51 @@
                 </div>  
                 
                 <div class="budget-details">  
-                    <h3>विस्तृत खर्च</h3>  
+                    <h3><i class="material-icons">list_alt</i>कुल खर्चा</h3>  
                     <table>  
                         <thead>  
                             <tr>  
-                                <th>मद</th>  
-                                <th>आवंटित राशि</th>  
-                                <th>खर्च की गई राशि</th>  
+                                <th>सामान आया</th>  
+                                <th>पैसे दिए गए</th>  
+                                <th>खर्च में आए पैसे</th>  
                                 <th>बचत</th>  
                             </tr>  
                         </thead>  
                         <tbody id="expenses-table-body">  
                             <!-- Data will be loaded here from Google Sheets -->
+                            <tr>
+                                <td colspan="4" class="loading-state">
+                                    <div class="loading"></div>डेटा लोड हो रहा है...
+                                </td>
+                            </tr>
                         </tbody>  
                     </table>  
                 </div>  
                 
-                <!-- NEW: Google Form Section added below the detailed expenses table -->
-                <div class="google-form-section">
-                    <h3>
-                        <i class="material-icons">assignment</i>
-                        फॉर्म के माध्यम से सुझाव दें
-                    </h3>
-                    <p>
-                        “बाराफ़त के लिए इस बार 9 अलग-अलग सजावट आइडियाज़ तैयार करे!
-                        50 मीटर के हर एरिया में सिर्फ 5000 रुपये के बजट में खूबसूरती और स्टाइल का कमाल हो। 
-                        कुल 450 मीटर एरिया को शानदार तरीके से सजाया जाए। आपकी राय और सुझाव हमारे लिए महत्वपूर्ण हैं। आइए, अपनी पसंद साझा करें और सजावट को और भी ख़ास बनाने में मदद करें।”
-                    </p>
-                    
-                    <div class="form-options">
-                        <div class="form-option">
-                            <button class="btn-google-form" onclick="openGoogleForm()">
-                                <i class="material-icons">assignment</i>
-                                सुझाव दें फॉर्म खोलें
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                
             </div>  
             
             <div class="card">  
-                <h2>सदस्यों की सूची</h2>  
+                <h2><i class="material-icons">people</i>मेम्बरो के लिस्ट</h2>  
                 <div class="member-list" id="members-list">  
                     <!-- Data will be loaded here from Google Sheets -->
+                    <div class="loading-state">
+                        <div class="loading"></div>मेम्बरो के लिस्ट लोड हो रही है...
+                    </div>
                 </div>  
             </div>  
             
             <div class="card">  
-                <h2>सुझाव</h2>  
+                <h2><i class="material-icons">lightbulb</i>सुझाव</h2>  
                 <div class="suggestions-container" id="suggestions-container">  
                     <!-- Data will be loaded here from Google Sheets -->
+                    <div class="loading-state">
+                        <div class="loading"></div>सुझाव लोड हो रहे हैं...
+                    </div>
                 </div>  
             </div>  
         </div>  
-        
-        <!-- Feedback Panel -->
-          
+    </div>  
         
     <!-- Modals -->
     <div class="modal" id="member-details-modal">  
@@ -688,7 +758,7 @@
     <div class="modal" id="reserved-details-modal">  
         <div class="modal-content">  
             <div class="modal-header">  
-                <h3>आरक्षित राशि का विवरण</h3>  
+                <h3>परमानेंट खर्चा जो होना है हर हाल में</h3>  
                 <button class="close-modal">&times;</button>  
             </div>  
             <div id="reserved-details-content">  
@@ -714,380 +784,345 @@
     </div>  
 
     <script>  
-        // Your Google Apps Script Web App URL - यहाँ अपनी नई URL डालें
+        // Your Google Apps Script Web App URL
         const GOOGLE_SCRIPT_URL = 'https://script.googleusercontent.com/macros/echo?user_content_key=AehSKLgTu3_fGHB8Tf9DB9riEfpYbIHa7lnktOSq1DI8OtRf76QgVuO3o1omPdj9IAhnwN55POC4zRBLfGhWoHysa_ZAQn3vP1zr3ZaV-etF-HD33zzCXyzPlxnxplY8kUhOtfFEDSpHkWOweHdaPTRVdYe8s_n3hxEnSOhFtBxDkjXWvgcFhiSITOWVuf_HrGOvkXrOO2s0L7o7HdYRS74bYbQ8-Kdxdtw92x4lhwZksEd-TXfb5fNjquGMZ5r3O7Xd6YVHJozCaLEOKzVsIrOY9_4EWpHXLQ&lib=MTF7K1p6lIO18CBwhBt27vOKkGZzaX1Ik'; 
 
-
-        // NEW: Google Form URL - अपना Google Form URL यहाँ डालें
+        // Google Form URL
         const GOOGLE_FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSeN0fDvIoyynb7y65ME3_nxpV9JOwHWXKMFAetZyqAD1VQW2Q/viewform?usp=dialog';
 
-        // NEW: Google Form Functions
+        // Performance optimization: Cache data
+        let cachedData = null;
+        let lastFetchTime = 0;
+        const CACHE_DURATION = 30000; // 30 seconds
+
+        // Google Form Functions
         function openGoogleForm() {
             window.open(GOOGLE_FORM_URL, '_blank', 'noopener,noreferrer');
             showNotification('Google Form नई विंडो में खुल रहा है...');
         }
 
-        // Function to fetch data from Google Sheets  
-        async function fetchDataFromGoogleSheets() {  
-            try {  
-                console.log('Fetching data from Google Sheets...');
-                const response = await fetch(GOOGLE_SCRIPT_URL);  
-                if (!response.ok) {  
-                    throw new Error('Network response was not ok');  
-                }  
-                const data = await response.json();
-                return data;
-            } catch (error) {  
-                console.error('Error fetching data from Google Sheets:', error);  
-                throw error;  
-            }  
-        }  
-
-        // Function to send data to Google Sheets  
-        async function sendDataToGoogleSheets(action, data) {  
-            try {  
-                console.log('Sending data to Google Sheets:', { action, data });
-                const response = await fetch(GOOGLE_SCRIPT_URL, {  
-                    method: 'POST',  
-                    headers: {  
-                        'Content-Type': 'application/json',  
-                    },  
-                    body: JSON.stringify({  
-                        action: action,  
-                        data: data  
-                    })  
-                });  
-                  
-                if (!response.ok) {  
-                    throw new Error('Network response was not ok');  
-                }  
-                const result = await response.json();
-                console.log('Data sent successfully:', result);
-                return result;
-            } catch (error) {  
-                console.error('Error sending data to Google Sheets:', error);  
-                throw error;  
-            }  
-        }  
-
-        // Function to update budget summary  
-        async function updateBudgetSummary() {  
-            try {  
-                const data = await fetchDataFromGoogleSheets();  
-                
-                // Update the budget summary  
-                document.querySelector('#total-budget .budget-amount').textContent = `${data.totalBudget.toLocaleString('hi-IN')} रुपये`;  
-                document.querySelector('#reserved-amount .budget-amount').textContent = `${data.reservedAmount.toLocaleString('hi-IN')} रुपये`;  
-                document.querySelector('#spent-amount .budget-amount').textContent = `${data.spentAmount.toLocaleString('hi-IN')} रुपये`;  
-                document.querySelector('#available-balance .budget-amount').textContent = `${data.availableBalance.toLocaleString('hi-IN')} रुपये`;  
-                
-                // Update progress bars  
-                document.querySelector('.reserved-progress').style.width = `${(data.reservedAmount / data.totalBudget) * 100}%`;  
-                document.querySelector('.spent-progress').style.width = `${(data.spentAmount / data.totalBudget) * 100}%`;  
-                document.querySelector('.remaining-progress').style.width = `${(data.availableBalance / data.totalBudget) * 100}%`;  
-                
-                // Update detailed expenses table  
-                const tableBody = document.getElementById('expenses-table-body');  
-                tableBody.innerHTML = '';  
-                
-                if (data.expenses && data.expenses.length > 0) {
-                  data.expenses.forEach(item => {  
-                      const row = document.createElement('tr');  
-                      row.innerHTML = `  
-                          <td>${item.category}</td>  
-                          <td>${item.allocated.toLocaleString('hi-IN')} रुपये</td>  
-                          <td>${item.spent.toLocaleString('hi-IN')} रुपये</td>  
-                          <td>${item.savings.toLocaleString('hi-IN')} रुपये</td>  
-                      `;  
-                      tableBody.appendChild(row);  
-                  });
-                } else {
-                  tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">कोई डेटा उपलब्ध नहीं है</td></tr>';
-                }
-                
-                // Update reserved details modal  
-                const reservedContent = document.getElementById('reserved-details-content');  
-                reservedContent.innerHTML = '';  
-                
-                if (data.reservedDetails && data.reservedDetails.length > 0) {
-                  data.reservedDetails.forEach(item => {  
-                      const detailItem = document.createElement('div');  
-                      detailItem.className = 'detail-item';  
-                      detailItem.innerHTML = `  
-                          <div class="detail-name">${item.name}</div>  
-                          <div class="detail-amount">${item.amount.toLocaleString('hi-IN')} रुपये</div>  
-                      `;  
-                      reservedContent.appendChild(detailItem);  
-                        
-                      if (item.details) {  
-                          const description = document.createElement('div');  
-                          description.className = 'detail-description';  
-                          description.textContent = item.details;  
-                          description.style.fontSize = '0.9rem';  
-                          description.style.color = '#6c757d';  
-                          description.style.marginTop = '5px';  
-                          reservedContent.appendChild(description);  
-                      }  
-                  });
-                } else {
-                  reservedContent.innerHTML = '<p>कोई आरक्षित विवरण उपलब्ध नहीं है</p>';
-                }
-                
-                // Update spent details modal  
-                const spentContent = document.getElementById('spent-details-content');  
-                spentContent.innerHTML = '';  
-                
-                if (data.spentDetails && data.spentDetails.length > 0) {
-                  data.spentDetails.forEach(item => {  
-                      const detailItem = document.createElement('div');  
-                      detailItem.className = 'detail-item';  
-                      detailItem.innerHTML = `  
-                          <div class="detail-name">${item.name}</div>  
-                          <div class="detail-amount">${item.amount.toLocaleString('hi-IN')} रुपये</div>  
-                      `;  
-                      spentContent.appendChild(detailItem);  
-                        
-                      if (item.details) {  
-                          const description = document.createElement('div');  
-                          description.className = 'detail-description';  
-                          description.textContent = item.details;  
-                          description.style.fontSize = '0.9rem';  
-                          description.style.color = '#6c757d';  
-                          description.style.marginTop = '5px';  
-                          spentContent.appendChild(description);  
-                      }  
-                  });
-                } else {
-                  spentContent.innerHTML = '<p>कोई खर्च विवरण उपलब्ध नहीं है</p>';
-                }
-                
-                // Update members list and dropdown
-                const memberList = document.getElementById('members-list');  
-                memberList.innerHTML = '';  
-                
-                if (data.members && data.members.length > 0) {
-                  data.members.forEach(member => {  
-                      // Update members list
-                      const memberItem = document.createElement('div');  
-                      memberItem.className = 'member-item';  
-                      memberItem.setAttribute('data-member', member.id);  
-                      memberItem.innerHTML = `  
-                          <div class="member-avatar">${member.name.charAt(0)}</div>  
-                          <div class="member-name">${member.name}</div>  
-                      `;  
-                      memberList.appendChild(memberItem);  
-                  });
-                } else {
-                  memberList.innerHTML = '<p>कोई सदस्य उपलब्ध नहीं है</p>';
-                }
-                
-                // Update suggestions  
-                const suggestionsContainer = document.getElementById('suggestions-container');  
-                suggestionsContainer.innerHTML = '';  
-                
-                if (data.suggestions && data.suggestions.length > 0) {
-                  data.suggestions.forEach(suggestion => {  
-                      const suggestionItem = document.createElement('div');  
-                      suggestionItem.className = 'suggestion-item';  
-                      suggestionItem.innerHTML = `  
-                          <div class="suggestion-header">  
-                              <div class="suggestion-author">${suggestion.author || 'अनाम'}</div>  
-                              <div class="suggestion-date">${suggestion.date}</div>  
-                          </div>  
-                          <div class="suggestion-content">  
-                              ${suggestion.content}  
-                          </div>  
-                          ${suggestion.media ? `  
-                          <div class="suggestion-media">  
-                              <img src="${suggestion.media}" alt="सुझाव मीडिया">  
-                          </div>  
-                          ` : ''}  
-                      `;  
-                      suggestionsContainer.appendChild(suggestionItem);  
-                  });
-                } else {
-                  suggestionsContainer.innerHTML = '<p>कोई सुझाव उपलब्ध नहीं है</p>';
-                }
-                
-                // Re-attach event listeners to new member items  
-                attachMemberEventListeners();  
-                
-            } catch (error) {  
-                console.error('Error updating budget summary:', error);  
-                alert('डेटा लोड करने में त्रुटि हुई है। कृपया बाद में पुनः प्रयास करें।');  
-            }  
-        }  
-
-        // Function to attach event listeners to member items  
-        function attachMemberEventListeners() {  
-            const memberItems = document.querySelectorAll('.member-item');  
-            memberItems.forEach(item => {  
-                item.addEventListener('click', async () => {  
-                    const memberId = item.getAttribute('data-member');  
-                    await loadMemberDetails(memberId);  
-                    document.getElementById('member-details-modal').style.display = 'flex';  
-                });  
-            });  
-        }  
-
-        // Function to submit suggestion
-        async function submitSuggestion() {
-            const name = document.getElementById('anonymous-name').value.trim();
-            const email = document.getElementById('anonymous-email').value.trim();
-            const suggestionText = document.getElementById('suggestion-text').value.trim();
-            
-            if (!suggestionText) {
-                alert('कृपया सुझाव लिखें');
-                return;
+        // Function to fetch data from Google Sheets with caching
+        async function fetchDataFromGoogleSheets() {
+            // Return cached data if it's still valid
+            const now = Date.now();
+            if (cachedData && (now - lastFetchTime) < CACHE_DURATION) {
+                console.log('Returning cached data');
+                return cachedData;
             }
             
-            const submitBtn = document.getElementById('submit-suggestion-btn');
-            const submitText = document.getElementById('submit-text');
-            const loadingSpinner = document.getElementById('submit-loading');
-            
-            // Show loading state
-            submitBtn.disabled = true;
-            submitText.textContent = 'जमा हो रहा है...';
-            loadingSpinner.style.display = 'inline-block';
-            
             try {
-                // Send suggestion data
-                const result = await sendDataToGoogleSheets('addSuggestion', {
-                    author: name || 'अनाम',
-                    email: email || '',
-                    content: suggestionText,
-                    media: ''
+                console.log('Fetching data from Google Sheets...');
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                
+                const response = await fetch(GOOGLE_SCRIPT_URL, { 
+                    signal: controller.signal 
                 });
                 
-                if (result.success) {
-                    showNotification('सुझाव सफलतापूर्वक जमा हो गया!');
-                    document.getElementById('anonymous-name').value = '';
-                    document.getElementById('anonymous-email').value = '';
-                    document.getElementById('suggestion-text').value = '';
-                    
-                    // Refresh data to show new suggestion
-                    await updateBudgetSummary();
-                } else {
-                    throw new Error(result.error || 'सुझाव जमा करने में त्रुटि हुई');
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
                 
+                const data = await response.json();
+                
+                // Cache the data
+                cachedData = data;
+                lastFetchTime = now;
+                
+                return data;
             } catch (error) {
-                console.error('Error submitting suggestion:', error);
-                alert('सुझाव जमा करने में त्रुटि हुई है: ' + error.message);
-            } finally {
-                // Reset button state
-                submitBtn.disabled = false;
-                submitText.textContent = 'सुझाव जमा करें';
-                loadingSpinner.style.display = 'none';
+                console.error('Error fetching data from Google Sheets:', error);
+                
+                // If we have cached data, return it even if it's stale
+                if (cachedData) {
+                    console.log('Using stale cached data due to fetch error');
+                    return cachedData;
+                }
+                
+                throw error;
             }
         }
 
-        // Function to show notification  
-        function showNotification(message) {  
-            const notification = document.getElementById('notification');  
-            notification.textContent = message;  
-            notification.style.display = 'block';  
-              
-            setTimeout(() => {  
-                notification.style.display = 'none';  
-            }, 3000);  
-        }  
+        // Function to update budget summary
+        async function updateBudgetSummary() {
+            try {
+                const data = await fetchDataFromGoogleSheets();
+                
+                // Update the budget summary
+                document.querySelector('#total-budget .budget-amount').textContent = `${data.totalBudget.toLocaleString('hi-IN')} रुपये`;
+                document.querySelector('#reserved-amount .budget-amount').textContent = `${data.reservedAmount.toLocaleString('hi-IN')} रुपये`;
+                document.querySelector('#spent-amount .budget-amount').textContent = `${data.spentAmount.toLocaleString('hi-IN')} रुपये`;
+                document.querySelector('#available-balance .budget-amount').textContent = `${data.availableBalance.toLocaleString('hi-IN')} रुपये`;
+                
+                // Update progress bars with animation
+                setTimeout(() => {
+                    document.querySelector('.reserved-progress').style.width = `${(data.reservedAmount / data.totalBudget) * 100}%`;
+                    document.querySelector('.spent-progress').style.width = `${(data.spentAmount / data.totalBudget) * 100}%`;
+                    document.querySelector('.remaining-progress').style.width = `${(data.availableBalance / data.totalBudget) * 100}%`;
+                }, 100);
+                
+                // Update detailed expenses table
+                const tableBody = document.getElementById('expenses-table-body');
+                tableBody.innerHTML = '';
+                
+                if (data.expenses && data.expenses.length > 0) {
+                    data.expenses.forEach(item => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${item.category}</td>
+                            <td>${item.allocated.toLocaleString('hi-IN')} रुपये</td>
+                            <td>${item.spent.toLocaleString('hi-IN')} रुपये</td>
+                            <td>${item.savings.toLocaleString('hi-IN')} रुपये</td>
+                        `;
+                        tableBody.appendChild(row);
+                    });
+                } else {
+                    tableBody.innerHTML = '<tr><td colspan="4" style="text-align: center;">कोई डेटा उपलब्ध नहीं है</td></tr>';
+                }
+                
+                // Update reserved details modal
+                const reservedContent = document.getElementById('reserved-details-content');
+                reservedContent.innerHTML = '';
+                
+                if (data.reservedDetails && data.reservedDetails.length > 0) {
+                    data.reservedDetails.forEach(item => {
+                        const detailItem = document.createElement('div');
+                        detailItem.className = 'detail-item';
+                        detailItem.innerHTML = `
+                            <div class="detail-name">${item.name}</div>
+                            <div class="detail-amount">${item.amount.toLocaleString('hi-IN')} रुपये</div>
+                        `;
+                        reservedContent.appendChild(detailItem);
+                        
+                        if (item.details) {
+                            const description = document.createElement('div');
+                            description.className = 'detail-description';
+                            description.textContent = item.details;
+                            description.style.fontSize = '0.9rem';
+                            description.style.color = '#6c757d';
+                            description.style.marginTop = '5px';
+                            reservedContent.appendChild(description);
+                        }
+                    });
+                } else {
+                    reservedContent.innerHTML = '<p>कोई आरक्षित विवरण उपलब्ध नहीं है</p>';
+                }
+                
+                // Update spent details modal
+                const spentContent = document.getElementById('spent-details-content');
+                spentContent.innerHTML = '';
+                
+                if (data.spentDetails && data.spentDetails.length > 0) {
+                    data.spentDetails.forEach(item => {
+                        const detailItem = document.createElement('div');
+                        detailItem.className = 'detail-item';
+                        detailItem.innerHTML = `
+                            <div class="detail-name">${item.name}</div>
+                            <div class="detail-amount">${item.amount.toLocaleString('hi-IN')} रुपये</div>
+                        `;
+                        spentContent.appendChild(detailItem);
+                        
+                        if (item.details) {
+                            const description = document.createElement('div');
+                            description.className = 'detail-description';
+                            description.textContent = item.details;
+                            description.style.fontSize = '0.9rem';
+                            description.style.color = '#6c757d';
+                            description.style.marginTop = '5px';
+                            spentContent.appendChild(description);
+                        }
+                    });
+                } else {
+                    spentContent.innerHTML = '<p>कोई खर्च विवरण उपलब्ध नहीं है</p>';
+                }
+                
+                // Update members list and dropdown
+                const memberList = document.getElementById('members-list');
+                memberList.innerHTML = '';
+                
+                if (data.members && data.members.length > 0) {
+                    data.members.forEach(member => {
+                        // Update members list
+                        const memberItem = document.createElement('div');
+                        memberItem.className = 'member-item';
+                        memberItem.setAttribute('data-member', member.id);
+                        memberItem.innerHTML = `
+                            <div class="member-avatar">${member.name.charAt(0)}</div>
+                            <div class="member-name">${member.name}</div>
+                        `;
+                        memberList.appendChild(memberItem);
+                    });
+                } else {
+                    memberList.innerHTML = '<p>कोई सदस्य उपलब्ध नहीं है</p>';
+                }
+                
+                // Update suggestions
+                const suggestionsContainer = document.getElementById('suggestions-container');
+                suggestionsContainer.innerHTML = '';
+                
+                if (data.suggestions && data.suggestions.length > 0) {
+                    data.suggestions.forEach(suggestion => {
+                        const suggestionItem = document.createElement('div');
+                        suggestionItem.className = 'suggestion-item';
+                        suggestionItem.innerHTML = `
+                            <div class="suggestion-header">
+                                <div class="suggestion-author">${suggestion.author || 'अनाम'}</div>
+                                <div class="suggestion-date">${suggestion.date}</div>
+                            </div>
+                            <div class="suggestion-content">
+                                ${suggestion.content}
+                            </div>
+                            ${suggestion.media ? `
+                            <div class="suggestion-media">
+                                <img src="${suggestion.media}" alt="सुझाव मीडिया">
+                            </div>
+                            ` : ''}
+                        `;
+                        suggestionsContainer.appendChild(suggestionItem);
+                    });
+                } else {
+                    suggestionsContainer.innerHTML = '<p>कोई सुझाव उपलब्ध नहीं है</p>';
+                }
+                
+                // Re-attach event listeners to new member items
+                attachMemberEventListeners();
+                
+            } catch (error) {
+                console.error('Error updating budget summary:', error);
+                // Don't show alert if we're using cached data
+                if (!cachedData) {
+                    showNotification('डेटा लोड करने में त्रुटि हुई है। कृपया बाद में पुनः प्रयास करें।');
+                }
+            }
+        }
+
+        // Function to attach event listeners to member items
+        function attachMemberEventListeners() {
+            const memberItems = document.querySelectorAll('.member-item');
+            memberItems.forEach(item => {
+                item.addEventListener('click', async () => {
+                    const memberId = item.getAttribute('data-member');
+                    await loadMemberDetails(memberId);
+                    document.getElementById('member-details-modal').style.display = 'flex';
+                });
+            });
+        }
+
+        // Function to show notification
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.style.display = 'block';
+            
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
 
         // Modal functionality
-        const modals = document.querySelectorAll('.modal');  
-        const closeButtons = document.querySelectorAll('.close-modal');  
-          
-        document.getElementById('reserved-amount').addEventListener('click', () => {  
-            document.getElementById('reserved-details-modal').style.display = 'flex';  
-        });  
-          
-        document.getElementById('spent-amount').addEventListener('click', () => {  
-            document.getElementById('spent-details-modal').style.display = 'flex';  
-        });  
-          
-        closeButtons.forEach(button => {  
-            button.addEventListener('click', () => {  
-                modals.forEach(modal => {  
-                    modal.style.display = 'none';  
-                });  
-            });  
-        });  
-          
-        window.addEventListener('click', (e) => {  
-            modals.forEach(modal => {  
-                if (e.target === modal) {  
-                    modal.style.display = 'none';  
-                }  
-            });  
-        });  
-          
-        const tabs = document.querySelectorAll('.tab');  
-        tabs.forEach(tab => {  
-            tab.addEventListener('click', () => {  
-                const tabId = tab.getAttribute('data-tab');  
-                tabs.forEach(t => t.classList.remove('active'));  
-                document.querySelectorAll('.tab-content').forEach(content => {  
-                    content.classList.remove('active');  
-                });  
-                tab.classList.add('active');  
-                document.getElementById(`${tabId}-tab`).classList.add('active');  
-            });  
-        });  
-          
-        async function loadMemberDetails(memberId) {  
+        const modals = document.querySelectorAll('.modal');
+        const closeButtons = document.querySelectorAll('.close-modal');
+        
+        document.getElementById('reserved-amount').addEventListener('click', () => {
+            document.getElementById('reserved-details-modal').style.display = 'flex';
+        });
+        
+        document.getElementById('spent-amount').addEventListener('click', () => {
+            document.getElementById('spent-details-modal').style.display = 'flex';
+        });
+        
+        closeButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                modals.forEach(modal => {
+                    modal.style.display = 'none';
+                });
+            });
+        });
+        
+        window.addEventListener('click', (e) => {
+            modals.forEach(modal => {
+                if (e.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
+        });
+        
+        const tabs = document.querySelectorAll('.tab');
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const tabId = tab.getAttribute('data-tab');
+                tabs.forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.remove('active');
+                });
+                tab.classList.add('active');
+                document.getElementById(`${tabId}-tab`).classList.add('active');
+            });
+        });
+        
+        async function loadMemberDetails(memberId) {
             try {
                 const data = await fetchDataFromGoogleSheets();
                 const member = data.members.find(m => m.id == memberId);
                 
-                if (member) {  
-                    document.getElementById('member-modal-title').textContent = member.name;  
-                    document.getElementById('member-detail-name').textContent = member.name;  
-                    document.getElementById('member-detail-email').textContent = member.email;  
-                    document.getElementById('member-detail-phone').textContent = member.phone;  
+                if (member) {
+                    document.getElementById('member-modal-title').textContent = member.name;
+                    document.getElementById('member-detail-name').textContent = member.name;
+                    document.getElementById('member-detail-email').textContent = member.email;
+                    document.getElementById('member-detail-phone').textContent = member.phone;
                     
                     const memberSuggestions = data.suggestions.filter(s => s.author === member.name);
-                    document.getElementById('member-detail-suggestions').textContent = memberSuggestions.length;  
-                    loadMemberSuggestions(member.name);  
+                    document.getElementById('member-detail-suggestions').textContent = memberSuggestions.length;
+                    loadMemberSuggestions(member.name);
                 }
             } catch (error) {
                 console.error('Error loading member details:', error);
             }
-        }  
-          
-        function loadMemberSuggestions(memberName) {  
-            const suggestionsContainer = document.getElementById('member-suggestions-list');  
-            suggestionsContainer.innerHTML = '';  
-              
+        }
+        
+        function loadMemberSuggestions(memberName) {
+            const suggestionsContainer = document.getElementById('member-suggestions-list');
+            suggestionsContainer.innerHTML = '';
+            
             fetchDataFromGoogleSheets().then(data => {
                 const memberSuggestions = data.suggestions.filter(s => s.author === memberName);
                 
-                if (memberSuggestions.length === 0) {  
-                    suggestionsContainer.innerHTML = '<p>इस सदस्य ने अभी तक कोई सुझाव नहीं दिया है।</p>';  
-                    return;  
+                if (memberSuggestions.length === 0) {
+                    suggestionsContainer.innerHTML = '<p>इस सदस्य ने अभी तक कोई सुझाव नहीं दिया है।</p>';
+                    return;
                 }
                 
                 memberSuggestions.forEach(suggestion => {
-                    const suggestionItem = document.createElement('div');  
-                    suggestionItem.className = 'suggestion-item';  
-                    suggestionItem.innerHTML = `  
-                        <div class="suggestion-header">  
-                            <div class="suggestion-date">${suggestion.date}</div>  
-                        </div>  
-                        <div class="suggestion-content">  
-                            ${suggestion.content}  
-                        </div>  
-                    `;  
-                    suggestionsContainer.appendChild(suggestionItem);  
+                    const suggestionItem = document.createElement('div');
+                    suggestionItem.className = 'suggestion-item';
+                    suggestionItem.innerHTML = `
+                        <div class="suggestion-header">
+                            <div class="suggestion-date">${suggestion.date}</div>
+                        </div>
+                        <div class="suggestion-content">
+                            ${suggestion.content}
+                        </div>
+                    `;
+                    suggestionsContainer.appendChild(suggestionItem);
                 });
             });
-        }  
+        }
 
-        // Initialize the application  
-        document.addEventListener('DOMContentLoaded', async () => {  
-            await updateBudgetSummary();  
-            document.getElementById('submit-suggestion-btn').addEventListener('click', submitSuggestion);
-            setInterval(updateBudgetSummary, 30000);  
-        });  
-    </script>  
-</body>  
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Show loading states
+            document.querySelectorAll('.loading-state').forEach(el => {
+                el.style.display = 'flex';
+            });
+            
+            // Initial data load
+            await updateBudgetSummary();
+            
+            // Set up periodic refresh (every 30 seconds)
+            setInterval(updateBudgetSummary, 30000);
+        });
+    </script>
+</body>
 </html>
