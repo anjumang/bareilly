@@ -1,0 +1,2412 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>बारा रबी उल अव्वल सजावट खर्चा प्रबंधन - Google Sheets Integration</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google APIs -->
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', 'Nirmala UI', sans-serif;
+        }
+        
+        :root {
+            --primary: #2c5aa0;
+            --secondary: #e8f4ff;
+            --accent: #ff6b35;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --light: #f8f9fa;
+            --dark: #343a40;
+            --border: #dee2e6;
+            --google: #4285F4;
+            --google-dark: #3367D6;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: #333;
+            line-height: 1.6;
+            padding: 10px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        header {
+            background: linear-gradient(to right, var(--primary), #4a7bc8);
+            color: white;
+            padding: 20px 30px;
+            border-bottom: 5px solid var(--accent);
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        
+        h1 {
+            font-size: 28px;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        h1 i {
+            color: var(--accent);
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        .lang-toggle, .sheets-status {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .lang-btn, .sheets-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .lang-btn.active, .sheets-btn.active {
+            background: var(--accent);
+        }
+        
+        .lang-btn:hover, .sheets-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .sheets-connected {
+            background: var(--success);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            display: none;
+        }
+        
+        .tabs {
+            display: flex;
+            background: var(--secondary);
+            border-bottom: 2px solid var(--border);
+            overflow-x: auto;
+        }
+        
+        .tab-btn {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--dark);
+            cursor: pointer;
+            transition: all 0.3s;
+            white-space: nowrap;
+            border-right: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .tab-btn:hover {
+            background: rgba(44, 90, 160, 0.1);
+        }
+        
+        .tab-btn.active {
+            background: white;
+            color: var(--primary);
+            border-bottom: 3px solid var(--primary);
+        }
+        
+        .tab-content {
+            display: none;
+            padding: 25px;
+            animation: fadeIn 0.5s;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        .year-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        
+        .year-title {
+            font-size: 24px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .year-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #1d4a8a;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+        
+        .btn-warning {
+            background: var(--warning);
+            color: var(--dark);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-export {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-google {
+            background: var(--google);
+            color: white;
+        }
+        
+        .btn-google:hover {
+            background: var(--google-dark);
+        }
+        
+        .data-table-container {
+            overflow-x: auto;
+            margin-bottom: 25px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 1000px;
+        }
+        
+        th {
+            background: var(--secondary);
+            color: var(--primary);
+            font-weight: 600;
+            text-align: left;
+            padding: 15px;
+            border-bottom: 2px solid var(--border);
+            position: sticky;
+            top: 0;
+        }
+        
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        tr:hover {
+            background: rgba(44, 90, 160, 0.05);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 8px 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 2px rgba(44, 90, 160, 0.2);
+        }
+        
+        .total-row {
+            background: var(--secondary);
+            font-weight: bold;
+        }
+        
+        .total-row td {
+            padding: 15px;
+            font-size: 16px;
+        }
+        
+        .analysis-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-top: 4px solid var(--primary);
+        }
+        
+        .card h3 {
+            color: var(--primary);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-content {
+            min-height: 200px;
+        }
+        
+        .chart-container {
+            height: 300px;
+            position: relative;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .summary-item {
+            background: var(--light);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .summary-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            margin: 10px 0;
+        }
+        
+        .summary-label {
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .list-item {
+            padding: 10px 0;
+            border-bottom: 1px dashed var(--border);
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .list-item:last-child {
+            border-bottom: none;
+        }
+        
+        .item-name {
+            font-weight: 500;
+        }
+        
+        .item-value {
+            font-weight: bold;
+            color: var(--primary);
+        }
+        
+        .suggestion-item {
+            padding: 12px;
+            background: #fff8e1;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border-left: 4px solid var(--warning);
+        }
+        
+        .highlight {
+            background: #e7f3ff;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        
+        .optimization-item {
+            padding: 10px;
+            background: #f0f9ff;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .save-status {
+            padding: 10px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 5px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .sheets-config {
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .config-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            margin-bottom: 5px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+        
+        .form-group input {
+            padding: 10px;
+            border: 1px solid var(--border);
+            border-radius: 4px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .sheets-help {
+            background: #e8f4ff;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 20px;
+            font-size: 14px;
+        }
+        
+        .sheets-help ol {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+        
+        .sheets-help li {
+            margin-bottom: 8px;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: #666;
+            border-top: 1px solid var(--border);
+            font-size: 14px;
+        }
+        
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .tab-btn {
+                flex: 1;
+                min-width: 120px;
+                justify-content: center;
+            }
+            
+            .year-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .year-controls {
+                width: 100%;
+                flex-wrap: wrap;
+            }
+            
+            .btn {
+                flex: 1;
+                min-width: 140px;
+                justify-content: center;
+            }
+            
+            .analysis-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .config-form {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .tab-content {
+                padding: 15px;
+            }
+            
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .btn {
+                min-width: 100%;
+            }
+        }
+        
+        .print-btn {
+            background: #17a2b8;
+            color: white;
+        }
+        
+        .item-tag {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+        
+        .tag-high {
+            background: #ffcdd2;
+            color: #c62828;
+        }
+        
+        .tag-repeat {
+            background: #e1f5fe;
+            color: #0277bd;
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .modal-title {
+            font-size: 20px;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+        
+        .sheets-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: 5px;
+            margin-top: 15px;
+        }
+        
+        .sheet-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        
+        .sheet-item:hover {
+            background: var(--secondary);
+        }
+        
+        .sheet-item.selected {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .user-info {
+            display: none;
+            margin: 10px 0;
+            padding: 10px;
+            background: #e8f4ff;
+            border-radius: 5px;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        #google-signout-btn {
+            margin-left: 10px;
+        }
+        
+        #sheets-section {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+        
+        #signin-section {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="header-content">
+                <div>
+                    <h1><i class="fas fa-mosque"></i> बारा रबी उल अव्वल सजावट खर्चा प्रबंधन</h1>
+                    <p class="subtitle">Google Sheets Integrated - वार्षिक सजावट खर्चा लेज़र और विश्लेषण प्रणाली</p>
+                </div>
+                <div class="sheets-status">
+                    <div id="sheets-connected" class="sheets-connected" style="display: none;">
+                        <i class="fas fa-check-circle"></i> Google Sheets Connected
+                    </div>
+                    <button class="sheets-btn" onclick="showSheetsModal()">
+                        <i class="fab fa-google"></i> Google Sheets
+                    </button>
+                    <button class="lang-btn active" onclick="setLanguage('hi')">हिंदी</button>
+                    <button class="lang-btn" onclick="setLanguage('en')">English</button>
+                </div>
+            </div>
+        </header>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="year1"><i class="fas fa-calendar-alt"></i> वर्ष 1 डेटा</button>
+            <button class="tab-btn" data-tab="year2"><i class="fas fa-calendar-alt"></i> वर्ष 2 डेटा</button>
+            <button class="tab-btn" data-tab="year3"><i class="fas fa-calendar-alt"></i> वर्ष 3 डेटा</button>
+            <button class="tab-btn" data-tab="analysis"><i class="fas fa-chart-bar"></i> विश्लेषण डैशबोर्ड</button>
+        </div>
+        
+        <!-- Google Sheets Configuration Modal -->
+        <div id="sheetsModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <div class="modal-title">
+                        <i class="fab fa-google"></i>
+                        <span>Google Sheets कॉन्फ़िगरेशन</span>
+                    </div>
+                    <button class="close-modal" onclick="closeSheetsModal()">&times;</button>
+                </div>
+                
+                <div class="sheets-config">
+                    <!-- Step 1: Google Sign-In -->
+                    <div id="signin-section">
+                        <h3><i class="fas fa-sign-in-alt"></i> स्टेप 1: Google से Sign In करें</h3>
+                        <p>Google Sheets का उपयोग करने के लिए पहले Google account से sign in करें।</p>
+                        <div style="margin: 20px 0;">
+                            <button id="google-signin-btn" class="btn btn-google" onclick="handleGoogleSignIn()">
+                                <i class="fab fa-google"></i> Google से Sign In करें
+                            </button>
+                            <button id="google-signout-btn" class="btn btn-danger" onclick="handleGoogleSignOut()" style="display: none;">
+                                <i class="fas fa-sign-out-alt"></i> Sign Out
+                            </button>
+                        </div>
+                        <div id="user-info" class="user-info">
+                            <i class="fas fa-user"></i> <span id="user-email"></span>
+                        </div>
+                    </div>
+                    
+                    <!-- Step 2: Sheets Configuration -->
+                    <div id="sheets-section">
+                        <h3><i class="fas fa-cog"></i> स्टेप 2: Sheets कॉन्फ़िगरेशन</h3>
+                        
+                        <div class="config-form">
+                            <div class="form-group">
+                                <label for="spreadsheetId">Google Sheets ID</label>
+                                <input type="text" id="spreadsheetId" placeholder="1xYzAbCdEfGhIjKlMnOpQrStUvWxYzAbCdEfG">
+                                <small style="color: #666; font-size: 12px;">URL से ID कॉपी करें: docs.google.com/spreadsheets/d/<strong>ID</strong>/edit</small>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button class="btn btn-google" onclick="loadSheetsList()">
+                                <i class="fas fa-list"></i> Sheets List देखें
+                            </button>
+                            <button class="btn btn-primary" onclick="createNewSheet()">
+                                <i class="fas fa-plus"></i> नई Sheet बनाएं
+                            </button>
+                            <button class="btn" onclick="openTemplateSheet()" style="background: #6c757d; color: white;">
+                                <i class="fas fa-external-link-alt"></i> टेम्पलेट देखें
+                            </button>
+                        </div>
+                        
+                        <div id="sheetsList" class="sheets-list" style="display: none; margin-top: 15px;">
+                            <!-- Sheets will be listed here -->
+                        </div>
+                        
+                        <div id="syncControls" style="display: none; margin-top: 20px;">
+                            <h3><i class="fas fa-sync-alt"></i> डेटा सिंक</h3>
+                            <div style="display: flex; gap: 10px; margin-top: 15px; flex-wrap: wrap;">
+                                <button class="btn btn-success" onclick="syncAllData('load')">
+                                    <i class="fas fa-download"></i> Sheets से सभी डेटा लोड करें
+                                </button>
+                                <button class="btn btn-primary" onclick="syncAllData('save')">
+                                    <i class="fas fa-upload"></i> सभी डेटा Sheets में सेव करें
+                                </button>
+                            </div>
+                            <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+                                <button class="btn btn-warning" onclick="syncYearData('year1', 'load')">
+                                    <i class="fas fa-download"></i> वर्ष 1 लोड करें
+                                </button>
+                                <button class="btn btn-warning" onclick="syncYearData('year2', 'load')">
+                                    <i class="fas fa-download"></i> वर्ष 2 लोड करें
+                                </button>
+                                <button class="btn btn-warning" onclick="syncYearData('year3', 'load')">
+                                    <i class="fas fa-download"></i> वर्ष 3 लोड करें
+                                </button>
+                                <button class="btn" onclick="syncYearData('year1', 'save')" style="background: #6c757d; color: white;">
+                                    <i class="fas fa-upload"></i> वर्ष 1 सेव करें
+                                </button>
+                                <button class="btn" onclick="syncYearData('year2', 'save')" style="background: #6c757d; color: white;">
+                                    <i class="fas fa-upload"></i> वर्ष 2 सेव करें
+                                </button>
+                                <button class="btn" onclick="syncYearData('year3', 'save')" style="background: #6c757d; color: white;">
+                                    <i class="fas fa-upload"></i> वर्ष 3 सेव करें
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="sheets-help">
+                        <p><strong>कैसे सेटअप करें:</strong></p>
+                        <ol>
+                            <li>Google से Sign In करें (ऊपर दिए गए बटन से)</li>
+                            <li>Google Sheets में एक नई spreadsheet बनाएं या मौजूदा का ID डालें</li>
+                            <li>URL से spreadsheet ID कॉपी करें</li>
+                            <li>"Sheets List देखें" बटन दबाएं</li>
+                            <li>डेटा save या load करने के लिए उपयुक्त बटन दबाएं</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Year 1 Data Entry -->
+        <div id="year1" class="tab-content active">
+            <div class="year-header">
+                <div class="year-title">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>वर्ष 1 सजावट खर्चा डेटा एंट्री</span>
+                </div>
+                <div class="year-controls">
+                    <button class="btn btn-primary" onclick="addRow('year1')">
+                        <i class="fas fa-plus"></i> नई एंट्री जोड़ें
+                    </button>
+                    <button class="btn btn-success" onclick="saveData('year1')">
+                        <i class="fas fa-save"></i> लोकल सेव
+                    </button>
+                    <button class="btn btn-google" onclick="syncYearData('year1', 'save')">
+                        <i class="fas fa-cloud-upload-alt"></i> Sheets में सेव
+                    </button>
+                    <button class="btn btn-export" onclick="exportToExcel('year1')">
+                        <i class="fas fa-file-excel"></i> एक्सेल में निर्यात
+                    </button>
+                </div>
+            </div>
+            
+            <div class="data-table-container">
+                <table id="table-year1">
+                    <thead>
+                        <tr>
+                            <th width="50">क्र.सं.</th>
+                            <th>सजावट का नाम</th>
+                            <th>स्थान/पॉइंट</th>
+                            <th width="100">मात्रा</th>
+                            <th width="120">दर (₹)</th>
+                            <th width="120">कुल (₹)</th>
+                            <th width="150">परिवहन/श्रम शुल्क (₹)</th>
+                            <th width="150">अतिरिक्त खर्च (₹)</th>
+                            <th width="140">आइटम कुल (₹)</th>
+                            <th width="200">टिप्पणी</th>
+                            <th width="80">कार्य</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-year1">
+                        <!-- Data rows will be added here dynamically -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="8" style="text-align: right;">वर्ष 1 कुल खर्च:</td>
+                            <td id="total-year1">₹0</td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            
+            <div id="save-status-year1" class="save-status">
+                डेटा सफलतापूर्वक सेव हो गया है!
+            </div>
+        </div>
+        
+        <!-- Year 2 Data Entry -->
+        <div id="year2" class="tab-content">
+            <div class="year-header">
+                <div class="year-title">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>वर्ष 2 सजावट खर्चा डेटा एंट्री</span>
+                </div>
+                <div class="year-controls">
+                    <button class="btn btn-primary" onclick="addRow('year2')">
+                        <i class="fas fa-plus"></i> नई एंट्री जोड़ें
+                    </button>
+                    <button class="btn btn-success" onclick="saveData('year2')">
+                        <i class="fas fa-save"></i> लोकल सेव
+                    </button>
+                    <button class="btn btn-google" onclick="syncYearData('year2', 'save')">
+                        <i class="fas fa-cloud-upload-alt"></i> Sheets में सेव
+                    </button>
+                    <button class="btn btn-export" onclick="exportToExcel('year2')">
+                        <i class="fas fa-file-excel"></i> एक्सेल में निर्यात
+                    </button>
+                </div>
+            </div>
+            
+            <div class="data-table-container">
+                <table id="table-year2">
+                    <thead>
+                        <tr>
+                            <th width="50">क्र.सं.</th>
+                            <th>सजावट का नाम</th>
+                            <th>स्थान/पॉइंट</th>
+                            <th width="100">मात्रा</th>
+                            <th width="120">दर (₹)</th>
+                            <th width="120">कुल (₹)</th>
+                            <th width="150">परिवहन/श्रम शुल्क (₹)</th>
+                            <th width="150">अतिरिक्त खर्च (₹)</th>
+                            <th width="140">आइटम कुल (₹)</th>
+                            <th width="200">टिप्पणी</th>
+                            <th width="80">कार्य</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-year2">
+                        <!-- Data rows will be added here dynamically -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="8" style="text-align: right;">वर्ष 2 कुल खर्च:</td>
+                            <td id="total-year2">₹0</td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            
+            <div id="save-status-year2" class="save-status">
+                डेटा सफलतापूर्वक सेव हो गया है!
+            </div>
+        </div>
+        
+        <!-- Year 3 Data Entry -->
+        <div id="year3" class="tab-content">
+            <div class="year-header">
+                <div class="year-title">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>वर्ष 3 सजावट खर्चा डेटा एंट्री</span>
+                </div>
+                <div class="year-controls">
+                    <button class="btn btn-primary" onclick="addRow('year3')">
+                        <i class="fas fa-plus"></i> नई एंट्री जोड़ें
+                    </button>
+                    <button class="btn btn-success" onclick="saveData('year3')">
+                        <i class="fas fa-save"></i> लोकल सेव
+                    </button>
+                    <button class="btn btn-google" onclick="syncYearData('year3', 'save')">
+                        <i class="fas fa-cloud-upload-alt"></i> Sheets में सेव
+                    </button>
+                    <button class="btn btn-export" onclick="exportToExcel('year3')">
+                        <i class="fas fa-file-excel"></i> एक्सेल में निर्यात
+                    </button>
+                </div>
+            </div>
+            
+            <div class="data-table-container">
+                <table id="table-year3">
+                    <thead>
+                        <tr>
+                            <th width="50">क्र.सं.</th>
+                            <th>सजावट का नाम</th>
+                            <th>स्थान/पॉइंट</th>
+                            <th width="100">मात्रा</th>
+                            <th width="120">दर (₹)</th>
+                            <th width="120">कुल (₹)</th>
+                            <th width="150">परिवहन/श्रम शुल्क (₹)</th>
+                            <th width="150">अतिरिक्त खर्च (₹)</th>
+                            <th width="140">आइटम कुल (₹)</th>
+                            <th width="200">टिप्पणी</th>
+                            <th width="80">कार्य</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tbody-year3">
+                        <!-- Data rows will be added here dynamically -->
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row">
+                            <td colspan="8" style="text-align: right;">वर्ष 3 कुल खर्च:</td>
+                            <td id="total-year3">₹0</td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            
+            <div id="save-status-year3" class="save-status">
+                डेटा सफलतापूर्वक सेव हो गया है!
+            </div>
+        </div>
+        
+        <!-- Analysis Dashboard -->
+        <div id="analysis" class="tab-content">
+            <div class="year-header">
+                <div class="year-title">
+                    <i class="fas fa-chart-pie"></i>
+                    <span>4-वर्षीय विश्लेषण डैशबोर्ड</span>
+                </div>
+                <div class="year-controls">
+                    <button class="btn btn-google" onclick="syncAllData('load')">
+                        <i class="fas fa-sync-alt"></i> Sheets से डेटा लोड करें
+                    </button>
+                    <button class="btn btn-primary" onclick="refreshAnalysis()">
+                        <i class="fas fa-sync-alt"></i> विश्लेषण अपडेट करें
+                    </button>
+                    <button class="btn btn-export" onclick="exportAnalysis()">
+                        <i class="fas fa-file-pdf"></i> रिपोर्ट डाउनलोड
+                    </button>
+                    <button class="btn print-btn" onclick="window.print()">
+                        <i class="fas fa-print"></i> प्रिंट करें
+                    </button>
+                </div>
+            </div>
+            
+            <div class="analysis-container">
+                <!-- Summary Card -->
+                <div class="card">
+                    <h3><i class="fas fa-rupee-sign"></i> वित्तीय सारांश</h3>
+                    <div class="card-content">
+                        <div class="summary-grid">
+                            <div class="summary-item">
+                                <div class="summary-label">3 वर्षों का कुल खर्च</div>
+                                <div class="summary-value" id="total-3years">₹0</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">वर्ष 1 कुल</div>
+                                <div class="summary-value" id="year1-total">₹0</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">वर्ष 2 कुल</div>
+                                <div class="summary-value" id="year2-total">₹0</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">वर्ष 3 कुल</div>
+                                <div class="summary-value" id="year3-total">₹0</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">औसत वार्षिक खर्च</div>
+                                <div class="summary-value" id="avg-yearly">₹0</div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="summary-label">सबसे महंगा वर्ष</div>
+                                <div class="summary-value" id="most-expensive-year">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Top Items Card -->
+                <div class="card">
+                    <h3><i class="fas fa-list-ol"></i> शीर्ष खर्च वाली वस्तुएं</h3>
+                    <div class="card-content">
+                        <div id="top-items-list">
+                            <!-- Will be populated by JavaScript -->
+                            <p>डेटा लोड हो रहा है...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Repeated Items Card -->
+                <div class="card">
+                    <h3><i class="fas fa-redo"></i> दोहराई जाने वाली वस्तुएं</h3>
+                    <div class="card-content">
+                        <div id="repeated-items-list">
+                            <!-- Will be populated by JavaScript -->
+                            <p>डेटा लोड हो रहा है...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Optimization Suggestions Card -->
+                <div class="card">
+                    <h3><i class="fas fa-lightbulb"></i> अनुकूलन सुझाव</h3>
+                    <div class="card-content">
+                        <div id="optimization-suggestions">
+                            <!-- Will be populated by JavaScript -->
+                            <p>डेटा लोड हो रहा है...</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Chart 1: Expense Distribution -->
+                <div class="card" style="grid-column: span 2;">
+                    <h3><i class="fas fa-chart-pie"></i> खर्च वितरण (पाई चार्ट)</h3>
+                    <div class="chart-container">
+                        <canvas id="pieChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Chart 2: Yearly Comparison -->
+                <div class="card" style="grid-column: span 2;">
+                    <h3><i class="fas fa-chart-bar"></i> वार्षिक खर्च तुलना</h3>
+                    <div class="chart-container">
+                        <canvas id="barChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Detailed Analysis -->
+                <div class="card" style="grid-column: span 2;">
+                    <h3><i class="fas fa-search-dollar"></i> विस्तृत विश्लेषण</h3>
+                    <div class="card-content">
+                        <div class="optimization-item">
+                            <div>
+                                <strong>उच्चतम खर्च वाली श्रेणी:</strong>
+                                <span id="highest-category">-</span>
+                            </div>
+                            <div class="item-value" id="highest-category-value">₹0</div>
+                        </div>
+                        <div class="optimization-item">
+                            <div>
+                                <strong>न्यूनतम खर्च वाली श्रेणी:</strong>
+                                <span id="lowest-category">-</span>
+                            </div>
+                            <div class="item-value" id="lowest-category-value">₹0</div>
+                        </div>
+                        <div class="optimization-item">
+                            <div>
+                                <strong>संभावित बचत (10% कटौती के साथ):</strong>
+                                <span id="potential-savings-desc">उच्च खर्च वाली वस्तुओं पर</span>
+                            </div>
+                            <div class="item-value" id="potential-savings">₹0</div>
+                        </div>
+                        <div class="suggestion-item">
+                            <strong><i class="fas fa-check-circle"></i> सुझाव:</strong> दोहराई जाने वाली वस्तुओं को थोक में खरीदने से आप <span class="highlight" id="bulk-saving">₹0</span> तक बचा सकते हैं।
+                        </div>
+                        <div class="suggestion-item">
+                            <strong><i class="fas fa-check-circle"></i> सुझाव:</strong> स्थानीय विक्रेताओं से समझौता मूल्य पर बातचीत करके आप <span class="highlight" id="negotiation-saving">₹0</span> तक बचा सकते हैं।
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2023 बारा रबी उल अव्वल सजावट खर्चा प्रबंधन प्रणाली | Google Sheets Integrated - डेटा आपकी Google Sheet में सुरक्षित रहेगा</p>
+            <p>तकनीकी सहायता: +91-XXXXXXXXXX | Email: support@example.com</p>
+        </footer>
+    </div>
+    
+    <script>
+        // ==================== CONFIGURATION ====================
+        // आपका Client ID यहाँ लगा हुआ है
+        const CLIENT_ID = '732561678546-6u4ukrlq8arrsdosr4m9i5k9oc9679fi.apps.googleusercontent.com';
+        const API_KEY = '';
+        const SCOPES = 'https://www.googleapis.com/auth/spreadsheets';
+        
+        // ==================== APPLICATION STATE ====================
+        const appState = {
+            currentLanguage: 'hi',
+            sheetsConnected: false,
+            spreadsheetId: null,
+            googleToken: null,
+            userEmail: null,
+            data: {
+                year1: [],
+                year2: [],
+                year3: []
+            },
+            analysis: {
+                topItems: [],
+                repeatedItems: [],
+                yearlyTotals: { year1: 0, year2: 0, year3: 0 },
+                categoryTotals: {}
+            }
+        };
+        
+        // ==================== GOOGLE AUTH FUNCTIONS ====================
+        let tokenClient;
+        
+        // Initialize Google Sign-In
+        function initGoogleSignIn() {
+            console.log('Initializing Google Sign-In...');
+            
+            // Initialize the OAuth2 token client
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: CLIENT_ID,
+                scope: SCOPES,
+                callback: (response) => {
+                    console.log('Token response:', response);
+                    if (response.access_token) {
+                        appState.googleToken = response.access_token;
+                        updateAuthUI(true);
+                        loadUserInfo();
+                        showSuccess('Google Sheets से सफलतापूर्वक कनेक्ट हो गया!');
+                        loadSavedSpreadsheetId();
+                    }
+                },
+                error_callback: (error) => {
+                    console.error('Google Sign-In Error:', error);
+                    showError('Sign-in में त्रुटि: ' + (error.message || 'अज्ञात त्रुटि'));
+                }
+            });
+            
+            // Check if we have a saved token
+            const savedToken = localStorage.getItem('googleToken');
+            if (savedToken) {
+                // Verify token is still valid
+                verifyToken(savedToken);
+            }
+        }
+        
+        // Verify if token is still valid
+        function verifyToken(token) {
+            fetch('https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=' + token)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.error) {
+                        appState.googleToken = token;
+                        updateAuthUI(true);
+                        loadUserInfo();
+                        loadSavedSpreadsheetId();
+                    } else {
+                        localStorage.removeItem('googleToken');
+                    }
+                })
+                .catch(() => {
+                    localStorage.removeItem('googleToken');
+                });
+        }
+        
+        // Handle Google Sign-In
+        function handleGoogleSignIn() {
+            if (!appState.googleToken) {
+                tokenClient.requestAccessToken();
+            } else {
+                showInfo('आप पहले से ही Google Sheets से कनेक्ट हैं!');
+            }
+        }
+        
+        // Handle Google Sign-Out
+        function handleGoogleSignOut() {
+            if (appState.googleToken) {
+                google.accounts.oauth2.revoke(appState.googleToken, () => {
+                    console.log('Access token revoked');
+                });
+                appState.googleToken = null;
+                appState.userEmail = null;
+                localStorage.removeItem('googleToken');
+                localStorage.removeItem('userEmail');
+                updateAuthUI(false);
+                showInfo('Google से Sign Out कर दिया गया है।');
+            }
+        }
+        
+        // Update Authentication UI
+        function updateAuthUI(isSignedIn) {
+            const signinBtn = document.getElementById('google-signin-btn');
+            const signoutBtn = document.getElementById('google-signout-btn');
+            const userInfo = document.getElementById('user-info');
+            const sheetsSection = document.getElementById('sheets-section');
+            const syncControls = document.getElementById('syncControls');
+            const sheetsConnected = document.getElementById('sheets-connected');
+            
+            if (isSignedIn) {
+                signinBtn.style.display = 'none';
+                signoutBtn.style.display = 'inline-flex';
+                userInfo.style.display = 'flex';
+                sheetsSection.style.display = 'block';
+                syncControls.style.display = 'block';
+                sheetsConnected.style.display = 'block';
+                appState.sheetsConnected = true;
+                
+                // Save token to localStorage
+                localStorage.setItem('googleToken', appState.googleToken);
+            } else {
+                signinBtn.style.display = 'inline-flex';
+                signoutBtn.style.display = 'none';
+                userInfo.style.display = 'none';
+                sheetsSection.style.display = 'none';
+                syncControls.style.display = 'none';
+                sheetsConnected.style.display = 'none';
+                appState.sheetsConnected = false;
+            }
+        }
+        
+        // Load User Information
+        function loadUserInfo() {
+            if (!appState.googleToken) return;
+            
+            fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+                headers: {
+                    'Authorization': `Bearer ${appState.googleToken}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.email) {
+                    appState.userEmail = data.email;
+                    document.getElementById('user-email').textContent = data.email;
+                    localStorage.setItem('userEmail', data.email);
+                }
+            })
+            .catch(error => {
+                console.error('Error loading user info:', error);
+            });
+        }
+        
+        // Load saved spreadsheet ID
+        function loadSavedSpreadsheetId() {
+            const savedSpreadsheetId = localStorage.getItem('spreadsheetId');
+            if (savedSpreadsheetId) {
+                document.getElementById('spreadsheetId').value = savedSpreadsheetId;
+                appState.spreadsheetId = savedSpreadsheetId;
+            }
+            
+            const savedUserEmail = localStorage.getItem('userEmail');
+            if (savedUserEmail) {
+                document.getElementById('user-email').textContent = savedUserEmail;
+            }
+        }
+        
+        // ==================== GOOGLE SHEETS FUNCTIONS ====================
+        
+        // Load Sheets List
+        function loadSheetsList() {
+            if (!appState.googleToken) {
+                showError('कृपया पहले Google से Sign In करें');
+                return;
+            }
+            
+            const spreadsheetId = document.getElementById('spreadsheetId').value.trim();
+            if (!spreadsheetId) {
+                showError('कृपया Google Sheets ID दर्ज करें');
+                return;
+            }
+            
+            appState.spreadsheetId = spreadsheetId;
+            localStorage.setItem('spreadsheetId', spreadsheetId);
+            
+            showLoading('Sheets लोड हो रही हैं...');
+            
+            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}`, {
+                headers: {
+                    'Authorization': `Bearer ${appState.googleToken}`
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Sheets तक पहुँचने में त्रुटि');
+                }
+                return response.json();
+            })
+            .then(data => {
+                hideLoading();
+                displaySheetsList(data.sheets);
+                showSuccess('Sheets सफलतापूर्वक लोड हो गईं!');
+            })
+            .catch(error => {
+                hideLoading();
+                console.error('Error fetching sheets:', error);
+                showError('Sheets लोड करने में त्रुटि: ' + error.message);
+            });
+        }
+        
+        // Display Sheets List
+        function displaySheetsList(sheets) {
+            const sheetsList = document.getElementById('sheetsList');
+            sheetsList.innerHTML = '';
+            sheetsList.style.display = 'block';
+            
+            if (!sheets || sheets.length === 0) {
+                sheetsList.innerHTML = '<div class="sheet-item">कोई Sheets नहीं मिलीं</div>';
+                return;
+            }
+            
+            sheets.forEach(sheet => {
+                const sheetItem = document.createElement('div');
+                sheetItem.className = 'sheet-item';
+                sheetItem.innerHTML = `
+                    <i class="fas fa-table"></i>
+                    <strong>${sheet.properties.title}</strong>
+                    <span style="float: right;">
+                        ${sheet.properties.gridProperties.rowCount} पंक्तियाँ × ${sheet.properties.gridProperties.columnCount} कॉलम
+                    </span>
+                `;
+                sheetItem.onclick = () => selectSheet(sheet.properties.title);
+                sheetsList.appendChild(sheetItem);
+            });
+        }
+        
+        // Select a Sheet
+        function selectSheet(sheetName) {
+            document.querySelectorAll('.sheet-item').forEach(item => {
+                item.classList.remove('selected');
+            });
+            event.target.closest('.sheet-item').classList.add('selected');
+            showInfo(`"${sheetName}" शीट चयनित की गई है।`);
+        }
+        
+        // Create New Sheet
+        function createNewSheet() {
+            if (!appState.googleToken) {
+                showError('कृपया पहले Google से Sign In करें');
+                return;
+            }
+            
+            const spreadsheetId = document.getElementById('spreadsheetId').value.trim();
+            if (!spreadsheetId) {
+                // Create a new spreadsheet
+                showLoading('नई Sheet बनाई जा रही है...');
+                
+                fetch('https://sheets.googleapis.com/v4/spreadsheets', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${appState.googleToken}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        properties: {
+                            title: 'बारा रबी उल अव्वल सजावट खर्चा प्रबंधन'
+                        },
+                        sheets: [
+                            {
+                                properties: {
+                                    title: 'Year 1',
+                                    gridProperties: {
+                                        rowCount: 100,
+                                        columnCount: 10
+                                    }
+                                }
+                            },
+                            {
+                                properties: {
+                                    title: 'Year 2',
+                                    gridProperties: {
+                                        rowCount: 100,
+                                        columnCount: 10
+                                    }
+                                }
+                            },
+                            {
+                                properties: {
+                                    title: 'Year 3',
+                                    gridProperties: {
+                                        rowCount: 100,
+                                        columnCount: 10
+                                    }
+                                }
+                            }
+                        ]
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    hideLoading();
+                    if (data.spreadsheetId) {
+                        const newSheetId = data.spreadsheetId;
+                        document.getElementById('spreadsheetId').value = newSheetId;
+                        appState.spreadsheetId = newSheetId;
+                        localStorage.setItem('spreadsheetId', newSheetId);
+                        
+                        // Add headers to each sheet
+                        addSheetHeaders(newSheetId);
+                        
+                        showSuccess(`नई Sheet बन गई है! Sheet ID: ${newSheetId}`);
+                        setTimeout(() => loadSheetsList(), 2000);
+                    } else {
+                        showError('Sheet ID प्राप्त नहीं हुआ');
+                    }
+                })
+                .catch(error => {
+                    hideLoading();
+                    console.error('Error creating sheet:', error);
+                    showError('Sheet बनाने में त्रुटि: ' + error.message);
+                });
+            } else {
+                // Add sheets to existing spreadsheet
+                addSheetsToExisting(spreadsheetId);
+            }
+        }
+        
+        // Add Headers to Sheets
+        function addSheetHeaders(spreadsheetId) {
+            const requests = [];
+            
+            ['Year 1', 'Year 2', 'Year 3'].forEach((sheetName, index) => {
+                requests.push({
+                    updateCells: {
+                        range: {
+                            sheetId: index,
+                            startRowIndex: 0,
+                            endRowIndex: 1,
+                            startColumnIndex: 0,
+                            endColumnIndex: 10
+                        },
+                        rows: [{
+                            values: [
+                                { userEnteredValue: { stringValue: 'क्र.सं.' } },
+                                { userEnteredValue: { stringValue: 'सजावट का नाम' } },
+                                { userEnteredValue: { stringValue: 'स्थान/पॉइंट' } },
+                                { userEnteredValue: { stringValue: 'मात्रा' } },
+                                { userEnteredValue: { stringValue: 'दर (₹)' } },
+                                { userEnteredValue: { stringValue: 'कुल (₹)' } },
+                                { userEnteredValue: { stringValue: 'परिवहन/श्रम शुल्क (₹)' } },
+                                { userEnteredValue: { stringValue: 'अतिरिक्त खर्च (₹)' } },
+                                { userEnteredValue: { stringValue: 'आइटम कुल (₹)' } },
+                                { userEnteredValue: { stringValue: 'टिप्पणी' } }
+                            ]
+                        }],
+                        fields: 'userEnteredValue'
+                    }
+                });
+            });
+            
+            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}:batchUpdate`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${appState.googleToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ requests })
+            })
+            .catch(error => console.error('Error adding headers:', error));
+        }
+        
+        // Add Sheets to Existing Spreadsheet
+        function addSheetsToExisting(spreadsheetId) {
+            showLoading('Sheets जोड़ी जा रही हैं...');
+            
+            const requests = [];
+            
+            ['Year 1', 'Year 2', 'Year 3'].forEach(sheetName => {
+                requests.push({
+                    addSheet: {
+                        properties: {
+                            title: sheetName
+                        }
+                    }
+                });
+            });
+            
+            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${spreadsheetId}:batchUpdate`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${appState.googleToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ requests })
+            })
+            .then(response => response.json())
+            .then(data => {
+                hideLoading();
+                // Add headers after sheets are created
+                setTimeout(() => addSheetHeaders(spreadsheetId), 1000);
+                showSuccess('नई Sheets बन गई हैं!');
+                setTimeout(() => loadSheetsList(), 2000);
+            })
+            .catch(error => {
+                hideLoading();
+                console.error('Error adding sheets:', error);
+                showError('Sheets जोड़ने में त्रुटि: ' + error.message);
+            });
+        }
+        
+        // Open Template Sheet
+        function openTemplateSheet() {
+            window.open('https://docs.google.com/spreadsheets/d/1X8JwLt8m6z7Y5q9K0n1R2S3T4U5V6W7X8Y9Z0A1B2C3D4E5F6G7H8I9J0K1L/edit?usp=sharing', '_blank');
+        }
+        
+        // ==================== DATA SYNC FUNCTIONS ====================
+        
+        // Sync Year Data
+        function syncYearData(year, action) {
+            if (!appState.googleToken) {
+                showError('कृपया पहले Google से Sign In करें');
+                showSheetsModal();
+                return;
+            }
+            
+            if (!appState.spreadsheetId) {
+                const spreadsheetId = document.getElementById('spreadsheetId').value.trim();
+                if (!spreadsheetId) {
+                    showError('कृपया Google Sheets ID दर्ज करें');
+                    return;
+                }
+                appState.spreadsheetId = spreadsheetId;
+                localStorage.setItem('spreadsheetId', spreadsheetId);
+            }
+            
+            if (action === 'load') {
+                loadDataFromSheets(year);
+            } else if (action === 'save') {
+                saveDataToSheets(year);
+            }
+        }
+        
+        // Sync All Data
+        function syncAllData(action) {
+            if (!appState.googleToken) {
+                showError('कृपया पहले Google से Sign In करें');
+                showSheetsModal();
+                return;
+            }
+            
+            if (action === 'load') {
+                ['year1', 'year2', 'year3'].forEach(year => {
+                    loadDataFromSheets(year);
+                });
+            } else if (action === 'save') {
+                ['year1', 'year2', 'year3'].forEach(year => {
+                    saveDataToSheets(year);
+                });
+            }
+        }
+        
+        // Load Data from Google Sheets
+        function loadDataFromSheets(year) {
+            const sheetName = year.replace('year', 'Year ');
+            const range = `${sheetName}!A2:J`;
+            
+            showLoading(`${sheetName} से डेटा लोड हो रहा है...`);
+            
+            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${appState.spreadsheetId}/values/${range}`, {
+                headers: {
+                    'Authorization': `Bearer ${appState.googleToken}`
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('डेटा लोड नहीं हो पाया');
+                }
+                return response.json();
+            })
+            .then(data => {
+                hideLoading();
+                if (data.values && data.values.length > 0) {
+                    processSheetData(year, data.values);
+                    showSuccess(`${sheetName} का डेटा सफलतापूर्वक लोड हो गया!`);
+                } else {
+                    showInfo(`${sheetName} में कोई डेटा नहीं मिला।`);
+                }
+            })
+            .catch(error => {
+                hideLoading();
+                console.error('Error loading data:', error);
+                showError(`डेटा लोड करने में त्रुटि: ${error.message}`);
+            });
+        }
+        
+        // Process Sheet Data
+        function processSheetData(year, rows) {
+            const yearData = [];
+            
+            rows.forEach((row, index) => {
+                // Skip empty rows
+                if (row.length < 3 || !row[1]) return;
+                
+                const quantity = parseFloat(row[3]) || 1;
+                const rate = parseFloat(row[4]) || 0;
+                const transport = parseFloat(row[6]) || 0;
+                const extra = parseFloat(row[7]) || 0;
+                const total = quantity * rate;
+                const itemTotal = total + transport + extra;
+                
+                yearData.push({
+                    itemName: row[1] || '',
+                    location: row[2] || '',
+                    quantity: quantity,
+                    rate: rate,
+                    total: total,
+                    transport: transport,
+                    extra: extra,
+                    itemTotal: itemTotal,
+                    remarks: row[9] || ''
+                });
+            });
+            
+            // Update app state
+            appState.data[year] = yearData;
+            
+            // Update UI
+            populateTableFromData(year);
+            
+            // Save to localStorage as backup
+            localStorage.setItem(`decorationData_${year}`, JSON.stringify(yearData));
+            
+            // Refresh analysis
+            refreshAnalysis();
+        }
+        
+        // Save Data to Google Sheets
+        function saveDataToSheets(year) {
+            // First save data to state
+            saveDataToState(year);
+            
+            const yearData = appState.data[year];
+            if (yearData.length === 0) {
+                showError('सेव करने के लिए कोई डेटा नहीं है!');
+                return;
+            }
+            
+            // Prepare data for Google Sheets
+            const sheetName = year.replace('year', 'Year ');
+            const range = `${sheetName}!A2:J${yearData.length + 1}`;
+            
+            // Create values array
+            const values = [];
+            yearData.forEach((item, index) => {
+                values.push([
+                    index + 1,
+                    item.itemName,
+                    item.location,
+                    item.quantity,
+                    item.rate,
+                    item.total,
+                    item.transport,
+                    item.extra,
+                    item.itemTotal,
+                    item.remarks || ''
+                ]);
+            });
+            
+            // Create request body
+            const requestBody = {
+                values: values,
+                majorDimension: "ROWS"
+            };
+            
+            showLoading(`${sheetName} का डेटा सेव हो रहा है...`);
+            
+            fetch(`https://sheets.googleapis.com/v4/spreadsheets/${appState.spreadsheetId}/values/${range}?valueInputOption=USER_ENTERED`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${appState.googleToken}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(requestBody)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('डेटा सेव नहीं हो पाया');
+                }
+                return response.json();
+            })
+            .then(data => {
+                hideLoading();
+                const statusEl = document.getElementById(`save-status-${year}`);
+                statusEl.style.display = 'block';
+                statusEl.textContent = 'डेटा Google Sheets में सफलतापूर्वक सेव हो गया है!';
+                statusEl.style.background = '#d4edda';
+                statusEl.style.color = '#155724';
+                
+                setTimeout(() => {
+                    statusEl.style.display = 'none';
+                }, 3000);
+                
+                showSuccess('डेटा Google Sheets में सफलतापूर्वक सेव हो गया है!');
+            })
+            .catch(error => {
+                hideLoading();
+                console.error('Error saving data:', error);
+                showError(`डेटा सेव करने में त्रुटि: ${error.message}`);
+            });
+        }
+        
+        // ==================== CORE APPLICATION FUNCTIONS ====================
+        
+        // Initialize tabs
+        function initializeTabs() {
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active');
+                    
+                    if (tabId === 'analysis') {
+                        setTimeout(refreshAnalysis, 100);
+                    }
+                });
+            });
+        }
+        
+        // Add a new row to a year's table
+        function addRow(year) {
+            const tbody = document.getElementById(`tbody-${year}`);
+            const rowCount = tbody.children.length + 1;
+            
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>${rowCount}</td>
+                <td><input type="text" class="item-name" placeholder="जैसे: झंडे, बल्ब, फूल, आदि"></td>
+                <td><input type="text" class="location" placeholder="जैसे: मुख्य द्वार, मंच, आदि"></td>
+                <td><input type="number" class="quantity" value="1" min="1" onchange="calculateRow(this)"></td>
+                <td><input type="number" class="rate" value="0" min="0" step="0.01" onchange="calculateRow(this)"></td>
+                <td><input type="number" class="total" value="0" readonly></td>
+                <td><input type="number" class="transport" value="0" min="0" step="0.01" onchange="calculateRow(this)"></td>
+                <td><input type="number" class="extra" value="0" min="0" step="0.01" onchange="calculateRow(this)"></td>
+                <td><input type="number" class="item-total" value="0" readonly></td>
+                <td><input type="text" class="remarks" placeholder="विशेष नोट"></td>
+                <td><button class="btn btn-danger" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
+            `;
+            
+            tbody.appendChild(row);
+            calculateRow(row.querySelector('.quantity'));
+            updateYearTotal(year);
+        }
+        
+        // Calculate row totals
+        function calculateRow(input) {
+            const row = input.closest('tr');
+            const quantity = parseFloat(row.querySelector('.quantity').value) || 0;
+            const rate = parseFloat(row.querySelector('.rate').value) || 0;
+            const transport = parseFloat(row.querySelector('.transport').value) || 0;
+            const extra = parseFloat(row.querySelector('.extra').value) || 0;
+            
+            const total = quantity * rate;
+            const itemTotal = total + transport + extra;
+            
+            row.querySelector('.total').value = total.toFixed(2);
+            row.querySelector('.item-total').value = itemTotal.toFixed(2);
+            
+            const year = input.closest('.tab-content').id;
+            updateYearTotal(year);
+        }
+        
+        // Update year total
+        function updateYearTotal(year) {
+            const tbody = document.getElementById(`tbody-${year}`);
+            const rows = tbody.querySelectorAll('tr');
+            let yearTotal = 0;
+            
+            rows.forEach(row => {
+                const itemTotal = parseFloat(row.querySelector('.item-total').value) || 0;
+                yearTotal += itemTotal;
+            });
+            
+            document.getElementById(`total-${year}`).textContent = `₹${yearTotal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}`;
+            
+            saveDataToState(year);
+        }
+        
+        // Delete a row
+        function deleteRow(button) {
+            const row = button.closest('tr');
+            const year = row.closest('.tab-content').id;
+            
+            if (confirm('क्या आप वाकई इस पंक्ति को हटाना चाहते हैं?')) {
+                row.remove();
+                
+                const tbody = document.getElementById(`tbody-${year}`);
+                const rows = tbody.querySelectorAll('tr');
+                rows.forEach((row, index) => {
+                    row.cells[0].textContent = index + 1;
+                });
+                
+                updateYearTotal(year);
+            }
+        }
+        
+        // Save data to state
+        function saveDataToState(year) {
+            const tbody = document.getElementById(`tbody-${year}`);
+            const rows = tbody.querySelectorAll('tr');
+            const yearData = [];
+            
+            rows.forEach(row => {
+                const itemName = row.querySelector('.item-name').value;
+                if (itemName) {
+                    yearData.push({
+                        itemName: row.querySelector('.item-name').value,
+                        location: row.querySelector('.location').value,
+                        quantity: parseFloat(row.querySelector('.quantity').value) || 0,
+                        rate: parseFloat(row.querySelector('.rate').value) || 0,
+                        total: parseFloat(row.querySelector('.total').value) || 0,
+                        transport: parseFloat(row.querySelector('.transport').value) || 0,
+                        extra: parseFloat(row.querySelector('.extra').value) || 0,
+                        itemTotal: parseFloat(row.querySelector('.item-total').value) || 0,
+                        remarks: row.querySelector('.remarks').value
+                    });
+                }
+            });
+            
+            appState.data[year] = yearData;
+        }
+        
+        // Save data to localStorage
+        function saveData(year) {
+            saveDataToState(year);
+            
+            localStorage.setItem(`decorationData_${year}`, JSON.stringify(appState.data[year]));
+            
+            const statusEl = document.getElementById(`save-status-${year}`);
+            statusEl.style.display = 'block';
+            statusEl.textContent = 'डेटा सफलतापूर्वक सेव हो गया है!';
+            
+            setTimeout(() => {
+                statusEl.style.display = 'none';
+            }, 3000);
+            
+            if (year !== 'analysis') {
+                refreshAnalysis();
+            }
+        }
+        
+        // Load data from localStorage
+        function loadData() {
+            ['year1', 'year2', 'year3'].forEach(year => {
+                const savedData = localStorage.getItem(`decorationData_${year}`);
+                if (savedData) {
+                    appState.data[year] = JSON.parse(savedData);
+                    populateTableFromData(year);
+                }
+            });
+        }
+        
+        // Populate table from saved data
+        function populateTableFromData(year) {
+            const tbody = document.getElementById(`tbody-${year}`);
+            tbody.innerHTML = '';
+            
+            if (appState.data[year].length === 0) {
+                addRow(year);
+                return;
+            }
+            
+            appState.data[year].forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><input type="text" class="item-name" value="${item.itemName}"></td>
+                    <td><input type="text" class="location" value="${item.location}"></td>
+                    <td><input type="number" class="quantity" value="${item.quantity}" min="1" onchange="calculateRow(this)"></td>
+                    <td><input type="number" class="rate" value="${item.rate}" min="0" step="0.01" onchange="calculateRow(this)"></td>
+                    <td><input type="number" class="total" value="${item.total}" readonly></td>
+                    <td><input type="number" class="transport" value="${item.transport}" min="0" step="0.01" onchange="calculateRow(this)"></td>
+                    <td><input type="number" class="extra" value="${item.extra}" min="0" step="0.01" onchange="calculateRow(this)"></td>
+                    <td><input type="number" class="item-total" value="${item.itemTotal}" readonly></td>
+                    <td><input type="text" class="remarks" value="${item.remarks || ''}"></td>
+                    <td><button class="btn btn-danger" onclick="deleteRow(this)"><i class="fas fa-trash"></i></button></td>
+                `;
+                tbody.appendChild(row);
+            });
+            
+            updateYearTotal(year);
+        }
+        
+        // Initialize year tables
+        function initializeYearTables() {
+            ['year1', 'year2', 'year3'].forEach(year => {
+                if (appState.data[year].length === 0) {
+                    addRow(year);
+                    addRow(year);
+                    addRow(year);
+                }
+            });
+        }
+        
+        // Refresh analysis
+        function refreshAnalysis() {
+            ['year1', 'year2', 'year3'].forEach(year => saveDataToState(year));
+            performAnalysis();
+            updateAnalysisUI();
+            generateCharts();
+        }
+        
+        // Perform data analysis
+        function performAnalysis() {
+            appState.analysis = {
+                topItems: [],
+                repeatedItems: [],
+                yearlyTotals: { year1: 0, year2: 0, year3: 0 },
+                categoryTotals: {},
+                itemsByYear: { year1: {}, year2: {}, year3: {} }
+            };
+            
+            ['year1', 'year2', 'year3'].forEach(year => {
+                let yearTotal = 0;
+                const yearItems = {};
+                
+                appState.data[year].forEach(item => {
+                    if (item.itemName) {
+                        yearTotal += item.itemTotal;
+                        
+                        if (!yearItems[item.itemName]) {
+                            yearItems[item.itemName] = 0;
+                        }
+                        yearItems[item.itemName] += item.itemTotal;
+                        
+                        if (!appState.analysis.categoryTotals[item.itemName]) {
+                            appState.analysis.categoryTotals[item.itemName] = 0;
+                        }
+                        appState.analysis.categoryTotals[item.itemName] += item.itemTotal;
+                    }
+                });
+                
+                appState.analysis.yearlyTotals[year] = yearTotal;
+                appState.analysis.itemsByYear[year] = yearItems;
+            });
+            
+            appState.analysis.topItems = Object.entries(appState.analysis.categoryTotals)
+                .map(([name, total]) => ({ name, total }))
+                .sort((a, b) => b.total - a.total)
+                .slice(0, 10);
+            
+            const itemCounts = {};
+            ['year1', 'year2', 'year3'].forEach(year => {
+                Object.keys(appState.analysis.itemsByYear[year]).forEach(item => {
+                    if (!itemCounts[item]) itemCounts[item] = 0;
+                    itemCounts[item]++;
+                });
+            });
+            
+            appState.analysis.repeatedItems = Object.entries(itemCounts)
+                .filter(([_, count]) => count >= 2)
+                .map(([name, count]) => ({
+                    name,
+                    count,
+                    total: appState.analysis.categoryTotals[name] || 0
+                }))
+                .sort((a, b) => b.total - a.total);
+        }
+        
+        // Update analysis UI
+        function updateAnalysisUI() {
+            const year1Total = appState.analysis.yearlyTotals.year1;
+            const year2Total = appState.analysis.yearlyTotals.year2;
+            const year3Total = appState.analysis.yearlyTotals.year3;
+            const total3Years = year1Total + year2Total + year3Total;
+            
+            document.getElementById('total-3years').textContent = formatCurrency(total3Years);
+            document.getElementById('year1-total').textContent = formatCurrency(year1Total);
+            document.getElementById('year2-total').textContent = formatCurrency(year2Total);
+            document.getElementById('year3-total').textContent = formatCurrency(year3Total);
+            document.getElementById('avg-yearly').textContent = formatCurrency(total3Years / 3);
+            
+            const years = [
+                { name: 'वर्ष 1', value: year1Total },
+                { name: 'वर्ष 2', value: year2Total },
+                { name: 'वर्ष 3', value: year3Total }
+            ];
+            const mostExpensive = years.reduce((max, year) => year.value > max.value ? year : max, years[0]);
+            document.getElementById('most-expensive-year').textContent = mostExpensive.name;
+            
+            const topItemsList = document.getElementById('top-items-list');
+            topItemsList.innerHTML = '';
+            
+            if (appState.analysis.topItems.length === 0) {
+                topItemsList.innerHTML = '<p>कोई डेटा उपलब्ध नहीं है। कृपया वर्ष 1, 2 और 3 में डेटा दर्ज करें।</p>';
+                return;
+            }
+            
+            appState.analysis.topItems.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `
+                    <div>
+                        <span class="item-name">${index + 1}. ${item.name}</span>
+                        ${item.total > 10000 ? '<span class="item-tag tag-high">उच्च खर्च</span>' : ''}
+                    </div>
+                    <div class="item-value">${formatCurrency(item.total)}</div>
+                `;
+                topItemsList.appendChild(div);
+            });
+            
+            const repeatedItemsList = document.getElementById('repeated-items-list');
+            repeatedItemsList.innerHTML = '';
+            
+            if (appState.analysis.repeatedItems.length === 0) {
+                repeatedItemsList.innerHTML = '<p>कोई दोहराई जाने वाली वस्तुएं नहीं मिलीं।</p>';
+                return;
+            }
+            
+            appState.analysis.repeatedItems.forEach((item, index) => {
+                const div = document.createElement('div');
+                div.className = 'list-item';
+                div.innerHTML = `
+                    <div>
+                        <span class="item-name">${index + 1}. ${item.name}</span>
+                        <span class="item-tag tag-repeat">${item.count} वर्षों में</span>
+                    </div>
+                    <div class="item-value">${formatCurrency(item.total)}</div>
+                `;
+                repeatedItemsList.appendChild(div);
+            });
+            
+            const optimizationDiv = document.getElementById('optimization-suggestions');
+            optimizationDiv.innerHTML = '';
+            
+            const suggestions = [];
+            
+            if (appState.analysis.topItems.length > 0) {
+                const topItem = appState.analysis.topItems[0];
+                suggestions.push({
+                    text: `"${topItem.name}" पर सबसे अधिक खर्च (${formatCurrency(topItem.total)}) होता है। वैकल्पिक स्रोत खोजें या कम कीमत वाले विकल्प तलाशें।`,
+                    icon: 'fa-money-bill-wave'
+                });
+            }
+            
+            let potentialBulkSave = 0;
+            if (appState.analysis.repeatedItems.length > 0) {
+                const repeatedTotal = appState.analysis.repeatedItems.reduce((sum, item) => sum + item.total, 0);
+                potentialBulkSave = repeatedTotal * 0.15;
+                suggestions.push({
+                    text: `दोहराई जाने वाली ${appState.analysis.repeatedItems.length} वस्तुओं को थोक में खरीदने से आप ${formatCurrency(potentialBulkSave)} तक बचा सकते हैं।`,
+                    icon: 'fa-boxes'
+                });
+            }
+            
+            if (total3Years > 0) {
+                const potentialNegotiationSave = total3Years * 0.10;
+                suggestions.push({
+                    text: `स्थानीय विक्रेताओं से समझौता मूल्य पर बातचीत करके आप ${formatCurrency(potentialNegotiationSave)} तक बचा सकते हैं।`,
+                    icon: 'fa-handshake'
+                });
+                
+                document.getElementById('potential-savings').textContent = formatCurrency(potentialNegotiationSave);
+                document.getElementById('bulk-saving').textContent = formatCurrency(potentialBulkSave);
+                document.getElementById('negotiation-saving').textContent = formatCurrency(potentialNegotiationSave);
+            }
+            
+            suggestions.push({
+                text: 'स्थायी/पुन: प्रयोज्य सजावट सामग्री में निवेश करें जिसे अगले वर्षों में फिर से उपयोग किया जा सके।',
+                icon: 'fa-recycle'
+            });
+            
+            suggestions.push({
+                text: 'स्वयंसेवकों से सजावट कार्य में सहायता लें ताकि श्रम लागत कम हो सके।',
+                icon: 'fa-hands-helping'
+            });
+            
+            suggestions.forEach(suggestion => {
+                const div = document.createElement('div');
+                div.className = 'suggestion-item';
+                div.innerHTML = `<strong><i class="fas ${suggestion.icon}"></i> सुझाव:</strong> ${suggestion.text}`;
+                optimizationDiv.appendChild(div);
+            });
+            
+            if (appState.analysis.topItems.length > 0) {
+                const highest = appState.analysis.topItems[0];
+                const lowest = appState.analysis.topItems[appState.analysis.topItems.length - 1];
+                
+                document.getElementById('highest-category').textContent = highest.name;
+                document.getElementById('highest-category-value').textContent = formatCurrency(highest.total);
+                document.getElementById('lowest-category').textContent = lowest.name;
+                document.getElementById('lowest-category-value').textContent = formatCurrency(lowest.total);
+            }
+        }
+        
+        // Generate charts
+        function generateCharts() {
+            const pieCtx = document.getElementById('pieChart').getContext('2d');
+            
+            if (window.pieChartInstance) {
+                window.pieChartInstance.destroy();
+            }
+            
+            if (appState.analysis.topItems.length > 0) {
+                const labels = appState.analysis.topItems.slice(0, 8).map(item => item.name);
+                const data = appState.analysis.topItems.slice(0, 8).map(item => item.total);
+                const colors = [
+                    '#2c5aa0', '#4a7bc8', '#6b9ce8', '#8fb7f0',
+                    '#ff6b35', '#ff8b5c', '#ffaa85', '#ffc9ad'
+                ];
+                
+                window.pieChartInstance = new Chart(pieCtx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: data,
+                            backgroundColor: colors,
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'शीर्ष 8 सजावट वस्तुओं में खर्च वितरण',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                pieCtx.font = "16px Arial";
+                pieCtx.fillStyle = "#999";
+                pieCtx.textAlign = "center";
+                pieCtx.fillText("डेटा उपलब्ध नहीं है", pieCtx.canvas.width/2, pieCtx.canvas.height/2);
+            }
+            
+            const barCtx = document.getElementById('barChart').getContext('2d');
+            
+            if (window.barChartInstance) {
+                window.barChartInstance.destroy();
+            }
+            
+            const yearlyData = [
+                appState.analysis.yearlyTotals.year1,
+                appState.analysis.yearlyTotals.year2,
+                appState.analysis.yearlyTotals.year3
+            ];
+            
+            if (yearlyData.some(total => total > 0)) {
+                window.barChartInstance = new Chart(barCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: ['वर्ष 1', 'वर्ष 2', 'वर्ष 3'],
+                        datasets: [{
+                            label: 'कुल खर्च (₹)',
+                            data: yearlyData,
+                            backgroundColor: ['#2c5aa0', '#4a7bc8', '#6b9ce8'],
+                            borderColor: ['#1d4a8a', '#3766b0', '#5585d6'],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                ticks: {
+                                    callback: function(value) {
+                                        return '₹' + value.toLocaleString('en-IN');
+                                    }
+                                }
+                            }
+                        },
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'वार्षिक खर्च तुलना',
+                                font: {
+                                    size: 14
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                barCtx.font = "16px Arial";
+                barCtx.fillStyle = "#999";
+                barCtx.textAlign = "center";
+                barCtx.fillText("वार्षिक डेटा उपलब्ध नहीं है", barCtx.canvas.width/2, barCtx.canvas.height/2);
+            }
+        }
+        
+        // Export to Excel
+        function exportToExcel(year) {
+            saveDataToState(year);
+            
+            const yearData = appState.data[year];
+            if (yearData.length === 0) {
+                showError('निर्यात करने के लिए कोई डेटा नहीं है!');
+                return;
+            }
+            
+            let csvContent = "क्र.सं.,सजावट का नाम,स्थान/पॉइंट,मात्रा,दर (₹),कुल (₹),परिवहन/श्रम शुल्क (₹),अतिरिक्त खर्च (₹),आइटम कुल (₹),टिप्पणी\n";
+            
+            yearData.forEach((item, index) => {
+                const row = [
+                    index + 1,
+                    `"${item.itemName}"`,
+                    `"${item.location}"`,
+                    item.quantity,
+                    item.rate,
+                    item.total,
+                    item.transport,
+                    item.extra,
+                    item.itemTotal,
+                    `"${item.remarks || ''}"`
+                ];
+                csvContent += row.join(',') + '\n';
+            });
+            
+            const yearTotal = yearData.reduce((sum, item) => sum + item.itemTotal, 0);
+            csvContent += `,,,,,,,,,"कुल खर्च: ${yearTotal.toFixed(2)}"`;
+            
+            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Bara_Rabi_ul_Awwal_${year}_Data.csv`;
+            link.click();
+            
+            showSuccess(`${year} का डेटा CSV फ़ाइल के रूप में निर्यात किया गया!`);
+        }
+        
+        // Export analysis report
+        function exportAnalysis() {
+            let reportContent = "बारा रबी उल अव्वल सजावट खर्चा विश्लेषण रिपोर्ट\n";
+            reportContent += "=============================================\n\n";
+            reportContent += `रिपोर्ट तिथि: ${new Date().toLocaleDateString('hi-IN')}\n\n`;
+            
+            reportContent += "वित्तीय सारांश:\n";
+            reportContent += `- 3 वर्षों का कुल खर्च: ${formatCurrency(appState.analysis.yearlyTotals.year1 + appState.analysis.yearlyTotals.year2 + appState.analysis.yearlyTotals.year3)}\n`;
+            reportContent += `- वर्ष 1 कुल: ${formatCurrency(appState.analysis.yearlyTotals.year1)}\n`;
+            reportContent += `- वर्ष 2 कुल: ${formatCurrency(appState.analysis.yearlyTotals.year2)}\n`;
+            reportContent += `- वर्ष 3 कुल: ${formatCurrency(appState.analysis.yearlyTotals.year3)}\n\n`;
+            
+            if (appState.analysis.topItems.length > 0) {
+                reportContent += "शीर्ष 5 खर्च वाली वस्तुएं:\n";
+                appState.analysis.topItems.slice(0, 5).forEach((item, index) => {
+                    reportContent += `${index + 1}. ${item.name}: ${formatCurrency(item.total)}\n`;
+                });
+                reportContent += '\n';
+            }
+            
+            if (appState.analysis.repeatedItems.length > 0) {
+                reportContent += "दोहराई जाने वाली वस्तुएं:\n";
+                appState.analysis.repeatedItems.forEach((item, index) => {
+                    reportContent += `${index + 1}. ${item.name} (${item.count} वर्षों में): ${formatCurrency(item.total)}\n`;
+                });
+                reportContent += '\n';
+            }
+            
+            reportContent += "अनुकूलन सुझाव:\n";
+            reportContent += "1. दोहराई जाने वाली वस्तुओं को थोक में खरीदें\n";
+            reportContent += "2. उच्च खर्च वाली वस्तुओं के लिए वैकल्पिक स्रोत खोजें\n";
+            reportContent += "3. स्थानीय विक्रेताओं से समझौता मूल्य पर बातचीत करें\n";
+            reportContent += "4. स्थायी/पुन: प्रयोज्य सामग्री में निवेश करें\n";
+            
+            const blob = new Blob([reportContent], { type: 'text/plain;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `Bara_Rabi_ul_Awwal_Analysis_Report.txt`;
+            link.click();
+            
+            showSuccess('विश्लेषण रिपोर्ट डाउनलोड की गई!');
+        }
+        
+        // Language toggle
+        function setLanguage(lang) {
+            appState.currentLanguage = lang;
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            showInfo(`Language switched to ${lang === 'hi' ? 'Hindi' : 'English'}`);
+        }
+        
+        // Helper function to format currency
+        function formatCurrency(amount) {
+            return '₹' + amount.toLocaleString('en-IN', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+        
+        // Modal Functions
+        function showSheetsModal() {
+            document.getElementById('sheetsModal').style.display = 'flex';
+        }
+        
+        function closeSheetsModal() {
+            document.getElementById('sheetsModal').style.display = 'none';
+        }
+        
+        // Show Loading Indicator
+        function showLoading(message) {
+            let loadingEl = document.getElementById('loading-indicator');
+            if (!loadingEl) {
+                loadingEl = document.createElement('div');
+                loadingEl.id = 'loading-indicator';
+                loadingEl.style.position = 'fixed';
+                loadingEl.style.top = '0';
+                loadingEl.style.left = '0';
+                loadingEl.style.width = '100%';
+                loadingEl.style.height = '100%';
+                loadingEl.style.background = 'rgba(0,0,0,0.7)';
+                loadingEl.style.color = 'white';
+                loadingEl.style.display = 'flex';
+                loadingEl.style.flexDirection = 'column';
+                loadingEl.style.alignItems = 'center';
+                loadingEl.style.justifyContent = 'center';
+                loadingEl.style.zIndex = '9999';
+                document.body.appendChild(loadingEl);
+            }
+            
+            loadingEl.innerHTML = `
+                <div style="background: white; color: #333; padding: 30px; border-radius: 10px; text-align: center;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 40px; color: var(--primary); margin-bottom: 15px;"></i>
+                    <h3>${message}</h3>
+                    <p>कृपया प्रतीक्षा करें...</p>
+                </div>
+            `;
+            loadingEl.style.display = 'flex';
+        }
+        
+        // Hide Loading Indicator
+        function hideLoading() {
+            const loadingEl = document.getElementById('loading-indicator');
+            if (loadingEl) {
+                loadingEl.style.display = 'none';
+            }
+        }
+        
+        // Show Success Message
+        function showSuccess(message) {
+            alert(message);
+        }
+        
+        // Show Error Message
+        function showError(message) {
+            alert('त्रुटि: ' + message);
+        }
+        
+        // Show Info Message
+        function showInfo(message) {
+            alert(message);
+        }
+        
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeTabs();
+            loadData();
+            initializeYearTables();
+            refreshAnalysis();
+            
+            // Initialize Google Sign-In
+            setTimeout(() => {
+                initGoogleSignIn();
+            }, 1000);
+            
+            // Close modal when clicking outside
+            window.onclick = function(event) {
+                const modal = document.getElementById('sheetsModal');
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            };
+        });
+    </script>
+</body>
+</html>
