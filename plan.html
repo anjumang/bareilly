@@ -47,6 +47,13 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
+        .logo-img {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 5px;
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
+}
         
         header {
             background: linear-gradient(to right, var(--primary), #4a7bc8);
@@ -649,23 +656,30 @@
 <body>
     <div class="container">
         <header>
-            <div class="header-content">
-                <div>
-                    <h1><i class="fas fa-mosque"></i> बारा रबी उल अव्वल सजावट खर्चा प्रबंधन</h1>
-                    <p class="subtitle">Google Sheets Integrated - वार्षिक सजावट खर्चा लेज़र और विश्लेषण प्रणाली</p>
-                </div>
-                <div class="sheets-status">
-                    <div id="sheets-connected" class="sheets-connected" style="display: none;">
-                        <i class="fas fa-check-circle"></i> Google Sheets Connected
-                    </div>
-                    <button class="sheets-btn" onclick="showSheetsModal()">
-                        <i class="fab fa-google"></i> Google Sheets
-                    </button>
-                    <button class="lang-btn active" onclick="setLanguage('hi')">हिंदी</button>
-                    <button class="lang-btn" onclick="setLanguage('en')">English</button>
-                </div>
+    <div class="header-content">
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <div style="flex-shrink: 0;">
+                <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="Logo" style="height: 60px; width: auto; border-radius: 8px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);">
             </div>
-        </header>
+            <div>
+                <h1 style="margin-bottom: 5px; font-size: 28px;">
+                    बारा रबी उल अव्वल सजावट खर्चा प्रबंधन
+                </h1>
+                <p class="subtitle">Google Sheets Integrated - वार्षिक सजावट खर्चा लेज़र और विश्लेषण प्रणाली</p>
+            </div>
+        </div>
+        <div class="sheets-status">
+            <div id="sheets-connected" class="sheets-connected" style="display: none;">
+                <i class="fas fa-check-circle"></i> Google Sheets Connected
+            </div>
+            <button class="sheets-btn" onclick="showSheetsModal()">
+                <i class="fab fa-google"></i> Google Sheets
+            </button>
+            <button class="lang-btn active" onclick="setLanguage('hi')">हिंदी</button>
+            <button class="lang-btn" onclick="setLanguage('en')">English</button>
+        </div>
+    </div>
+</header>
         
         <div class="tabs">
             <button class="tab-btn active" data-tab="year1"><i class="fas fa-calendar-alt"></i> वर्ष 1 डेटा</button>
@@ -1094,10 +1108,15 @@
             </div>
         </div>
         
-        <footer>
-            <p>© 2023 बारा रबी उल अव्वल सजावट खर्चा प्रबंधन प्रणाली | Google Sheets Integrated - डेटा आपकी Google Sheet में सुरक्षित रहेगा</p>
-            <p>तकनीकी सहायता: +91-XXXXXXXXXX | Email: support@example.com</p>
-        </footer>
+      <footer>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 15px; margin-bottom: 15px;">
+        <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="Logo" style="height: 40px; width: auto;">
+        <div>
+            <p>© 2025 बारा रबी उल अव्वल सजावट खर्चा प्रबंधन प्रणाली |</p>
+            
+        </div>
+    </div>
+</footer>
     </div>
     
     <script>
