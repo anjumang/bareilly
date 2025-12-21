@@ -1,0 +1,962 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Anjuman Membership Receipt - LIVE</title>
+  <style>
+    /* पहले वाला CSS वही रहेगा */
+    :root{
+      --green-1:#0f8a63;
+      --green-2:#0a6b4f;
+      --accent:#10b981;
+      --muted:#f3f7f9;
+      --blue:#0b4da0;
+      --card-bg: #ffffff;
+      --shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+      --radius: 12px;
+      font-family: "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#eef6f4 0%, #f9fcfd 100%);
+      color:#1f2937;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+    
+    :root{
+      --green-1:#0f8a63;
+      --green-2:#0a6b4f;
+      --accent:#10b981;
+      --muted:#f3f7f9;
+      --blue:#0b4da0;
+      --card-bg: #ffffff;
+      --shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
+      --radius: 12px;
+      font-family: "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      background:linear-gradient(180deg,#eef6f4 0%, #f9fcfd 100%);
+      color:#1f2937;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+    }
+
+    .container{
+      max-width:900px;
+      margin:28px auto;
+      padding:18px;
+    }
+
+    /* Header */
+    .header{
+      background:linear-gradient(90deg,var(--green-1),var(--green-2));
+      color:white;
+      border-radius:12px;
+      padding:20px;
+      box-shadow:var(--shadow);
+    }
+    .header .top{
+      display:flex;
+      gap:16px;
+      align-items:center;
+    }
+    .logo{
+      width:64px;
+      height:64px;
+      border-radius:10px;
+      background:#073b2a;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      overflow:hidden;
+      padding:4px;
+      box-sizing:border-box;
+      border:2px solid rgba(255,255,255,0.2);
+    }
+    .logo img{
+      width:100%;
+      height:100%;
+      object-fit:contain;
+      border-radius:6px;
+    }
+    .title{
+      flex:1;
+    }
+    .title h1{margin:0;font-size:20px;letter-spacing:0.2px}
+    .title p{margin:4px 0 0;font-size:13px;opacity:0.95}
+
+    /* profile card */
+    .profile{
+      margin-top:16px;
+      background:var(--card-bg);
+      border-radius:10px;
+      padding:16px;
+      display:flex;
+      gap:18px;
+      align-items:center;
+      box-shadow:var(--shadow);
+    }
+    .avatar{
+      width:120px;
+      height:120px;
+      border-radius:50%;
+      overflow:hidden;
+      flex:0 0 120px;
+      background:#f2f5f6;
+      border:4px solid var(--card-bg);
+      box-shadow:0 4px 12px rgba(0,0,0,0.15);
+    }
+    .avatar img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+    }
+    .info{flex:1}
+    .info .row{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      margin-bottom:8px;
+    }
+    .info .label{
+      min-width:100px;
+      color:#374151;
+      font-weight:700;
+      font-size:15px;
+    }
+    .info .val{
+      font-weight:600;
+      color:#0b1220;
+      font-size:16px;
+    }
+
+    /* Member badge */
+    .member-badge{
+      display:inline-flex;
+      align-items:center;
+      gap:6px;
+      background:#f0f9ff;
+      color:#0369a1;
+      padding:4px 12px;
+      border-radius:20px;
+      font-weight:700;
+      font-size:14px;
+      margin-top:4px;
+      border:1px solid #bae6fd;
+    }
+    .member-badge:before{
+      content:"👤";
+      font-size:14px;
+    }
+
+    /* alert */
+    .alert{
+      margin:14px 0;
+      padding:12px 14px;
+      background:#fff4d9;
+      border-left:4px solid #ffd27a;
+      border-radius:8px;
+      font-size:13px;
+      color:#6b3f00;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .alert:before{
+      content:"ℹ️";
+      font-size:16px;
+    }
+
+    /* table section */
+    .section-title{
+      display:flex;
+      align-items:center;
+      gap:10px;
+      font-weight:700;
+      color:#0b4da0;
+      margin:16px 0 12px;
+      padding:8px 0;
+      border-bottom:2px solid #eef3f6;
+    }
+    .section-title:before{
+      content:"📋";
+      font-size:18px;
+    }
+    table.receipt{
+      width:100%;
+      border-collapse:collapse;
+      background:var(--card-bg);
+      border-radius:8px;
+      overflow:hidden;
+      box-shadow:var(--shadow);
+    }
+    table.receipt thead th{
+      background:linear-gradient(180deg,#0b4da0,#083a7f);
+      color:#fff;
+      padding:14px 12px;
+      text-align:left;
+      font-weight:700;
+      font-size:14px;
+      border-bottom:2px solid rgba(255,255,255,0.06);
+      position:sticky;
+      top:0;
+    }
+    table.receipt tbody td{
+      padding:12px 10px;
+      border-bottom:1px solid #eef3f6;
+      font-size:14px;
+      color:#263238;
+    }
+    table.receipt tbody tr:nth-child(even){
+      background: #fbfeff;
+    }
+    table.receipt tbody tr:hover{
+      background:#f0f8ff;
+    }
+    table.receipt tfoot td{
+      background:#f8fafc;
+      font-weight:700;
+      color:#1e293b;
+    }
+
+    /* summary cards */
+    .summaries{
+      display:flex;
+      gap:16px;
+      margin-top:20px;
+      flex-wrap:wrap;
+    }
+    .card{
+      background:var(--card-bg);
+      padding:20px;
+      border-radius:12px;
+      flex:1;
+      min-width:220px;
+      box-shadow:var(--shadow);
+      border-top:4px solid var(--blue);
+      transition:transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .card:hover{
+      transform:translateY(-4px);
+      box-shadow:0 10px 25px rgba(15,23,42,0.12);
+    }
+    .card h3{
+      margin:0 0 12px;
+      font-size:17px;
+      color:#0b4da0;
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .card h3:before{
+      content:"💰";
+      font-size:18px;
+    }
+    .card:nth-child(2) h3:before{
+      content:"⭐";
+    }
+    .summary-row{
+      display:flex;
+      justify-content:space-between;
+      padding:8px 0;
+      font-weight:600;
+      border-bottom:1px dashed #e5e7eb;
+    }
+    .summary-row:last-child{
+      border-bottom:none;
+    }
+    .points-big{
+      display:flex;
+      align-items:center;
+      gap:12px;
+      font-size:24px;
+      font-weight:800;
+      color:#0b4da0;
+      margin-bottom:12px;
+    }
+    .progress-text{
+      display:flex;
+      justify-content:space-between;
+      font-size:13px;
+      color:#6b7280;
+      margin-top:8px;
+    }
+
+    /* footer note */
+    .note{
+      margin-top:20px;
+      padding:14px;
+      background:#fff;
+      border-radius:8px;
+      text-align:center;
+      color:#6b7280;
+      font-size:14px;
+      box-shadow:var(--shadow);
+      border-left:4px solid var(--accent);
+      font-weight:500;
+    }
+
+    /* loading spinner */
+    .loading{
+      text-align:center;
+      padding:40px;
+      color:#6b7280;
+    }
+    .spinner{
+      width:50px;
+      height:50px;
+      border:5px solid #f3f3f3;
+      border-top:5px solid var(--green-1);
+      border-radius:50%;
+      animation:spin 1s linear infinite;
+      margin:0 auto 20px;
+    }
+    @keyframes spin{
+      0%{transform:rotate(0deg)}
+      100%{transform:rotate(360deg)}
+    }
+
+    /* responsive */
+    @media (max-width:720px){
+      .container{padding:12px}
+      .header{padding:16px}
+      .header .top{gap:12px}
+      .logo{width:56px;height:56px}
+      .title h1{font-size:18px}
+      .title p{font-size:12px}
+      .profile{
+        flex-direction:column;
+        text-align:center;
+        gap:12px;
+      }
+      .info .row{
+        flex-direction:column;
+        gap:4px;
+        align-items:center;
+      }
+      .info .label{min-width:auto}
+      table.receipt{
+        font-size:13px;
+      }
+      table.receipt thead th,
+      table.receipt tbody td{
+        padding:10px 6px;
+        font-size:13px;
+      }
+      .avatar{
+        width:100px;
+        height:100px;
+        flex:0 0 100px;
+      }
+      .card{
+        min-width:100%;
+      }
+      .summaries{gap:12px}
+    }
+
+    @media print {
+      body{
+        background:#fff;
+      }
+      .container{
+        margin:0;
+        padding:0;
+        max-width:100%;
+      }
+      .header{
+        box-shadow:none;
+        border-radius:0;
+        border-bottom:2px solid var(--green-2);
+      }
+      .btn{
+        display:none;
+      }
+      .card{
+        box-shadow:none;
+        border:1px solid #e5e7eb;
+      }
+      table.receipt{
+        box-shadow:none;
+        border:1px solid #e5e7eb;
+      }
+      .note{
+        box-shadow:none;
+        border:1px solid #e5e7eb;
+      }
+    }
+
+    /* small utilities */
+    .muted{color:#6b7280;font-weight:600}
+    .green-pill{
+      background:#ecfdf5;
+      color:#059669;
+      padding:4px 10px;
+      border-radius:999px;
+      font-weight:700;
+      font-size:13px;
+    }
+    .btn{
+      display:inline-block;
+      padding:10px 16px;
+      border-radius:8px;
+      background:var(--accent);
+      color:white;
+      font-weight:700;
+      text-decoration:none;
+      border:none;
+      cursor:pointer;
+      transition:all 0.3s ease;
+      font-size:14px;
+      box-shadow:0 4px 6px rgba(16, 185, 129, 0.2);
+    }
+    .btn:hover{
+      background:#0da271;
+      transform:translateY(-2px);
+      box-shadow:0 6px 12px rgba(16, 185, 129, 0.3);
+    }
+    .btn:active{
+      transform:translateY(0);
+    }
+    .btn-secondary{
+      background:#0b4da0;
+      box-shadow:0 4px 6px rgba(11, 77, 160, 0.2);
+    }
+    .btn-secondary:hover{
+      background:#083a7f;
+      box-shadow:0 6px 12px rgba(11, 77, 160, 0.3);
+    }
+    .status-paid{
+      color:#059669;
+      font-weight:700;
+      display:inline-flex;
+      align-items:center;
+      gap:4px;
+    }
+    .status-paid:before{
+      content:"✓";
+      background:#059669;
+      color:white;
+      width:18px;
+      height:18px;
+      border-radius:50%;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:12px;
+    }
+    .error-alert{
+      background:#fee;
+      border-left:4px solid #f00;
+      color:#900;
+    }
+    .error-alert:before{
+      content:"⚠️";
+    }
+    .refresh-btn{
+      margin-left:10px;
+      padding:4px 12px;
+      font-size:12px;
+    }
+  
+    /* बाकी CSS exactly वही जो पहले था */
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="top">
+        <div class="logo">
+          <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="AGM Logo" id="logoImg">
+        </div>
+        <div class="title">
+          <h1>Anjuman Ghulamane Mustafa</h1>
+          <p>Official Membership Receipt - Bara Rabi al-Awwal Fund 1446-47 Hijri</p>
+          <div id="lastUpdated" style="font-size:11px;opacity:0.9;margin-top:4px">
+            Last updated: <span id="updateTime">Loading...</span>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <div style="margin-bottom:8px">
+            <select id="memberSelect" class="btn" style="margin-right:10px;background:#fff;color:#333;border:1px solid #ddd">
+              <option value="">Select Member</option>
+            </select>
+            <button class="btn" id="downloadPdf">📥 Download Receipt</button>
+            <button class="btn btn-secondary" id="refreshData">🔄 Refresh</button>
+          </div>
+          <div style="font-size:13px;opacity:0.95">
+            <span style="display:block;margin-bottom:2px">Receipt No: <strong id="receiptNo">AGM/2025/0016</strong></span>
+            <span>Date: <strong id="topDate">21/11/2025</strong></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Section -->
+      <div class="profile">
+        <div class="avatar">
+          <img id="avatarImg" src="https://via.placeholder.com/120" alt="Member Photo">
+        </div>
+        <div class="info">
+          <div class="row"><div class="label">Member:</div><div class="val" id="name">Select a member</div></div>
+          <div class="row"><div class="label">Serial No:</div><div class="val" id="srno">--</div></div>
+          <div class="row"><div class="label">Mobile:</div><div class="val" id="mobile">--</div></div>
+          <div class="row"><div class="label">Date:</div><div class="val" id="date">--</div></div>
+          <div class="row"><div class="label">Status:</div><div class="val"><span class="status-paid" id="status">--</span></div></div>
+          <div class="row">
+            <span class="member-badge" id="memberBadge">Select Member</span>
+            <span id="syncStatus" style="font-size:12px;margin-left:10px;background:#e0f2fe;padding:2px 8px;border-radius:10px;">⏳ Syncing...</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="dataAlert" class="alert">
+      Select a member from dropdown to view receipt. Data loads from Google Sheets in real-time.
+    </div>
+
+    <div id="loadingSection" class="loading">
+      <div class="spinner"></div>
+      <p>Loading data from Google Sheets...</p>
+    </div>
+
+    <div id="contentSection" style="display:none">
+      <div class="section-title">Payment History (October 2025 - September 2026)</div>
+
+      <div style="overflow:auto;border-radius:8px">
+        <table class="receipt" id="paymentsTable">
+          <thead>
+            <tr>
+              <th style="width:48px">Sr.</th>
+              <th>Name</th>
+              <th style="width:100px">Date</th>
+              <th style="width:90px">Month</th>
+              <th style="width:100px">Payment</th>
+              <th style="width:120px">Received By</th>
+              <th style="width:100px">Last Date</th>
+              <th style="width:80px;text-align:right">Points</th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <!-- Data will appear here -->
+          </tbody>
+          <tfoot>
+            <tr>
+              <td colspan="4" style="text-align:center;font-weight:800;padding:16px 10px">Total</td>
+              <td id="totalPaid" style="text-align:left;font-weight:800;padding:16px 10px;color:#059669">₹0</td>
+              <td colspan="2" style="text-align:right;padding:16px 10px;color:#dc2626">Pending Amount</td>
+              <td id="pendingVal" style="text-align:right;padding:16px 10px;color:#dc2626">₹0</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <div class="summaries">
+        <div class="card">
+          <h3>Financial Summary</h3>
+          <div class="summary-row">
+            <div>Total Paid:</div>
+            <div id="sumPaid" style="color:#059669;font-weight:700">₹0</div>
+          </div>
+          <div class="summary-row">
+            <div>Pending Amount:</div>
+            <div id="sumPending" style="color:#dc2626;font-weight:700">₹0</div>
+          </div>
+          <div class="summary-row">
+            <div>Target Amount:</div>
+            <div id="sumTarget" class="muted">₹1200</div>
+          </div>
+          <div class="summary-row">
+            <div>Completion:</div>
+            <div id="completion" style="color:#0b4da0;font-weight:800">0%</div>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3>Points Summary</h3>
+          <div class="points-big">
+            <div>🏆</div>
+            <div id="pointsTotal">0 Points</div>
+          </div>
+          <div style="height:10px;margin:16px 0 8px;background:#eef6f3;border-radius:999px;overflow:hidden">
+            <div id="prog" style="height:10px;background:linear-gradient(90deg,#10b981,#0b4da0);width:0%"></div>
+          </div>
+          <div class="progress-text">
+            <span>0 Points</span>
+            <span id="maxPoints">500 Points</span>
+          </div>
+          <div style="margin-top:12px;font-size:13px;color:#6b7280;text-align:center">
+            Get 500 points when all payments are completed!
+          </div>
+        </div>
+      </div>
+
+      <div class="note">
+        <strong>Note:</strong> Please deposit all pending payments. Additional 20 points will be awarded for payments made by the 5th of each month. — Committee
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ================================
+    // CONFIGURATION - यहाँ अपना Data डालो
+    // ================================
+    
+    // Google Sheets Configuration
+    const SPREADSHEET_ID = '1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw'; // अपना Spreadsheet ID डालो
+    const API_KEY = 'AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU'; // अपना API Key डालो
+    const SHEET_NAME = 'Sheet53'; // Sheet का नाम
+    
+    // Global Variables
+    let allMembers = [];
+    let currentMemberName = "";
+    let paymentData = [];
+    
+    // Member Database (अपने Members का Data यहाँ डालो)
+    const memberDatabase = {
+      "Rehan Khan": {
+        srno: "40",
+        mobile: "9412185821",
+        receiptNo: "AGM/2025/0016",
+        avatar: "https://anjumang.github.io/bareilly/img/team/rehan.png",
+        targetAmount: 1200
+      },
+      "Sajid Khan": {
+        srno: "41",
+        mobile: "9876543210",
+        receiptNo: "AGM/2025/0017",
+        avatar: "https://anjumang.github.io/bareilly/img/team/sajid.png",
+        targetAmount: 1200
+      },
+      "Mohsin": {
+        srno: "42",
+        mobile: "9876543211",
+        receiptNo: "AGM/2025/0018",
+        avatar: "https://anjumang.github.io/bareilly/img/team/mohsin.png",
+        targetAmount: 1200
+      }
+    };
+    
+    // DOM Elements
+    const tbody = document.getElementById('tbody');
+    const loadingSection = document.getElementById('loadingSection');
+    const contentSection = document.getElementById('contentSection');
+    const dataAlert = document.getElementById('dataAlert');
+    const syncStatus = document.getElementById('syncStatus');
+    const updateTime = document.getElementById('updateTime');
+    const memberSelect = document.getElementById('memberSelect');
+    
+    // ================================
+    // INITIALIZE PAGE
+    // ================================
+    document.addEventListener('DOMContentLoaded', function() {
+      // Set current date
+      const today = new Date();
+      const formattedDate = today.toLocaleDateString('en-GB');
+      document.getElementById('date').textContent = formattedDate;
+      document.getElementById('topDate').textContent = formattedDate;
+      
+      // Event Listeners
+      document.getElementById('refreshData').addEventListener('click', fetchAllData);
+      document.getElementById('downloadPdf').addEventListener('click', function(e) {
+        e.preventDefault();
+        window.print();
+      });
+      
+      memberSelect.addEventListener('change', function() {
+        if (this.value) {
+          currentMemberName = this.value;
+          loadMemberData(currentMemberName);
+        } else {
+          resetDisplay();
+        }
+      });
+      
+      // Load data initially
+      fetchAllData();
+      
+      // Auto-refresh every 5 minutes
+      setInterval(fetchAllData, 5 * 60 * 1000);
+    });
+    
+    // ================================
+    // FETCH ALL DATA FROM GOOGLE SHEETS
+    // ================================
+    async function fetchAllData() {
+      showLoading(true);
+      updateSyncStatus('⏳ Fetching data...', '#fef3c7');
+      
+      try {
+        const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${SHEET_NAME}?key=${API_KEY}`;
+        
+        const response = await fetch(url);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const result = await response.json();
+        
+        if (result.values && result.values.length > 0) {
+          processAllData(result.values);
+        } else {
+          throw new Error('No data found in sheet');
+        }
+        
+        updateSyncStatus('✅ Data loaded', '#d1fae5');
+        updateTime.textContent = new Date().toLocaleTimeString();
+        
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        showError(`Failed to load data: ${error.message}`);
+        updateSyncStatus('❌ Connection failed', '#fee2e2');
+        
+        // Fallback to example data
+        useExampleData();
+      }
+    }
+    
+    // ================================
+    // PROCESS ALL DATA
+    // ================================
+    function processAllData(sheetValues) {
+      // First row contains headers
+      const headers = sheetValues[0];
+      const rows = sheetValues.slice(1);
+      
+      // Find column indices
+      const nameIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('name'));
+      const dateIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('date'));
+      const monthIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('month'));
+      const paymentIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('payment'));
+      const receivedIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('received'));
+      const lastDateIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('last'));
+      const pointsIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('point'));
+      
+      // Store all data
+      allMembers = rows;
+      
+      // Extract unique member names for dropdown
+      const uniqueNames = [...new Set(rows.map(row => row[nameIndex]).filter(name => name && name.trim()))];
+      
+      // Populate dropdown
+      populateMemberDropdown(uniqueNames);
+      
+      showLoading(false);
+      
+      // If a member is already selected, reload their data
+      if (currentMemberName) {
+        loadMemberData(currentMemberName);
+      } else {
+        dataAlert.innerHTML = `✅ ${uniqueNames.length} members loaded. Select a member from dropdown to view receipt.`;
+      }
+    }
+    
+    // ================================
+    // POPULATE MEMBER DROPDOWN
+    // ================================
+    function populateMemberDropdown(names) {
+      memberSelect.innerHTML = '<option value="">Select Member</option>';
+      
+      names.sort().forEach(name => {
+        const option = document.createElement('option');
+        option.value = name;
+        option.textContent = name;
+        memberSelect.appendChild(option);
+      });
+    }
+    
+    // ================================
+    // LOAD SPECIFIC MEMBER DATA
+    // ================================
+    function loadMemberData(memberName) {
+      if (!allMembers || allMembers.length === 0) {
+        showError('No data available. Please refresh.');
+        return;
+      }
+      
+      showLoading(true);
+      
+      // Find column indices (assuming same structure as before)
+      const headers = ['Name', 'Date', 'Month', 'Payment', 'Received By', 'Last Date', 'Points'];
+      const nameIndex = 0;
+      const dateIndex = 1;
+      const monthIndex = 2;
+      const paymentIndex = 3;
+      const receivedIndex = 4;
+      const lastDateIndex = 5;
+      const pointsIndex = 6;
+      
+      // Filter data for current member
+      paymentData = allMembers
+        .filter(row => row[nameIndex] && row[nameIndex].toString().trim() === memberName)
+        .map((row, index) => ({
+          sr: index + 1,
+          name: row[nameIndex] || '',
+          date: row[dateIndex] || '',
+          month: row[monthIndex] || '',
+          payment: parseFloat(row[paymentIndex]) || 0,
+          receivedBy: row[receivedIndex] || '',
+          lastDate: row[lastDateIndex] || '',
+          points: parseInt(row[pointsIndex]) || 0
+        }));
+      
+      if (paymentData.length === 0) {
+        showError(`No payment records found for ${memberName}`);
+        return;
+      }
+      
+      // Update member info
+      const memberInfo = memberDatabase[memberName] || {
+        srno: "N/A",
+        mobile: "N/A",
+        receiptNo: "AGM/2025/XXXX",
+        avatar: "https://via.placeholder.com/120",
+        targetAmount: 1200
+      };
+      
+      document.getElementById('name').textContent = memberName;
+      document.getElementById('srno').textContent = memberInfo.srno;
+      document.getElementById('mobile').textContent = memberInfo.mobile;
+      document.getElementById('receiptNo').textContent = memberInfo.receiptNo;
+      document.getElementById('avatarImg').src = memberInfo.avatar;
+      document.getElementById('memberBadge').textContent = "Verified Member";
+      
+      // Update display
+      updateDisplay();
+      showLoading(false);
+    }
+    
+    // ================================
+    // UPDATE TABLE AND CALCULATIONS
+    // ================================
+    function updateDisplay() {
+      // Clear existing table rows
+      tbody.innerHTML = '';
+      
+      let totalPaid = 0;
+      let totalPoints = 0;
+      
+      // Add rows to table
+      paymentData.forEach(item => {
+        const tr = document.createElement('tr');
+        
+        tr.innerHTML = `
+          <td>${item.sr}</td>
+          <td>${item.name}</td>
+          <td>${item.date}</td>
+          <td>${item.month}</td>
+          <td>${item.payment > 0 ? `<span style="color:#059669;font-weight:700">₹${item.payment}</span>` : "<span style='color:#9ca3af'>—</span>"}</td>
+          <td>${item.receivedBy}</td>
+          <td>${item.lastDate}</td>
+          <td style="text-align:right;font-weight:700;color:#0b4da0">${item.points}</td>
+        `;
+        
+        tbody.appendChild(tr);
+        
+        totalPaid += item.payment;
+        totalPoints += item.points;
+      });
+      
+      // Get member info
+      const memberInfo = memberDatabase[currentMemberName] || { targetAmount: 1200 };
+      const targetAmount = memberInfo.targetAmount || 1200;
+      const maxPoints = 500;
+      
+      // Calculate statistics
+      const pending = Math.max(0, targetAmount - totalPaid);
+      const completion = Math.round((totalPaid / targetAmount) * 100);
+      const pointsPercentage = Math.round((totalPoints / maxPoints) * 100);
+      
+      // Update DOM values
+      document.getElementById('totalPaid').textContent = "₹" + totalPaid;
+      document.getElementById('pendingVal').textContent = pending === 0 ? "₹0" : "₹" + pending;
+      
+      document.getElementById('sumPaid').textContent = "₹" + totalPaid;
+      document.getElementById('sumPending').textContent = pending === 0 ? "₹0" : "₹" + pending;
+      document.getElementById('sumTarget').textContent = "₹" + targetAmount;
+      document.getElementById('completion').textContent = completion + "%";
+      
+      document.getElementById('pointsTotal').textContent = totalPoints + " Points";
+      document.getElementById('maxPoints').textContent = maxPoints + " Points";
+      
+      // Update progress bars
+      document.getElementById('prog').style.width = Math.min(100, completion) + "%";
+      
+      // Update status
+      const statusElement = document.getElementById('status');
+      if (completion === 100) {
+        statusElement.textContent = "Payment Complete";
+        statusElement.style.color = "#059669";
+      } else if (completion >= 50) {
+        statusElement.textContent = "Active Member";
+        statusElement.style.color = "#0b4da0";
+      } else {
+        statusElement.textContent = "Payment Pending";
+        statusElement.style.color = "#dc2626";
+      }
+      
+      // Show content
+      contentSection.style.display = 'block';
+      dataAlert.innerHTML = `
+        ✅ Showing receipt for ${currentMemberName}. ${paymentData.length} payment records found.
+        <button class="btn refresh-btn" onclick="fetchAllData()">Refresh Data</button>
+      `;
+    }
+    
+    // ================================
+    // HELPER FUNCTIONS
+    // ================================
+    function showLoading(show) {
+      if (show) {
+        loadingSection.style.display = 'block';
+        contentSection.style.display = 'none';
+      } else {
+        loadingSection.style.display = 'none';
+      }
+    }
+    
+    function showError(message) {
+      dataAlert.className = 'alert error-alert';
+      dataAlert.innerHTML = `
+        ⚠️ ${message}
+        <button class="btn refresh-btn" onclick="fetchAllData()">Try Again</button>
+      `;
+      showLoading(false);
+    }
+    
+    function resetDisplay() {
+      document.getElementById('name').textContent = "Select a member";
+      document.getElementById('srno').textContent = "--";
+      document.getElementById('mobile').textContent = "--";
+      document.getElementById('memberBadge').textContent = "Select Member";
+      document.getElementById('status').textContent = "--";
+      document.getElementById('avatarImg').src = "https://via.placeholder.com/120";
+      contentSection.style.display = 'none';
+      tbody.innerHTML = '';
+    }
+    
+    function updateSyncStatus(text, color) {
+      syncStatus.textContent = text;
+      syncStatus.style.background = color || '#e0f2fe';
+    }
+    
+    function useExampleData() {
+      // Example data for demo
+      const exampleMembers = ["Rehan Khan", "Sajid Khan", "Mohsin"];
+      populateMemberDropdown(exampleMembers);
+      
+      dataAlert.innerHTML = `
+        ⚠️ Using example data. Configure Google Sheets to see real data.
+        <button class="btn refresh-btn" onclick="fetchAllData()">Try Again</button>
+      `;
+      showLoading(false);
+    }
+  </script>
+</body>
+</html>
