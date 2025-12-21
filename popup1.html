@@ -2,27 +2,30 @@
 <html lang="en">
 
 <head>
-    <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-    <meta http-equiv="Pragma" content="no-cache">
-    <meta http-equiv="Expires" content="0">
-
     <title>Anjuman Ghulaman-E-Mustafa</title>
 
     <!-- Bootstrap CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/custom.css" rel="stylesheet">
-    <link href="css/responsive.css" rel="stylesheet">
-    <link href="css/font.css" rel="stylesheet">
-    <link rel="shortcut icon" href="img/icons/favicon.ico" type="image/x-icon">
-
-    <!-- Modal/Popup CSS -->
+    
+    <!-- Modal CSS -->
     <style>
+        .member-link {
+            color: #0b4da0;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        
+        .member-link:hover {
+            color: #083a7f;
+            text-decoration: underline;
+        }
+        
         /* Modal Styles */
-        .receipt-modal {
+        .modal {
             display: none;
             position: fixed;
             z-index: 9999;
@@ -31,77 +34,48 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.8);
-            overflow: auto;
         }
-
+        
         .modal-content {
             background-color: #fefefe;
             margin: 2% auto;
             padding: 0;
             border: none;
             width: 95%;
-            max-width: 1200px;
             height: 90vh;
             border-radius: 12px;
-            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.3);
             overflow: hidden;
         }
-
+        
+        .modal-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
         .close-modal {
             position: absolute;
-            right: 20px;
+            right: 25px;
             top: 15px;
             color: white;
-            font-size: 30px;
+            font-size: 35px;
             font-weight: bold;
             cursor: pointer;
             z-index: 10000;
-            background: rgba(0, 0, 0, 0.5);
+            background: rgba(0,0,0,0.5);
             width: 40px;
             height: 40px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s;
+            line-height: 1;
         }
-
+        
         .close-modal:hover {
-            background: rgba(0, 0, 0, 0.8);
-            transform: scale(1.1);
-        }
-
-        .modal-frame {
-            width: 100%;
-            height: 100%;
-            border: none;
-            border-radius: 12px;
-        }
-
-        .member-link {
-            color: #0b4da0;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-decoration: none;
-            border-bottom: 1px dotted #0b4da0;
-        }
-
-        .member-link:hover {
-            color: #083a7f;
-            border-bottom: 1px solid #083a7f;
-        }
-
-        @media (max-width: 768px) {
-            .modal-content {
-                width: 98%;
-                height: 95vh;
-                margin: 1% auto;
-            }
+            background: rgba(0,0,0,0.8);
         }
     </style>
-
-    <!-- Google API Script -->
-    <script src="https://apis.google.com/js/api.js"></script>
 </head>
 
 <body>
@@ -148,11 +122,11 @@
         </div>
     </main>
 
-    <!-- Receipt Modal -->
-    <div id="receiptModal" class="receipt-modal">
+    <!-- Modal/Popup for Receipt -->
+    <div id="receiptModal" class="modal">
         <span class="close-modal">&times;</span>
         <div class="modal-content">
-            <iframe id="receiptFrame" class="modal-frame" src="about:blank"></iframe>
+            <iframe id="receiptFrame" class="modal-iframe" src="about:blank"></iframe>
         </div>
     </div>
 
@@ -172,7 +146,6 @@
     <!-- JavaScript Files -->
     <script src="js/jquery-3.6.0.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
-    <script src="js/custom-jQuery.js"></script>
 
     <script>
         // ✅ Google Sheets API Configuration
@@ -188,33 +161,18 @@
 
         // Modal Functions
         function openReceiptModal(memberName) {
-            // Create receipt.html with member parameter
-            const receiptHTML = createReceiptHTML();
-            
-            // Create a blob URL for the receipt page
-            const blob = new Blob([receiptHTML], { type: 'text/html' });
-            const url = URL.createObjectURL(blob);
-            
-            // Set iframe source
-            receiptFrame.src = url;
+            // Set the receipt page URL with member parameter
+            receiptFrame.src = `receipt.html?member=${encodeURIComponent(memberName)}`;
             
             // Show modal
             modal.style.display = 'block';
             document.body.style.overflow = 'hidden'; // Prevent scrolling
-            
-            // Store member name for use in iframe
-            sessionStorage.setItem('selectedMember', memberName);
         }
 
         function closeModal() {
             modal.style.display = 'none';
             document.body.style.overflow = 'auto'; // Restore scrolling
-            
-            // Clean up blob URL
-            if (receiptFrame.src.startsWith('blob:')) {
-                URL.revokeObjectURL(receiptFrame.src);
-            }
-            receiptFrame.src = 'about:blank';
+            receiptFrame.src = 'about:blank'; // Unload the iframe
         }
 
         // Event Listeners for Modal
@@ -232,1060 +190,12 @@
             }
         });
 
-        // ✅ Function to create receipt HTML with embedded member parameter
-        function createReceiptHTML() {
-            const selectedMember = sessionStorage.getItem('selectedMember');
-            
-            // Modified version of your second code with auto-selection
-            return `<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Anjuman Membership Receipt - ${selectedMember || 'Member'}</title>
-  <style>
-    :root{
-      --green-1:#0f8a63;
-      --green-2:#0a6b4f;
-      --accent:#10b981;
-      --muted:#f3f7f9;
-      --blue:#0b4da0;
-      --card-bg: #ffffff;
-      --shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
-      --radius: 12px;
-      font-family: "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
-    }
-    *{box-sizing:border-box}
-    body{
-      margin:0;
-      background:linear-gradient(180deg,#eef6f4 0%, #f9fcfd 100%);
-      color:#1f2937;
-      -webkit-font-smoothing:antialiased;
-      -moz-osx-font-smoothing:grayscale;
-      overflow-x: hidden;
-    }
-    
-    .container{
-      max-width:900px;
-      margin:28px auto;
-      padding:18px;
-    }
-
-    /* Header */
-    .header{
-      background:linear-gradient(90deg,var(--green-1),var(--green-2));
-      color:white;
-      border-radius:12px;
-      padding:20px;
-      box-shadow:var(--shadow);
-      position: relative;
-    }
-    
-    .header .top{
-      display:flex;
-      gap:16px;
-      align-items:center;
-      flex-wrap: wrap;
-    }
-    
-    .logo{
-      width:64px;
-      height:64px;
-      border-radius:10px;
-      background:#073b2a;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      overflow:hidden;
-      padding:4px;
-      box-sizing:border-box;
-      border:2px solid rgba(255,255,255,0.2);
-    }
-    
-    .logo img{
-      width:100%;
-      height:100%;
-      object-fit:contain;
-      border-radius:6px;
-    }
-    
-    .title{
-      flex:1;
-      min-width: 250px;
-    }
-    
-    .title h1{
-      margin:0;
-      font-size:20px;
-      letter-spacing:0.2px;
-    }
-    
-    .title p{
-      margin:4px 0 0;
-      font-size:13px;
-      opacity:0.95;
-    }
-
-    /* Hide dropdown in popup mode */
-    .custom-dropdown {
-      display: none;
-    }
-
-    /* Close button for popup */
-    .popup-close-btn {
-      position: absolute;
-      top: 15px;
-      right: 15px;
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      border: none;
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      cursor: pointer;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.3s;
-      z-index: 10;
-    }
-    
-    .popup-close-btn:hover {
-      background: rgba(255, 255, 255, 0.3);
-      transform: scale(1.1);
-    }
-
-    /* profile card */
-    .profile{
-      margin-top:16px;
-      background:var(--card-bg);
-      border-radius:10px;
-      padding:16px;
-      display:flex;
-      gap:18px;
-      align-items:center;
-      box-shadow:var(--shadow);
-    }
-    
-    .avatar{
-      width:120px;
-      height:120px;
-      border-radius:50%;
-      overflow:hidden;
-      flex:0 0 120px;
-      background:#f2f5f6;
-      border:4px solid var(--card-bg);
-      box-shadow:0 4px 12px rgba(0,0,0,0.15);
-    }
-    
-    .avatar img{
-      width:100%;
-      height:100%;
-      object-fit:cover;
-      display:block;
-    }
-    
-    .info{flex:1}
-    
-    .info .row{
-      display:flex;
-      gap:12px;
-      align-items:center;
-      margin-bottom:8px;
-    }
-    
-    .info .label{
-      min-width:100px;
-      color:#374151;
-      font-weight:700;
-      font-size:15px;
-    }
-    
-    .info .val{
-      font-weight:600;
-      color:#0b1220;
-      font-size:16px;
-    }
-
-    /* Member badge */
-    .member-badge{
-      display:inline-flex;
-      align-items:center;
-      gap:6px;
-      background:#f0f9ff;
-      color:#0369a1;
-      padding:4px 12px;
-      border-radius:20px;
-      font-weight:700;
-      font-size:14px;
-      margin-top:4px;
-      border:1px solid #bae6fd;
-    }
-    
-    .member-badge:before{
-      content:"👤";
-      font-size:14px;
-    }
-
-    /* alert */
-    .alert{
-      margin:14px 0;
-      padding:12px 14px;
-      background:#fff4d9;
-      border-left:4px solid #ffd27a;
-      border-radius:8px;
-      font-size:13px;
-      color:#6b3f00;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    
-    .alert:before{
-      content:"ℹ️";
-      font-size:16px;
-    }
-
-    /* table section */
-    .section-title{
-      display:flex;
-      align-items:center;
-      gap:10px;
-      font-weight:700;
-      color:#0b4da0;
-      margin:16px 0 12px;
-      padding:8px 0;
-      border-bottom:2px solid #eef3f6;
-    }
-    
-    .section-title:before{
-      content:"📋";
-      font-size:18px;
-    }
-    
-    table.receipt{
-      width:100%;
-      border-collapse:collapse;
-      background:var(--card-bg);
-      border-radius:8px;
-      overflow:hidden;
-      box-shadow:var(--shadow);
-    }
-    
-    table.receipt thead th{
-      background:linear-gradient(180deg,#0b4da0,#083a7f);
-      color:#fff;
-      padding:14px 12px;
-      text-align:left;
-      font-weight:700;
-      font-size:14px;
-      border-bottom:2px solid rgba(255,255,255,0.06);
-    }
-    
-    table.receipt tbody td{
-      padding:12px 10px;
-      border-bottom:1px solid #eef3f6;
-      font-size:14px;
-      color:#263238;
-    }
-    
-    table.receipt tbody tr:nth-child(even){
-      background: #fbfeff;
-    }
-    
-    table.receipt tbody tr:hover{
-      background:#f0f8ff;
-    }
-    
-    table.receipt tfoot td{
-      background:#f8fafc;
-      font-weight:700;
-      color:#1e293b;
-    }
-
-    /* summary cards */
-    .summaries{
-      display:flex;
-      gap:16px;
-      margin-top:20px;
-      flex-wrap:wrap;
-    }
-    
-    .card{
-      background:var(--card-bg);
-      padding:20px;
-      border-radius:12px;
-      flex:1;
-      min-width:220px;
-      box-shadow:var(--shadow);
-      border-top:4px solid var(--blue);
-      transition:transform 0.3s ease, box-shadow 0.3s ease;
-    }
-    
-    .card:hover{
-      transform:translateY(-4px);
-      box-shadow:0 10px 25px rgba(15,23,42,0.12);
-    }
-    
-    .card h3{
-      margin:0 0 12px;
-      font-size:17px;
-      color:#0b4da0;
-      display:flex;
-      align-items:center;
-      gap:8px;
-    }
-    
-    .card h3:before{
-      content:"💰";
-      font-size:18px;
-    }
-    
-    .card:nth-child(2) h3:before{
-      content:"⭐";
-    }
-    
-    .summary-row{
-      display:flex;
-      justify-content:space-between;
-      padding:8px 0;
-      font-weight:600;
-      border-bottom:1px dashed #e5e7eb;
-    }
-    
-    .summary-row:last-child{
-      border-bottom:none;
-    }
-    
-    .points-big{
-      display:flex;
-      align-items:center;
-      gap:12px;
-      font-size:24px;
-      font-weight:800;
-      color:#0b4da0;
-      margin-bottom:12px;
-    }
-    
-    .progress-text{
-      display:flex;
-      justify-content:space-between;
-      font-size:13px;
-      color:#6b7280;
-      margin-top:8px;
-    }
-
-    /* footer note */
-    .note{
-      margin-top:20px;
-      padding:14px;
-      background:#fff;
-      border-radius:8px;
-      text-align:center;
-      color:#6b7280;
-      font-size:14px;
-      box-shadow:var(--shadow);
-      border-left:4px solid var(--accent);
-      font-weight:500;
-    }
-
-    /* loading spinner */
-    .loading{
-      text-align:center;
-      padding:40px;
-      color:#6b7280;
-    }
-    
-    .spinner{
-      width:50px;
-      height:50px;
-      border:5px solid #f3f3f3;
-      border-top:5px solid var(--green-1);
-      border-radius:50%;
-      animation:spin 1s linear infinite;
-      margin:0 auto 20px;
-    }
-    
-    @keyframes spin{
-      0%{transform:rotate(0deg)}
-      100%{transform:rotate(360deg)}
-    }
-
-    /* responsive */
-    @media (max-width: 720px){
-      .container{padding:12px}
-      .header{padding:16px}
-      .header .top{
-        flex-direction: column;
-        gap: 12px;
-      }
-      
-      .logo{width:56px;height:56px}
-      .title h1{font-size:18px}
-      .title p{font-size:12px}
-      
-      .profile{
-        flex-direction:column;
-        text-align:center;
-        gap:12px;
-      }
-      
-      .info .row{
-        flex-direction:column;
-        gap:4px;
-        align-items:center;
-      }
-      
-      .info .label{min-width:auto}
-      
-      table.receipt{
-        font-size:13px;
-      }
-      
-      table.receipt thead th,
-      table.receipt tbody td{
-        padding:10px 6px;
-        font-size:13px;
-      }
-      
-      .avatar{
-        width:100px;
-        height:100px;
-        flex:0 0 100px;
-      }
-      
-      .card{
-        min-width:100%;
-      }
-      
-      .summaries{gap:12px}
-    }
-
-    @media print {
-      body{
-        background:#fff;
-      }
-      .container{
-        margin:0;
-        padding:0;
-        max-width:100%;
-      }
-      .header{
-        box-shadow:none;
-        border-radius:0;
-        border-bottom:2px solid var(--green-2);
-      }
-      .popup-close-btn {
-        display: none;
-      }
-      .card{
-        box-shadow:none;
-        border:1px solid #e5e7eb;
-      }
-      table.receipt{
-        box-shadow:none;
-        border:1px solid #e5e7eb;
-      }
-      .note{
-        box-shadow:none;
-        border:1px solid #e5e7eb;
-      }
-    }
-
-    /* small utilities */
-    .muted{color:#6b7280;font-weight:600}
-    
-    .green-pill{
-      background:#ecfdf5;
-      color:#059669;
-      padding:4px 10px;
-      border-radius:999px;
-      font-weight:700;
-      font-size:13px;
-    }
-    
-    .btn{
-      display:inline-block;
-      padding:10px 16px;
-      border-radius:8px;
-      background:var(--accent);
-      color:white;
-      font-weight:700;
-      text-decoration:none;
-      border:none;
-      cursor:pointer;
-      transition:all 0.3s ease;
-      font-size:14px;
-      box-shadow:0 4px 6px rgba(16, 185, 129, 0.2);
-    }
-    
-    .btn:hover{
-      background:#0da271;
-      transform:translateY(-2px);
-      box-shadow:0 6px 12px rgba(16, 185, 129, 0.3);
-    }
-    
-    .btn:active{
-      transform:translateY(0);
-    }
-    
-    .btn-secondary{
-      background:#0b4da0;
-      box-shadow:0 4px 6px rgba(11, 77, 160, 0.2);
-    }
-    
-    .btn-secondary:hover{
-      background:#083a7f;
-      box-shadow:0 6px 12px rgba(11, 77, 160, 0.3);
-    }
-    
-    .status-paid{
-      color:#059669;
-      font-weight:700;
-      display:inline-flex;
-      align-items:center;
-      gap:4px;
-    }
-    
-    .status-paid:before{
-      content:"✓";
-      background:#059669;
-      color:white;
-      width:18px;
-      height:18px;
-      border-radius:50%;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      font-size:12px;
-    }
-    
-    .error-alert{
-      background:#fee;
-      border-left:4px solid #f00;
-      color:#900;
-    }
-    
-    .error-alert:before{
-      content:"⚠️";
-    }
-    
-    .refresh-btn{
-      margin-left:10px;
-      padding:4px 12px;
-      font-size:12px;
-    }
-    
-    /* Popup specific styles */
-    .header .top > div:last-child {
-      width: 100%;
-      text-align: left;
-      margin-top: 10px;
-    }
-    
-    .btn{
-      margin-top: 5px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <button class="popup-close-btn" onclick="window.parent.closeModal()">&times;</button>
-      <div class="top">
-        <div class="logo">
-          <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="AGM Logo" id="logoImg">
-        </div>
-        <div class="title">
-          <h1>Anjuman Ghulamane Mustafa</h1>
-          <p>Official Membership Receipt - Bara Rabi al-Awwal Fund 1446-47 Hijri</p>
-          <div id="lastUpdated" style="font-size:11px;opacity:0.9;margin-top:4px">
-            Last updated: <span id="updateTime">Loading...</span>
-          </div>
-        </div>
-        <div style="text-align:left;width:100%">
-          <div style="margin-bottom:8px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start">
-            <button class="btn" id="downloadPdf">📥 Download Receipt</button>
-            <button class="btn btn-secondary" id="refreshData">🔄 Refresh</button>
-          </div>
-          <div style="font-size:13px;opacity:0.95;margin-top:5px">
-            <span style="display:block;margin-bottom:2px">Receipt No: <strong id="receiptNo">AGM/2025/0016</strong></span>
-            <span>Date: <strong id="topDate">${new Date().toLocaleDateString('en-GB')}</strong></span>
-          </div>
-        </div>
-      </div>
-
-      <!-- Profile Section -->
-      <div class="profile">
-        <div class="avatar">
-          <img id="avatarImg" src="https://via.placeholder.com/120" alt="Member Photo">
-        </div>
-        <div class="info">
-          <div class="row"><div class="label">Member:</div><div class="val" id="name">Loading...</div></div>
-          <div class="row"><div class="label">Serial No:</div><div class="val" id="srno">--</div></div>
-          <div class="row"><div class="label">Mobile:</div><div class="val" id="mobile">--</div></div>
-          <div class="row"><div class="label">Date:</div><div class="val" id="date">${new Date().toLocaleDateString('en-GB')}</div></div>
-          <div class="row"><div class="label">Status:</div><div class="val"><span class="status-paid" id="status">--</span></div></div>
-          <div class="row">
-            <span class="member-badge" id="memberBadge">Member</span>
-            <span id="syncStatus" style="font-size:12px;margin-left:10px;background:#e0f2fe;padding:2px 8px;border-radius:10px;">⏳ Loading...</span>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div id="dataAlert" class="alert">
-      Loading member data...
-    </div>
-
-    <div id="loadingSection" class="loading">
-      <div class="spinner"></div>
-      <p>Loading data from Google Sheets...</p>
-    </div>
-
-    <div id="contentSection" style="display:none">
-      <div class="section-title">Payment History (October 2025 - September 2026)</div>
-
-      <div style="overflow:auto;border-radius:8px">
-        <table class="receipt" id="paymentsTable">
-          <thead>
-            <tr>
-              <th style="width:48px">Sr.</th>
-              <th>Name</th>
-              <th style="width:100px">Date</th>
-              <th style="width:90px">Month</th>
-              <th style="width:100px">Payment</th>
-              <th style="width:120px">Received By</th>
-              <th style="width:100px">Last Date</th>
-              <th style="width:80px;text-align:right">Points</th>
-            </tr>
-          </thead>
-          <tbody id="tbody">
-            <!-- Data will appear here -->
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colspan="4" style="text-align:center;font-weight:800;padding:16px 10px">Total</td>
-              <td id="totalPaid" style="text-align:left;font-weight:800;padding:16px 10px;color:#059669">₹0</td>
-              <td colspan="2" style="text-align:right;padding:16px 10px;color:#dc2626">Pending Amount</td>
-              <td id="pendingVal" style="text-align:right;padding:16px 10px;color:#dc2626">₹0</td>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-
-      <div class="summaries">
-        <div class="card">
-          <h3>Financial Summary</h3>
-          <div class="summary-row">
-            <div>Total Paid:</div>
-            <div id="sumPaid" style="color:#059669;font-weight:700">₹0</div>
-          </div>
-          <div class="summary-row">
-            <div>Pending Amount:</div>
-            <div id="sumPending" style="color:#dc2626;font-weight:700">₹0</div>
-          </div>
-          <div class="summary-row">
-            <div>Target Amount:</div>
-            <div id="sumTarget" class="muted">₹1200</div>
-          </div>
-          <div class="summary-row">
-            <div>Completion:</div>
-            <div id="completion" style="color:#0b4da0;font-weight:800">0%</div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3>Points Summary</h3>
-          <div class="points-big">
-            <div>🏆</div>
-            <div id="pointsTotal">0 Points</div>
-          </div>
-          <div style="height:10px;margin:16px 0 8px;background:#eef6f3;border-radius:999px;overflow:hidden">
-            <div id="prog" style="height:10px;background:linear-gradient(90deg,#10b981,#0b4da0);width:0%"></div>
-          </div>
-          <div class="progress-text">
-            <span>0 Points</span>
-            <span id="maxPoints">500 Points</span>
-          </div>
-          <div style="margin-top:12px;font-size:13px;color:#6b7280;text-align:center">
-            Get 500 points when all payments are completed!
-          </div>
-        </div>
-      </div>
-
-      <div class="note">
-        <strong>Note:</strong> Please deposit all pending payments. Additional 20 points will be awarded for payments made by the 5th of each month. — Committee
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // ================================
-    // CONFIGURATION
-    // ================================
-    
-    // Google Sheets Configuration
-    const SPREADSHEET_ID = '1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw';
-    const API_KEY = 'AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU';
-    const PAYMENT_SHEET_NAME = 'Sheet1!A2:D'; // Payment data sheet
-    const MEMBER_SHEET_NAME = 'Sheet1';   // Member info sheet
-    
-    // Global Variables
-    let allPaymentData = [];  // For payment data
-    let memberDatabase = {};  // Will be populated from Google Sheets
-    let currentMemberName = "${selectedMember || ''}";
-    let paymentData = [];
-    
-    // DOM Elements
-    const tbody = document.getElementById('tbody');
-    const loadingSection = document.getElementById('loadingSection');
-    const contentSection = document.getElementById('contentSection');
-    const dataAlert = document.getElementById('dataAlert');
-    const syncStatus = document.getElementById('syncStatus');
-    const updateTime = document.getElementById('updateTime');
-    
-    // ================================
-    // INITIALIZE PAGE
-    // ================================
-    document.addEventListener('DOMContentLoaded', function() {
-      // Event Listeners
-      document.getElementById('refreshData').addEventListener('click', fetchAllData);
-      document.getElementById('downloadPdf').addEventListener('click', function(e) {
-        e.preventDefault();
-        window.print();
-      });
-      
-      // Load data initially
-      fetchAllData();
-      
-      // Auto-refresh every 5 minutes
-      setInterval(fetchAllData, 5 * 60 * 1000);
-    });
-    
-    // ================================
-    // FETCH ALL DATA FROM GOOGLE SHEETS
-    // ================================
-    async function fetchAllData() {
-      showLoading(true);
-      updateSyncStatus('⏳ Fetching data...', '#fef3c7');
-      
-      try {
-        // Fetch payment data and member data in parallel
-        const [paymentResult, memberResult] = await Promise.all([
-          fetchGoogleSheetData(PAYMENT_SHEET_NAME),
-          fetchGoogleSheetData(MEMBER_SHEET_NAME)
-        ]);
-        
-        // Process payment data
-        if (paymentResult.values && paymentResult.values.length > 0) {
-          processPaymentData(paymentResult.values);
-        } else {
-          throw new Error('No payment data found');
-        }
-        
-        // Process member data
-        if (memberResult.values && memberResult.values.length > 0) {
-          processMemberData(memberResult.values);
-        } else {
-          // If no member sheet, try to extract member info from payment data
-          extractMembersFromPaymentData(paymentResult.values);
-        }
-        
-        updateSyncStatus('✅ Data loaded', '#d1fae5');
-        updateTime.textContent = new Date().toLocaleTimeString();
-        
-        showLoading(false);
-        
-        // If currentMemberName is set, load their data
-        if (currentMemberName && memberDatabase[currentMemberName]) {
-          loadMemberData(currentMemberName);
-          dataAlert.innerHTML = \`✅ Showing receipt for <strong>\${currentMemberName}</strong>\`;
-        } else if (currentMemberName) {
-          // Member not found in database
-          showError(\`Member "\${currentMemberName}" not found in database.\`);
-        } else {
-          dataAlert.innerHTML = \`✅ \${Object.keys(memberDatabase).length} members loaded.\`;
-        }
-        
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        showError(\`Failed to load data: \${error.message}\`);
-        updateSyncStatus('❌ Connection failed', '#fee2e2');
-        showLoading(false);
-      }
-    }
-    
-    // ================================
-    // FETCH DATA FROM GOOGLE SHEETS
-    // ================================
-    async function fetchGoogleSheetData(sheetName) {
-      const url = \`https://sheets.googleapis.com/v4/spreadsheets/\${SPREADSHEET_ID}/values/\${sheetName}?key=\${API_KEY}\`;
-      
-      const response = await fetch(url);
-      
-      if (!response.ok) {
-        throw new Error(\`HTTP error! status: \${response.status} for sheet: \${sheetName}\`);
-      }
-      
-      return await response.json();
-    }
-    
-    // ================================
-    // PROCESS PAYMENT DATA (Sheet53)
-    // ================================
-    function processPaymentData(sheetValues) {
-      // First row contains headers
-      const headers = sheetValues[0];
-      const rows = sheetValues.slice(1);
-      
-      // Find column indices dynamically
-      const nameIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('name'));
-      const dateIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('date'));
-      const monthIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('month'));
-      const paymentIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('payment'));
-      const receivedIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('received'));
-      const lastDateIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('last'));
-      const pointsIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('point'));
-      
-      // Store all payment data
-      allPaymentData = rows.map((row, index) => ({
-        sr: index + 1,
-        name: row[nameIndex] || '',
-        date: row[dateIndex] || '',
-        month: row[monthIndex] || '',
-        payment: parseFloat(row[paymentIndex]) || 0,
-        receivedBy: row[receivedIndex] || '',
-        lastDate: row[lastDateIndex] || '',
-        points: parseInt(row[pointsIndex]) || 0
-      }));
-    }
-    
-    // ================================
-    // PROCESS MEMBER DATA FROM SHEET1
-    // ================================
-    function processMemberData(sheetValues) {
-      memberDatabase = {}; // Reset member database
-      
-      // First row contains headers
-      const headers = sheetValues[0];
-      const rows = sheetValues.slice(1);
-      
-      // Process each row according to your Sheet1 structure
-      rows.forEach(row => {
-        // Column indices (0-based)
-        // A=0, B=1, C=2, D=3, E=4, F=5, G=6
-        const nameIndex = 0;     // Column A: Name
-        const phoneIndex = 1;    // Column B: Phone
-        const imageIndex = 3;    // Column D: Image URL
-        const srnoIndex = 4;     // Column E: Serial No
-        const receiptIndex = 5;  // Column F: Receipt No
-        const targetIndex = 6;   // Column G: Target Amount
-        
-        const memberName = (row[nameIndex] || '').toString().trim();
-        
-        if (memberName) {
-          // Handle image URL - if empty, use default
-          let imageUrl = (row[imageIndex] || '').toString().trim();
-          if (!imageUrl) {
-            const initial = memberName.charAt(0).toUpperCase();
-            imageUrl = \`https://via.placeholder.com/120/0b4da0/ffffff?text=\${initial}\`;
-          }
-          
-          memberDatabase[memberName] = {
-            srno: (row[srnoIndex] || '').toString().trim(),
-            mobile: (row[phoneIndex] || '').toString().trim(),
-            receiptNo: (row[receiptIndex] || '').toString().trim(),
-            avatar: imageUrl,
-            targetAmount: parseFloat(row[targetIndex]) || 1200
-          };
-        }
-      });
-    }
-    
-    // ================================
-    // EXTRACT MEMBER INFO FROM PAYMENT DATA (FALLBACK)
-    // ================================
-    function extractMembersFromPaymentData(sheetValues) {
-      memberDatabase = {}; // Reset member database
-      
-      const headers = sheetValues[0];
-      const rows = sheetValues.slice(1);
-      
-      const nameIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('name'));
-      
-      // Extract unique member names
-      const uniqueNames = [...new Set(rows.map(row => row[nameIndex]).filter(name => name && name.toString().trim()))];
-      
-      // Create basic member info
-      uniqueNames.forEach((name, index) => {
-        const initial = name.charAt(0).toUpperCase();
-        memberDatabase[name] = {
-          srno: (index + 1).toString(),
-          mobile: "N/A",
-          receiptNo: \`AGM/2025/\${(index + 1000).toString().padStart(4, '0')}\`,
-          avatar: \`https://via.placeholder.com/120/0b4da0/ffffff?text=\${initial}\`,
-          targetAmount: 1200
-        };
-      });
-    }
-    
-    // ================================
-    // LOAD SPECIFIC MEMBER DATA
-    // ================================
-    function loadMemberData(memberName) {
-      if (!allPaymentData || allPaymentData.length === 0) {
-        showError('No payment data available. Please refresh.');
-        return;
-      }
-      
-      showLoading(true);
-      
-      // Filter data for current member
-      paymentData = allPaymentData.filter(item => 
-        item.name && item.name.toString().trim() === memberName
-      );
-      
-      if (paymentData.length === 0) {
-        showError(\`No payment records found for \${memberName}\`);
-        showLoading(false);
-        return;
-      }
-      
-      // Update member info from memberDatabase
-      const memberInfo = memberDatabase[memberName];
-      
-      if (!memberInfo) {
-        showError(\`Member info not found for \${memberName}\`);
-        showLoading(false);
-        return;
-      }
-      
-      document.getElementById('name').textContent = memberName;
-      document.getElementById('srno').textContent = memberInfo.srno || "N/A";
-      document.getElementById('mobile').textContent = memberInfo.mobile || "N/A";
-      document.getElementById('receiptNo').textContent = memberInfo.receiptNo || \`AGM/2025/XXXX\`;
-      document.getElementById('avatarImg').src = memberInfo.avatar;
-      document.getElementById('avatarImg').onerror = function() {
-        const initial = memberName.charAt(0).toUpperCase();
-        this.src = \`https://via.placeholder.com/120/0b4da0/ffffff?text=\${initial}\`;
-      };
-      document.getElementById('memberBadge').textContent = "Verified Member";
-      
-      // Update display
-      updateDisplay();
-      showLoading(false);
-    }
-    
-    // ================================
-    // UPDATE TABLE AND CALCULATIONS
-    // ================================
-    function updateDisplay() {
-      // Clear existing table rows
-      tbody.innerHTML = '';
-      
-      let totalPaid = 0;
-      let totalPoints = 0;
-      
-      // Add rows to table
-      paymentData.forEach(item => {
-        const tr = document.createElement('tr');
-        
-        tr.innerHTML = \`
-          <td>\${item.sr}</td>
-          <td>\${item.name}</td>
-          <td>\${item.date}</td>
-          <td>\${item.month}</td>
-          <td>\${item.payment > 0 ? \`<span style="color:#059669;font-weight:700">₹\${item.payment}</span>\` : "<span style='color:#9ca3af'>—</span>"}</td>
-          <td>\${item.receivedBy}</td>
-          <td>\${item.lastDate}</td>
-          <td style="text-align:right;font-weight:700;color:#0b4da0">\${item.points}</td>
-        \`;
-        
-        tbody.appendChild(tr);
-        
-        totalPaid += item.payment;
-        totalPoints += item.points;
-      });
-      
-      // Get member info
-      const memberInfo = memberDatabase[currentMemberName] || { targetAmount: 1200 };
-      const targetAmount = memberInfo.targetAmount || 1200;
-      const maxPoints = 500;
-      
-      // Calculate statistics
-      const pending = Math.max(0, targetAmount - totalPaid);
-      const completion = Math.round((totalPaid / targetAmount) * 100);
-      
-      // Update DOM values
-      document.getElementById('totalPaid').textContent = "₹" + totalPaid;
-      document.getElementById('pendingVal').textContent = pending === 0 ? "₹0" : "₹" + pending;
-      
-      document.getElementById('sumPaid').textContent = "₹" + totalPaid;
-      document.getElementById('sumPending').textContent = pending === 0 ? "₹0" : "₹" + pending;
-      document.getElementById('sumTarget').textContent = "₹" + targetAmount;
-      document.getElementById('completion').textContent = completion + "%";
-      
-      document.getElementById('pointsTotal').textContent = totalPoints + " Points";
-      document.getElementById('maxPoints').textContent = maxPoints + " Points";
-      
-      // Update progress bars
-      document.getElementById('prog').style.width = Math.min(100, completion) + "%";
-      
-      // Update status
-      const statusElement = document.getElementById('status');
-      if (completion === 100) {
-        statusElement.textContent = "Payment Complete";
-        statusElement.style.color = "#059669";
-      } else if (completion >= 50) {
-        statusElement.textContent = "Active Member";
-        statusElement.style.color = "#0b4da0";
-      } else {
-        statusElement.textContent = "Payment Pending";
-        statusElement.style.color = "#dc2626";
-      }
-      
-      // Show content
-      contentSection.style.display = 'block';
-    }
-    
-    // ================================
-    // HELPER FUNCTIONS
-    // ================================
-    function showLoading(show) {
-      if (show) {
-        loadingSection.style.display = 'block';
-        contentSection.style.display = 'none';
-      } else {
-        loadingSection.style.display = 'none';
-      }
-    }
-    
-    function showError(message) {
-      dataAlert.className = 'alert error-alert';
-      dataAlert.innerHTML = \`
-        ⚠️ \${message}
-        <button class="btn refresh-btn" onclick="fetchAllData()">Try Again</button>
-      \`;
-      showLoading(false);
-    }
-    
-    function updateSyncStatus(text, color) {
-      syncStatus.textContent = text;
-      syncStatus.style.background = color || '#e0f2fe';
-    }
-  </script>
-</body>
-</html>`;
-        }
-
+        // ✅ Load data from Google Sheets
         function loadData() {
             const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
             const container = document.getElementById('dynamic-data');
 
-            container.innerHTML = "<p>Loading data, please wait...</p>"; // Show loading message
+            container.innerHTML = "<div class='col-12 text-center'><p>Loading data, please wait...</p></div>";
 
             fetch(url)
                 .then(response => response.json())
@@ -1293,25 +203,25 @@
                     if (data.values) {
                         renderData(data.values);
                     } else {
-                        container.innerHTML = "<p>No data available.</p>";
+                        container.innerHTML = "<div class='col-12 text-center'><p>No data available.</p></div>";
                     }
                 })
                 .catch(error => {
                     console.error("Error fetching data:", error);
-                    container.innerHTML = "<p>Error fetching data. Please try again later.</p>";
+                    container.innerHTML = "<div class='col-12 text-center'><p>Error fetching data. Please try again later.</p></div>";
                 });
         }
 
         function renderData(data) {
             const container = document.getElementById('dynamic-data');
-            container.innerHTML = ""; // ✅ Clear previous data
+            container.innerHTML = ""; // Clear previous data
 
             if (!data || data.length === 0) {
-                container.innerHTML = "<p>No data available.</p>";
+                container.innerHTML = "<div class='col-12 text-center'><p>No data available.</p></div>";
                 return;
             }
 
-            // ✅ Convert points to number and sort in descending order
+            // Convert points to number and sort in descending order
             data.sort((a, b) => (parseInt(b[2]) || 0) - (parseInt(a[2]) || 0));
 
             const fragment = document.createDocumentFragment();
@@ -1319,25 +229,22 @@
             data.forEach((row, index) => {
                 const [name, phone, points, image] = row;
                 const rank = index + 1;
-
-                // Create clickable member name
                 const memberName = name || "N/A";
-                const safeMemberName = encodeURIComponent(memberName);
 
                 const card = document.createElement('div');
-                card.className = 'col-md-4 col-12';
+                card.className = 'col-md-4 col-12 mb-4';
                 card.innerHTML = `
                     <div class='cand-box'>
                         <figure>
-                            <img src='${image}' alt='Member Image' loading='lazy'>
+                            <img src='${image || "img/default-avatar.png"}' alt='Member Image' loading='lazy' style="width:100px;height:100px;border-radius:50%;object-fit:cover;">
                         </figure>
                         <div class='cand-info'>
                             <div class='status member'>
-                                <div style='text-transform: capitalize'>Rank #${rank}</div>
+                                <div>Rank #${rank}</div>
                                 <div>Total Points: <span>(${points || 0})</span></div>
                             </div>
                             <div class='nme-prty'>
-                                <h5><a href="javascript:void(0)" class="member-link" data-member="${safeMemberName}">${memberName}</a></h5>
+                                <h5><a href="javascript:void(0)" onclick="openReceiptModal('${memberName.replace(/'/g, "\\'")}')" class="member-link">${memberName}</a></h5>
                                 <h6>${phone || "N/A"}</h6>
                             </div>
                         </div>
@@ -1346,18 +253,6 @@
             });
 
             container.appendChild(fragment);
-
-            // Add click event listeners to member links
-            setTimeout(() => {
-                const memberLinks = document.querySelectorAll('.member-link');
-                memberLinks.forEach(link => {
-                    link.addEventListener('click', function(e) {
-                        e.preventDefault();
-                        const memberName = decodeURIComponent(this.getAttribute('data-member'));
-                        openReceiptModal(memberName);
-                    });
-                });
-            }, 100);
         }
 
         // ✅ Auto-refresh every 30 seconds
