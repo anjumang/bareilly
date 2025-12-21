@@ -1,572 +1,229 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Anjuman Ghulaman-E-Mustafa</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anjuman Ghulaman-E-Mustafa</title>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <style>
-        body {
-            background: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #0b4da0 0%, #083a7f 100%);
-            padding: 15px 0;
-        }
-        
-        .logo img {
-            height: 60px;
-        }
-        
-        .dis-info {
-            background: #fff3cd;
-            border-bottom: 3px solid #ffc107;
-            padding: 10px 0;
-        }
-        
-        .page-title {
-            text-align: center;
-            margin: 25px 0;
-            padding: 20px;
-            background: white;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-        
-        .page-title h1 {
-            color: #0b4da0;
-            font-weight: bold;
-        }
-        
-        .middle-head {
-            background: white;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 25px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-        
-        .round-status {
-            background: #10b981;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 50px;
-            font-weight: 600;
-        }
-        
-        .switch-list li {
-            background: #0b4da0;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 8px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .member-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            transition: transform 0.3s;
-            margin-bottom: 25px;
-            cursor: pointer;
-        }
-        
-        .member-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.15);
-        }
-        
-        .member-image {
-            height: 200px;
-            width: 100%;
-            object-fit: cover;
-        }
-        
-        .member-info {
-            padding: 20px;
-        }
-        
-        .rank-badge {
-            background: #0b4da0;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 8px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            display: inline-block;
-        }
-        
-        .member-name {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 5px;
-        }
-        
-        .member-phone {
-            color: #64748b;
-            font-size: 1rem;
-        }
-        
-        .footer {
-            background: #1e293b;
-            color: white;
-            padding: 25px 0;
-            margin-top: 40px;
-        }
-        
-        /* Modal Styles */
-        #receiptModal .modal-content {
-            border-radius: 15px;
-            overflow: hidden;
-        }
-        
-        .modal-header {
-            background: linear-gradient(135deg, #0b4da0 0%, #083a7f 100%);
-            color: white;
-        }
-        
-        #receiptIframe {
-            width: 100%;
-            height: 70vh;
-            border: none;
-        }
-    </style>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<style>
+/* ========== GLOBAL ========== */
+body{
+    background:#eef3f9;
+    font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+    margin:0;
+}
+
+/* ========== TOP TITLE CARD ========== */
+.top-card{
+    background:#ffffff;
+    border-radius:22px;
+    padding:34px 22px;
+    margin:18px 14px;
+    text-align:center;
+    box-shadow:0 12px 35px rgba(0,0,0,.12);
+}
+.top-card h1{
+    font-size:26px;
+    font-weight:700;
+    color:#0b3c6d;
+    margin-bottom:20px;
+}
+.top-badge{
+    display:inline-block;
+    background:#0b5ed7;
+    color:#fff;
+    padding:12px 30px;
+    border-radius:30px;
+    font-size:15px;
+    font-weight:600;
+}
+
+/* ========== CONTROL BAR ========== */
+.control-bar{
+    background:#ffffff;
+    border-radius:22px;
+    padding:18px;
+    margin:16px 14px 24px;
+    display:flex;
+    gap:14px;
+    justify-content:center;
+    box-shadow:0 10px 30px rgba(0,0,0,.10);
+}
+.ctrl-month{
+    background:#1aa36f;
+    color:#fff;
+    padding:12px 26px;
+    border-radius:30px;
+    font-size:15px;
+    font-weight:600;
+}
+.ctrl-home{
+    background:#0b5ed7;
+    color:#fff;
+    padding:12px 28px;
+    border-radius:30px;
+    font-size:15px;
+    font-weight:600;
+    text-decoration:none;
+}
+
+/* ========== MEMBER CARD ========== */
+.member-card{
+    background:#ffffff;
+    border-radius:22px;
+    overflow:hidden;
+    box-shadow:0 16px 45px rgba(0,0,0,.15);
+}
+
+.member-img{
+    position:relative;
+}
+.member-img img{
+    width:100%;
+    height:270px;
+    object-fit:cover;
+}
+
+/* DP Overlay */
+.member-dp{
+    position:absolute;
+    bottom:-38px;
+    left:50%;
+    transform:translateX(-50%);
+    width:76px;
+    height:76px;
+    border-radius:50%;
+    border:5px solid #ffffff;
+    overflow:hidden;
+    background:#fff;
+}
+.member-dp img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+}
+
+/* Body */
+.member-body{
+    padding:56px 18px 22px;
+    text-align:center;
+}
+.member-body h4{
+    font-size:19px;
+    font-weight:700;
+    margin-bottom:6px;
+}
+.member-phone{
+    font-size:14px;
+    color:#555;
+    margin-bottom:10px;
+}
+.verified{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    color:#1aa36f;
+    font-size:14px;
+    font-weight:600;
+    margin-bottom:14px;
+}
+.points{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    background:linear-gradient(135deg,#1fbf75,#1aa36f);
+    color:#ffffff;
+    padding:10px 24px;
+    border-radius:30px;
+    font-size:15px;
+    font-weight:600;
+    margin-bottom:16px;
+}
+.receipt-btn{
+    width:100%;
+    border:none;
+    background:#0b5ed7;
+    color:#ffffff;
+    padding:14px;
+    border-radius:14px;
+    font-size:15px;
+    font-weight:600;
+}
+
+/* Grid spacing */
+.card-gap{
+    padding:0 14px;
+}
+</style>
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-12 text-center">
-                    <div class="logo">
-                        <a href="index.html">
-                            <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="Anjuman Logo">
-                        </a>
-                    </div>
-                </div>
+
+<!-- TITLE -->
+<div class="top-card">
+    <h1>Anjuman Ghulaman-E-Mustafa</h1>
+    <div class="top-badge">Upcoming Members • 2025</div>
+</div>
+
+<!-- CONTROLS -->
+<div class="control-bar">
+    <div class="ctrl-month">📅 Month : 10 / 12</div>
+    <a href="index.html" class="ctrl-home">🏠 Home</a>
+</div>
+
+<!-- MEMBERS -->
+<div class="container-fluid">
+    <div class="row" id="dynamic-data"></div>
+</div>
+
+<script>
+const sheetId = "1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw";
+const apiKey = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
+const range = "Sheet1!A2:D";
+
+function loadData(){
+fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`)
+.then(res=>res.json())
+.then(data=>{
+    if(!data.values) return;
+    renderData(data.values);
+});
+}
+
+function renderData(data){
+const box=document.getElementById("dynamic-data");
+box.innerHTML="";
+
+data.sort((a,b)=>(parseInt(b[2])||0)-(parseInt(a[2])||0));
+
+data.forEach(row=>{
+const [name,phone,points,image]=row;
+
+box.innerHTML+=`
+<div class="col-12 col-md-6 mb-4 card-gap">
+    <div class="member-card">
+        <div class="member-img">
+            <img src="${image}">
+            <div class="member-dp">
+                <img src="${image}">
             </div>
         </div>
-    </header>
-
-    <!-- Disclaimer -->
-    <div class="dis-info">
-        <div class="container">
-            <div class="d-flex align-items-center">
-                <i class="fas fa-info-circle text-warning me-2"></i>
-                <strong class="me-2">Disclaimer:</strong>
-                <p class="mb-0">In the blessed month of Rabi' al-Awwal, your support can bring new light to the noble works of Anjuman-e-Ghulaman-e-Mustafa...</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Main Content -->
-    <main class="py-4">
-        <div class="container">
-            <div class="page-title">
-                <h1 class="display-5">Anjuman Ghulaman-E-Mustafa</h1>
-                <h2 class="h3">Upcoming Members <span class="text-primary">2025</span></h2>
-            </div>
-
-            <div class="middle-head">
-                <div class="round-status">
-                    <i class="fas fa-calendar-alt me-2"></i>
-                    Month: <strong>10</strong> / 12
-                </div>
-                <div class="switch-list">
-                    <ul class="list-unstyled mb-0">
-                        <li onclick="window.location.href='index.html'">
-                            <i class="fas fa-home"></i>
-                            <span>Home</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- Members Grid -->
-            <div id="dynamic-data" class="row">
-                <!-- Data will be loaded here -->
-                <div class="col-12 text-center py-5">
-                    <div class="spinner-border text-primary" role="status">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <p class="mt-3 text-muted">Loading members data...</p>
-                </div>
-            </div>
-        </div>
-    </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h6 class="mb-2"><i class="fas fa-copyright me-2"></i> Copyright - All Rights Reserved</h6>
-                    <div class="fs-5">अंजुमने गुलामाने मुस्तफा</div>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="mb-0"><i class="fas fa-heart text-danger me-1"></i> Serving the community since 1990</p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Receipt Modal -->
-    <div class="modal fade" id="receiptModal" tabindex="-1" aria-labelledby="receiptModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="receiptModalLabel">Member Receipt</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body p-0">
-                    <iframe id="receiptIframe" src="about:blank"></iframe>
-                </div>
-            </div>
+        <div class="member-body">
+            <h4>${name}</h4>
+            <div class="member-phone">📞 ${phone}</div>
+            <div class="verified">✔ Verified Member</div>
+            <div class="points">⭐ ${points} Contribution Points</div>
+            <button class="receipt-btn">📄 View Receipt</button>
         </div>
     </div>
+</div>`;
+});
+}
 
-    <!-- JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <script>
-        // Global variables
-        let membersData = [];
-        
-        // Google Sheets Configuration
-        const sheetId = "1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw";
-        const apiKey = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
-        const range = "Sheet1!A2:D"; // A=Name, B=Phone, C=Points, D=Image
-        
-        // Modal setup
-        const receiptModal = new bootstrap.Modal(document.getElementById('receiptModal'));
-        const receiptIframe = document.getElementById('receiptIframe');
-        
-        // Function to fetch data from Google Sheets
-        async function fetchData() {
-            try {
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (data.values && data.values.length > 0) {
-                    processData(data.values);
-                } else {
-                    showError("No data found in Google Sheets");
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                showError("Failed to load data. Please check your internet connection.");
-            }
-        }
-        
-        // Function to process and display data
-        function processData(data) {
-            // Process data and sort by points
-            membersData = data.map((row, index) => {
-                const name = row[0] || "Unknown";
-                const initial = name.charAt(0).toUpperCase();
-                return {
-                    name: name,
-                    phone: row[1] || "N/A",
-                    points: parseInt(row[2]) || 0,
-                    image: row[3] || `https://via.placeholder.com/400x200/0b4da0/ffffff?text=${initial}`,
-                    id: index
-                };
-            });
-            
-            // Sort by points (descending)
-            membersData.sort((a, b) => b.points - a.points);
-            
-            // Render members
-            renderMembers();
-        }
-        
-        // Function to render members
-        function renderMembers() {
-            const container = document.getElementById('dynamic-data');
-            
-            if (membersData.length === 0) {
-                container.innerHTML = '<div class="col-12 text-center py-5"><p>No members found</p></div>';
-                return;
-            }
-            
-            let html = '';
-            
-            membersData.forEach((member, index) => {
-                const rank = index + 1;
-                
-                html += `
-                    <div class="col-lg-4 col-md-6 col-sm-6 col-12">
-                        <div class="member-card" onclick="showReceipt('${member.name.replace(/'/g, "\\'")}', ${member.points}, '${member.image}', '${member.phone}')">
-                            <img src="${member.image}" alt="${member.name}" class="member-image" 
-                                 onerror="this.src='https://via.placeholder.com/400x200/0b4da0/ffffff?text=${member.name.charAt(0)}'">
-                            <div class="member-info">
-                                <div class="rank-badge">
-                                    <i class="fas fa-trophy me-2"></i>Rank #${rank}
-                                </div>
-                                <div class="member-name">${member.name}</div>
-                                <div class="member-phone">
-                                    <i class="fas fa-phone me-2"></i>${member.phone}
-                                </div>
-                                <div class="mt-3">
-                                    <span class="badge bg-success">
-                                        <i class="fas fa-star me-1"></i>${member.points} Points
-                                    </span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-        }
-        
-        // Function to show receipt
-        function showReceipt(name, points, image, phone) {
-            // Generate receipt HTML
-            const receiptHTML = `
-                <!DOCTYPE html>
-                <html>
-                <head>
-                    <meta charset="UTF-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                    <title>Receipt - ${name}</title>
-                    <style>
-                        body {
-                            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                            background: #f8f9fa;
-                            margin: 0;
-                            padding: 20px;
-                        }
-                        .receipt-container {
-                            max-width: 800px;
-                            margin: 0 auto;
-                            background: white;
-                            border-radius: 15px;
-                            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-                            overflow: hidden;
-                        }
-                        .header {
-                            background: linear-gradient(135deg, #0b4da0 0%, #083a7f 100%);
-                            color: white;
-                            padding: 30px;
-                            text-align: center;
-                        }
-                        .header h1 {
-                            margin: 0;
-                            font-size: 2rem;
-                        }
-                        .header p {
-                            opacity: 0.9;
-                            margin: 10px 0 0 0;
-                        }
-                        .profile-section {
-                            padding: 30px;
-                            display: flex;
-                            align-items: center;
-                            gap: 30px;
-                            border-bottom: 1px solid #e9ecef;
-                        }
-                        .profile-image {
-                            width: 150px;
-                            height: 150px;
-                            border-radius: 50%;
-                            object-fit: cover;
-                            border: 5px solid #e9ecef;
-                        }
-                        .profile-info h2 {
-                            color: #1e293b;
-                            margin-bottom: 15px;
-                        }
-                        .info-grid {
-                            display: grid;
-                            grid-template-columns: repeat(2, 1fr);
-                            gap: 15px;
-                        }
-                        .info-item {
-                            background: #f8f9fa;
-                            padding: 15px;
-                            border-radius: 10px;
-                        }
-                        .info-label {
-                            color: #64748b;
-                            font-size: 0.9rem;
-                            margin-bottom: 5px;
-                        }
-                        .info-value {
-                            color: #1e293b;
-                            font-weight: 600;
-                            font-size: 1.1rem;
-                        }
-                        .summary-section {
-                            padding: 30px;
-                        }
-                        .summary-section h3 {
-                            color: #0b4da0;
-                            margin-bottom: 25px;
-                        }
-                        .summary-grid {
-                            display: grid;
-                            grid-template-columns: repeat(2, 1fr);
-                            gap: 20px;
-                        }
-                        .summary-card {
-                            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-                            padding: 25px;
-                            border-radius: 15px;
-                            text-align: center;
-                        }
-                        .summary-card h4 {
-                            color: #495057;
-                            margin-bottom: 15px;
-                        }
-                        .points-display {
-                            font-size: 3rem;
-                            font-weight: 800;
-                            color: #0b4da0;
-                            margin: 10px 0;
-                        }
-                        .progress-bar {
-                            height: 10px;
-                            background: #e9ecef;
-                            border-radius: 5px;
-                            margin: 20px 0;
-                            overflow: hidden;
-                        }
-                        .progress-fill {
-                            height: 100%;
-                            background: linear-gradient(90deg, #10b981, #0b4da0);
-                            width: ${Math.min(100, (points/500)*100)}%;
-                        }
-                        .footer {
-                            padding: 20px;
-                            text-align: center;
-                            color: #6c757d;
-                            border-top: 1px solid #e9ecef;
-                        }
-                        @media (max-width: 768px) {
-                            .profile-section {
-                                flex-direction: column;
-                                text-align: center;
-                            }
-                            .info-grid, .summary-grid {
-                                grid-template-columns: 1fr;
-                            }
-                        }
-                    </style>
-                </head>
-                <body>
-                    <div class="receipt-container">
-                        <div class="header">
-                            <h1>Anjuman Ghulamane Mustafa</h1>
-                            <p>Official Membership Receipt</p>
-                        </div>
-                        
-                        <div class="profile-section">
-                            <img src="${image}" alt="${name}" class="profile-image" 
-                                 onerror="this.src='https://via.placeholder.com/150/0b4da0/ffffff?text=${name.charAt(0)}'">
-                            <div class="profile-info">
-                                <h2>${name}</h2>
-                                <div class="info-grid">
-                                    <div class="info-item">
-                                        <div class="info-label">Mobile Number</div>
-                                        <div class="info-value">${phone}</div>
-                                    </div>
-                                    <div class="info-item">
-                                        <div class="info-label">Total Points</div>
-                                        <div class="info-value">${points}</div>
-                                    </div>
-                                    <div class="info-item">
-                                        <div class="info-label">Status</div>
-                                        <div class="info-value" style="color:#059669;">Active Member</div>
-                                    </div>
-                                    <div class="info-item">
-                                        <div class="info-label">Date</div>
-                                        <div class="info-value">${new Date().toLocaleDateString('en-GB')}</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="summary-section">
-                            <h3>Points Summary</h3>
-                            <div class="summary-grid">
-                                <div class="summary-card">
-                                    <h4>Current Points</h4>
-                                    <div class="points-display">${points}</div>
-                                    <p>Total Points Earned</p>
-                                </div>
-                                <div class="summary-card">
-                                    <h4>Progress</h4>
-                                    <div class="progress-bar">
-                                        <div class="progress-fill"></div>
-                                    </div>
-                                    <div style="display: flex; justify-content: space-between;">
-                                        <span>0</span>
-                                        <span>500 Points</span>
-                                    </div>
-                                    <p style="margin-top: 15px;">${Math.round((points/500)*100)}% of Target Achieved</p>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="footer">
-                            <p><strong>Note:</strong> This is an official receipt from Anjuman Ghulamane Mustafa</p>
-                            <p>Generated on: ${new Date().toLocaleString()}</p>
-                        </div>
-                    </div>
-                </body>
-                </html>
-            `;
-            
-            // Set iframe source
-            receiptIframe.srcdoc = receiptHTML;
-            
-            // Show modal
-            receiptModal.show();
-        }
-        
-        // Function to show error
-        function showError(message) {
-            const container = document.getElementById('dynamic-data');
-            container.innerHTML = `
-                <div class="col-12 text-center py-5">
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
-                        <h4>Error Loading Data</h4>
-                        <p>${message}</p>
-                        <button class="btn btn-primary mt-3" onclick="fetchData()">
-                            <i class="fas fa-redo me-2"></i>Try Again
-                        </button>
-                    </div>
-                </div>
-            `;
-        }
-        
-        // Auto-refresh every 30 seconds
-        setInterval(fetchData, 30000);
-        
-        // Initial load when page loads
-        document.addEventListener('DOMContentLoaded', fetchData);
-    </script>
+window.onload=loadData;
+</script>
+
 </body>
 </html>
