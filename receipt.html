@@ -9,13 +9,13 @@
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* Previous CSS remains same */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        /* 🔥 AUTO-ZOOM OUT FOR SMALL DEVICES */
         @media screen and (max-width: 1024px) {
             html {
                 zoom: 0.6;
@@ -66,6 +66,7 @@
             position: relative;
         }
 
+        /* ================= HEADER ================= */
         .receipt-header {
             background: linear-gradient(135deg, #0b4da0 0%, #083a7f 100%);
             color: #fff;
@@ -128,6 +129,7 @@
             font-size: 0.9rem;
         }
 
+        /* ================= PROFILE ================= */
         .profile-section {
             background: #fff;
             padding: 25px 30px;
@@ -196,6 +198,7 @@
             color: #1e293b;
         }
 
+        /* ================= PAYMENT HISTORY ================= */
         .history-section {
             background: #fff;
             padding: 25px 30px;
@@ -253,6 +256,7 @@
             background: #f1f5f9;
         }
 
+        /* ================= SUMMARY CARDS ================= */
         .summary-cards {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -292,6 +296,7 @@
             font-weight: 600;
         }
 
+        /* ================= POINTS DISPLAY ================= */
         .points-section {
             background: #fff;
             padding: 25px 30px;
@@ -330,6 +335,7 @@
             transition: width 1s ease;
         }
 
+        /* ================= ACTION BUTTONS ================= */
         .action-buttons {
             display: flex;
             justify-content: center;
@@ -367,6 +373,7 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
+        /* ================= ERROR MESSAGE ================= */
         .error-message {
             background: #fee2e2;
             color: #dc2626;
@@ -381,6 +388,7 @@
             margin-right: 10px;
         }
 
+        /* ================= LOADING ================= */
         .loading {
             text-align: center;
             padding: 40px;
@@ -399,6 +407,7 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* ================= MOBILE MESSAGE ================= */
         .mobile-message {
             display: none;
             position: fixed;
@@ -433,21 +442,6 @@
             .error-message { display: none !important; }
             .btn { display: none; }
         }
-
-        /* New styles for caching */
-        .cache-status {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            background: #10b981;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-size: 12px;
-            opacity: 0.8;
-            display: none;
-            z-index: 1000;
-        }
     </style>
 </head>
 
@@ -456,11 +450,6 @@
 <div class="mobile-message">
     <i class="fas fa-mobile-alt"></i>
     <span>Desktop view auto-zoomed for better view</span>
-</div>
-
-<!-- Cache Status Indicator -->
-<div id="cacheStatus" class="cache-status">
-    <i class="fas fa-bolt"></i> Loaded from cache
 </div>
 
 <div class="desktop-container">
@@ -641,484 +630,349 @@
 </div>
 
 <script>
-    // ===================== CONFIGURATION =====================
+    // Google Sheets Configuration
     const SPREADSHEET_ID = '1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw';
     const API_KEY = 'AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU';
-    const PAYMENT_SHEET_NAME = 'Sheet53';
-    const MEMBER_SHEET_NAME = 'Sheet1';
-    
-    // Cache Configuration
-    const CACHE_EXPIRY = 5 * 60 * 1000; // 5 minutes
-    const CACHE_PREFIX = 'agm_member_';
-    
-    // ===================== URL PARAMETERS =====================
+    const PAYMENT_SHEET_NAME = 'Sheet53'; // Payment data sheet
+    const MEMBER_SHEET_NAME = 'Sheet1';   // Member info sheet
+
+    // Get URL parameters
     const urlParams = new URLSearchParams(window.location.search);
-    const memberName = decodeURIComponent(urlParams.get('member') || '');
+    const memberName = urlParams.get('member') || 'Mohammad Ahmed';
     const memberPhone = urlParams.get('phone') || '';
     const points = parseInt(urlParams.get('points')) || 0;
     
-    // ===================== UTILITY FUNCTIONS =====================
+    // Update date and time
+    const now = new Date();
+    document.getElementById('currentDate').innerText = now.toLocaleDateString('en-IN');
+    document.getElementById('lastUpdatedTime').innerText = now.toLocaleTimeString('en-IN');
     
-    // Normalize string for comparison
-    function normalizeString(str) {
-        return str.toString().toLowerCase().trim().replace(/\s+/g, ' ');
+    // Mobile detection
+    function detectDevice() {
+        const screenWidth = window.innerWidth;
+        const message = document.querySelector('.mobile-message span');
+        
+        if (screenWidth <= 480) {
+            message.textContent = "Auto-zoomed 60% for mobile view";
+        } else if (screenWidth <= 768) {
+            message.textContent = "Auto-zoomed 70% for tablet view";
+        } else if (screenWidth <= 1024) {
+            message.textContent = "Auto-zoomed 80% for better view";
+        }
+        
+        setTimeout(() => {
+            const mobileMsg = document.querySelector('.mobile-message');
+            mobileMsg.style.opacity = '0';
+            setTimeout(() => {
+                mobileMsg.style.display = 'none';
+            }, 500);
+        }, 5000);
     }
     
-    // Check if cache is valid
-    function getCachedData(key) {
+    detectDevice();
+    window.addEventListener('resize', function() {
+        const message = document.querySelector('.mobile-message');
+        message.style.display = 'flex';
+        message.style.opacity = '1';
+        detectDevice();
+    });
+
+    // Fetch and display member data
+    async function fetchMemberData() {
         try {
-            const cached = localStorage.getItem(key);
-            if (!cached) return null;
+            // Show loading state
+            document.getElementById('memberName').innerText = "Loading...";
+            document.getElementById('memberStatus').innerText = "Loading...";
+            document.getElementById('memberStatus').style.color = "#64748b";
             
-            const data = JSON.parse(cached);
-            const now = Date.now();
+            // Get member name from URL
+            const decodedMemberName = decodeURIComponent(memberName);
             
-            if (now - data.timestamp > CACHE_EXPIRY) {
-                localStorage.removeItem(key);
-                return null;
+            // Fetch member info from Sheet1
+            const memberUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${MEMBER_SHEET_NAME}?key=${API_KEY}`;
+            console.log("Fetching member data from:", memberUrl);
+            
+            const memberResponse = await fetch(memberUrl);
+            
+            if (!memberResponse.ok) {
+                throw new Error(`HTTP error! Status: ${memberResponse.status}`);
             }
             
-            return data;
-        } catch (e) {
-            localStorage.removeItem(key);
-            return null;
-        }
-    }
-    
-    // Save data to cache
-    function setCachedData(key, data) {
-        try {
-            const cacheData = {
-                data: data,
-                timestamp: Date.now()
-            };
-            localStorage.setItem(key, JSON.stringify(cacheData));
-        } catch (e) {
-            console.warn('Failed to cache data:', e);
-        }
-    }
-    
-    // Generate cache key
-    function getCacheKey() {
-        return `${CACHE_PREFIX}${memberName}_${memberPhone}`;
-    }
-    
-    // ===================== DATA FETCHING =====================
-    
-    // Fetch data from Google Sheets with caching
-    async function fetchSheetData(sheetName) {
-        const cacheKey = `sheet_${sheetName}`;
-        const cached = getCachedData(cacheKey);
-        
-        if (cached) {
-            console.log(`Using cached data for ${sheetName}`);
-            return cached.data;
-        }
-        
-        const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${sheetName}?key=${API_KEY}`;
-        
-        try {
-            console.log(`Fetching ${sheetName} from API`);
-            const response = await fetch(url);
+            const memberData = await memberResponse.json();
             
-            if (!response.ok) {
-                throw new Error(`HTTP ${response.status}`);
+            if (!memberData.values || memberData.values.length === 0) {
+                throw new Error("No data found in member sheet");
             }
             
-            const data = await response.json();
+            let foundMember = null;
+            let memberPhoneNumber = memberPhone;
+            let memberImage = 'https://via.placeholder.com/150/0b4da0/ffffff?text=' + encodeURIComponent(decodedMemberName.charAt(0));
             
-            if (data && data.values) {
-                setCachedData(cacheKey, data);
-                console.log(`Cached data for ${sheetName}`);
-            }
-            
-            return data;
-        } catch (error) {
-            console.error(`Error fetching ${sheetName}:`, error);
-            throw error;
-        }
-    }
-    
-    // Fetch all data in parallel
-    async function fetchAllData() {
-        try {
-            const [memberData, paymentData] = await Promise.all([
-                fetchSheetData(MEMBER_SHEET_NAME),
-                fetchSheetData(PAYMENT_SHEET_NAME)
-            ]);
-            
-            return { memberData, paymentData };
-        } catch (error) {
-            throw error;
-        }
-    }
-    
-    // ===================== DATA PROCESSING =====================
-    
-    // Find member in data with multiple matching strategies
-    function findMemberData(memberData, paymentData) {
-        if (!memberData || !memberData.values || !paymentData || !paymentData.values) {
-            return null;
-        }
-        
-        const memberHeaders = memberData.values[0];
-        const memberRows = memberData.values.slice(1);
-        const paymentHeaders = paymentData.values[0];
-        const paymentRows = paymentData.values.slice(1);
-        
-        // Find column indices
-        const findColumnIndex = (headers, keywords) => {
-            for (const keyword of keywords) {
-                const index = headers.findIndex(h => 
-                    h && normalizeString(h).includes(normalizeString(keyword))
-                );
-                if (index !== -1) return index;
-            }
-            return 0; // Default to first column
-        };
-        
-        const memberNameIndex = findColumnIndex(memberHeaders, ['name', 'member', 'full name']);
-        const memberPhoneIndex = findColumnIndex(memberHeaders, ['phone', 'mobile', 'contact', 'number']);
-        const memberImageIndex = findColumnIndex(memberHeaders, ['image', 'photo', 'picture', 'avatar']);
-        
-        const paymentNameIndex = findColumnIndex(paymentHeaders, ['name', 'member', 'full name']);
-        const paymentDateIndex = findColumnIndex(paymentHeaders, ['date', 'payment date', 'timestamp']);
-        const paymentMonthIndex = findColumnIndex(paymentHeaders, ['month', 'for month', 'period']);
-        const paymentAmountIndex = findColumnIndex(paymentHeaders, ['payment', 'amount', 'paid', 'fee']);
-        const paymentPointsIndex = findColumnIndex(paymentHeaders, ['points', 'point', 'score']);
-        
-        // Normalize search name
-        const searchName = normalizeString(memberName);
-        
-        // Strategy 1: Exact name match
-        let foundMember = memberRows.find(row => 
-            row[memberNameIndex] && normalizeString(row[memberNameIndex]) === searchName
-        );
-        
-        // Strategy 2: Partial name match
-        if (!foundMember) {
-            foundMember = memberRows.find(row => 
-                row[memberNameIndex] && normalizeString(row[memberNameIndex]).includes(searchName)
-            );
-        }
-        
-        // Strategy 3: Phone number match (if provided)
-        if (!foundMember && memberPhone) {
-            const searchPhone = memberPhone.replace(/\D/g, '');
-            foundMember = memberRows.find(row => {
-                if (!row[memberPhoneIndex]) return false;
-                const rowPhone = row[memberPhoneIndex].replace(/\D/g, '');
-                return rowPhone.includes(searchPhone) || searchPhone.includes(rowPhone);
-            });
-        }
-        
-        // Get member payments
-        let memberPayments = [];
-        if (foundMember) {
-            const memberNameFromSheet = foundMember[memberNameIndex];
-            memberPayments = paymentRows.filter(row => {
-                const paymentName = row[paymentNameIndex];
-                if (!paymentName) return false;
-                
-                // Match payment name with member name
-                return normalizeString(paymentName) === normalizeString(memberNameFromSheet);
-            });
-        }
-        
-        return {
-            member: foundMember,
-            payments: memberPayments,
-            indices: {
-                member: {
-                    name: memberNameIndex,
-                    phone: memberPhoneIndex,
-                    image: memberImageIndex
-                },
-                payment: {
-                    name: paymentNameIndex,
-                    date: paymentDateIndex,
-                    month: paymentMonthIndex,
-                    amount: paymentAmountIndex,
-                    points: paymentPointsIndex
+            // Search for member in Sheet1
+            for (let i = 0; i < memberData.values.length; i++) {
+                const row = memberData.values[i];
+                if (row[0] && row[0].toString().trim() === decodedMemberName) {
+                    foundMember = row;
+                    break;
                 }
             }
-        };
-    }
-    
-    // ===================== UI UPDATES =====================
-    
-    // Update basic info
-    function updateBasicInfo(data) {
-        if (!data.member) {
-            document.getElementById('memberName').innerText = memberName || 'Member Not Found';
-            document.getElementById('memberPhone').innerText = memberPhone || 'N/A';
-            return;
-        }
-        
-        const indices = data.indices.member;
-        const member = data.member;
-        
-        // Update name
-        document.getElementById('memberName').innerText = member[indices.name] || memberName;
-        
-        // Update phone
-        const phone = member[indices.phone] || memberPhone;
-        document.getElementById('memberPhone').innerText = phone || 'N/A';
-        
-        // Update image
-        const imageUrl = member[indices.image];
-        if (imageUrl && imageUrl.startsWith('http')) {
-            document.getElementById('memberImage').src = imageUrl;
-        }
-    }
-    
-    // Update payment history
-    function updatePaymentHistory(data) {
-        const tbody = document.getElementById('paymentHistory');
-        const payments = data.payments || [];
-        const indices = data.indices.payment;
-        
-        if (payments.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="5" style="text-align: center; padding: 30px; color: #64748b;">
-                        <i class="fas fa-info-circle"></i><br>
-                        No payment records found
-                    </td>
-                </tr>
-            `;
-            return;
-        }
-        
-        tbody.innerHTML = '';
-        
-        let totalPaid = 0;
-        let totalPoints = 0;
-        let lastPaymentDate = '-';
-        let firstPaymentDate = null;
-        
-        payments.forEach((payment, index) => {
-            const amount = parseFloat(payment[indices.amount]) || 0;
-            const points = parseInt(payment[indices.points]) || 0;
-            const date = payment[indices.date] || '';
-            const month = payment[indices.month] || '';
             
-            totalPaid += amount;
-            totalPoints += points;
-            
-            // Track dates
-            if (date) {
-                if (!firstPaymentDate) firstPaymentDate = date;
-                lastPaymentDate = date;
+            if (foundMember) {
+                // Update member info
+                memberPhoneNumber = foundMember[1] || memberPhoneNumber;
+                if (foundMember[3]) {
+                    memberImage = foundMember[3];
+                }
             }
             
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${index + 1}</td>
-                <td>${date}</td>
-                <td>${month}</td>
-                <td style="font-weight: 600; color: ${amount > 0 ? '#059669' : '#64748b'}">
-                    ${amount > 0 ? '₹' + amount : '-'}
-                </td>
-                <td style="font-weight: 600; color: #0b4da0">${points}</td>
+            // Update member info on page
+            document.getElementById('memberName').innerText = decodedMemberName;
+            document.getElementById('memberPhone').innerText = memberPhoneNumber || 'Not Available';
+            document.getElementById('memberImage').src = memberImage;
+            
+            // Now fetch payment data from Sheet53
+            const paymentUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${PAYMENT_SHEET_NAME}?key=${API_KEY}`;
+            console.log("Fetching payment data from:", paymentUrl);
+            
+            const paymentResponse = await fetch(paymentUrl);
+            
+            if (!paymentResponse.ok) {
+                throw new Error(`HTTP error! Status: ${paymentResponse.status}`);
+            }
+            
+            const paymentData = await paymentResponse.json();
+            
+            if (!paymentData.values || paymentData.values.length === 0) {
+                throw new Error("No payment data found");
+            }
+            
+            // Process payment data
+            const headers = paymentData.values[0];
+            const rows = paymentData.values.slice(1);
+            
+            // Find column indices
+            const nameIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('name'));
+            const dateIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('date'));
+            const monthIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('month'));
+            const paymentIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('payment'));
+            const pointsIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('point'));
+            
+            // Check if columns found
+            if (nameIndex === -1) {
+                throw new Error("Name column not found in payment data");
+            }
+            
+            // Filter data for the specific member
+            const memberPayments = rows.filter(row => {
+                return row[nameIndex] && row[nameIndex].toString().trim() === decodedMemberName;
+            });
+            
+            // Update payment count
+            document.getElementById('totalPaymentsCount').innerText = memberPayments.length;
+            
+            // Calculate totals
+            let totalPaid = 0;
+            let totalPoints = 0;
+            let lastPaymentDate = '-';
+            let firstPaymentDate = null;
+            
+            // Populate payment history table
+            const tbody = document.getElementById('paymentHistory');
+            tbody.innerHTML = '';
+            
+            if (memberPayments.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 30px; color: #64748b;">
+                            <i class="fas fa-info-circle"></i><br>
+                            No payment records found for this member
+                        </td>
+                    </tr>
+                `;
+            } else {
+                memberPayments.forEach((row, index) => {
+                    const payment = parseFloat(row[paymentIndex]) || 0;
+                    const points = parseInt(row[pointsIndex]) || 0;
+                    const date = row[dateIndex] || '';
+                    const month = row[monthIndex] || '';
+                    
+                    totalPaid += payment;
+                    totalPoints += points;
+                    
+                    // Track dates
+                    if (date) {
+                        if (!firstPaymentDate) firstPaymentDate = date;
+                        lastPaymentDate = date;
+                    }
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${index + 1}</td>
+                        <td>${date}</td>
+                        <td>${month}</td>
+                        <td style="font-weight: 600; color: ${payment > 0 ? '#059669' : '#64748b'}">
+                            ${payment > 0 ? '₹' + payment : '-'}
+                        </td>
+                        <td style="font-weight: 600; color: #0b4da0">${points || 0}</td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+            
+            // Update last payment date
+            document.getElementById('lastPaymentDate').innerText = lastPaymentDate;
+            
+            // Update member since year
+            if (firstPaymentDate) {
+                try {
+                    const year = new Date(firstPaymentDate).getFullYear();
+                    if (!isNaN(year)) {
+                        document.getElementById('memberSince').innerText = year;
+                    }
+                } catch (e) {
+                    // If date parsing fails, use current year
+                    document.getElementById('memberSince').innerText = now.getFullYear();
+                }
+            } else {
+                document.getElementById('memberSince').innerText = now.getFullYear();
+            }
+            
+            // Calculate financial summary
+            const targetAmount = 1200;
+            const pendingAmount = Math.max(0, targetAmount - totalPaid);
+            const completionRate = Math.min(100, Math.round((totalPaid / targetAmount) * 100));
+            
+            // Update financial summary
+            document.getElementById('totalPaidAmount').innerText = '₹' + totalPaid;
+            document.getElementById('pendingAmount').innerText = pendingAmount === 0 ? '₹0' : '₹' + pendingAmount;
+            document.getElementById('completionPercentage').innerText = completionRate + '%';
+            document.getElementById('completionRate').innerText = completionRate + '%';
+            
+            // Calculate points summary
+            const maxPoints = 500;
+            const pointsProgress = Math.min(100, Math.round((totalPoints / maxPoints) * 100));
+            const avgPoints = memberPayments.length > 0 ? Math.round(totalPoints / memberPayments.length) : 0;
+            
+            // Update points summary
+            document.getElementById('totalPoints').innerText = totalPoints;
+            document.getElementById('pointsProgress').innerText = pointsProgress + '%';
+            document.getElementById('avgPoints').innerText = avgPoints;
+            
+            // Update points display
+            document.getElementById('displayPoints').innerText = totalPoints;
+            
+            // Update progress bars
+            const pointsPercent = Math.min(100, (totalPoints / maxPoints) * 100);
+            document.getElementById('pointsProgressBar').style.width = pointsPercent + '%';
+            document.getElementById('progressText').innerText = pointsPercent.toFixed(1) + '% Complete';
+            
+            // Update status
+            const statusElement = document.getElementById('memberStatus');
+            if (completionRate === 100) {
+                statusElement.innerText = "Payment Complete";
+                statusElement.style.color = "#059669";
+            } else if (completionRate >= 50) {
+                statusElement.innerText = "Active Member";
+                statusElement.style.color = "#0b4da0";
+            } else if (completionRate > 0) {
+                statusElement.innerText = "Payment Pending";
+                statusElement.style.color = "#f59e0b";
+            } else {
+                statusElement.innerText = "No Payments";
+                statusElement.style.color = "#dc2626";
+            }
+            
+            // Hide error message if shown
+            document.getElementById('errorMessage').style.display = 'none';
+            
+        } catch (error) {
+            console.error('Error fetching data:', error);
+            
+            // Show error message
+            const errorElement = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            errorText.innerHTML = `
+                <strong>Error loading data:</strong> ${error.message}<br>
+                <small style="font-size: 0.8rem;">Using demo data for display. Check Google Sheets access.</small>
             `;
-            tbody.appendChild(row);
-        });
-        
-        // Update summary data
-        updateSummaryData(totalPaid, totalPoints, payments.length, lastPaymentDate, firstPaymentDate);
+            errorElement.style.display = 'block';
+            
+            // Load demo data as fallback
+            loadDemoData();
+        }
     }
     
-    // Update summary data
-    function updateSummaryData(totalPaid, totalPoints, paymentCount, lastPaymentDate, firstPaymentDate) {
-        const targetAmount = 1200;
-        const pendingAmount = Math.max(0, targetAmount - totalPaid);
-        const completionRate = Math.min(100, Math.round((totalPaid / targetAmount) * 100));
-        const maxPoints = 500;
-        const pointsProgress = Math.min(100, Math.round((totalPoints / maxPoints) * 100));
-        const avgPoints = paymentCount > 0 ? Math.round(totalPoints / paymentCount) : 0;
+    // Fallback demo data function
+    function loadDemoData() {
+        const decodedMemberName = decodeURIComponent(memberName);
+        
+        // Set demo data
+        document.getElementById('memberName').innerText = decodedMemberName;
+        document.getElementById('memberPhone').innerText = memberPhone || '+91 9876543210';
+        document.getElementById('memberImage').src = 'https://via.placeholder.com/150/0b4da0/ffffff?text=' + encodeURIComponent(decodedMemberName.charAt(0));
+        
+        // Demo payment data
+        const tbody = document.getElementById('paymentHistory');
+        tbody.innerHTML = `
+            <tr>
+                <td>1</td>
+                <td>15/01/2025</td>
+                <td>January</td>
+                <td style="color:#059669; font-weight:600">₹300</td>
+                <td style="color:#0b4da0; font-weight:600">50</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>10/04/2025</td>
+                <td>April</td>
+                <td style="color:#059669; font-weight:600">₹300</td>
+                <td style="color:#0b4da0; font-weight:600">50</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>20/08/2025</td>
+                <td>August</td>
+                <td style="color:#059669; font-weight:600">₹300</td>
+                <td style="color:#0b4da0; font-weight:600">50</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>15/12/2025</td>
+                <td>December</td>
+                <td style="color:#059669; font-weight:600">₹300</td>
+                <td style="color:#0b4da0; font-weight:600">50</td>
+            </tr>
+        `;
+        
+        // Update demo summary
+        document.getElementById('totalPaymentsCount').innerText = '4';
+        document.getElementById('lastPaymentDate').innerText = '15/12/2025';
+        document.getElementById('memberSince').innerText = '2025';
+        document.getElementById('completionRate').innerText = '100%';
         
         // Financial summary
-        document.getElementById('totalPaymentsCount').innerText = paymentCount;
-        document.getElementById('totalPaidAmount').innerText = '₹' + totalPaid;
-        document.getElementById('pendingAmount').innerText = pendingAmount === 0 ? '₹0' : '₹' + pendingAmount;
-        document.getElementById('completionPercentage').innerText = completionRate + '%';
-        document.getElementById('completionRate').innerText = completionRate + '%';
+        document.getElementById('totalPaidAmount').innerText = '₹1200';
+        document.getElementById('pendingAmount').innerText = '₹0';
+        document.getElementById('completionPercentage').innerText = '100%';
         
         // Points summary
-        document.getElementById('totalPoints').innerText = totalPoints;
-        document.getElementById('pointsProgress').innerText = pointsProgress + '%';
-        document.getElementById('avgPoints').innerText = avgPoints;
+        document.getElementById('totalPoints').innerText = '200';
+        document.getElementById('pointsProgress').innerText = '40%';
+        document.getElementById('avgPoints').innerText = '50';
         
         // Points display
-        document.getElementById('displayPoints').innerText = totalPoints;
-        document.getElementById('pointsProgressBar').style.width = pointsProgress + '%';
-        document.getElementById('progressText').innerText = pointsProgress.toFixed(1) + '% Complete';
+        document.getElementById('displayPoints').innerText = '200';
+        document.getElementById('pointsProgressBar').style.width = '40%';
+        document.getElementById('progressText').innerText = '40% Complete';
         
-        // Last payment date
-        document.getElementById('lastPaymentDate').innerText = lastPaymentDate || '-';
-        
-        // Member since
-        if (firstPaymentDate) {
-            try {
-                const year = new Date(firstPaymentDate).getFullYear();
-                if (!isNaN(year)) {
-                    document.getElementById('memberSince').innerText = year;
-                }
-            } catch (e) {
-                document.getElementById('memberSince').innerText = new Date().getFullYear();
-            }
-        } else {
-            document.getElementById('memberSince').innerText = new Date().getFullYear();
-        }
-        
-        // Update status
-        const statusElement = document.getElementById('memberStatus');
-        if (completionRate === 100) {
-            statusElement.innerText = "Payment Complete";
-            statusElement.style.color = "#059669";
-        } else if (completionRate >= 50) {
-            statusElement.innerText = "Active Member";
-            statusElement.style.color = "#0b4da0";
-        } else if (completionRate > 0) {
-            statusElement.innerText = "Payment Pending";
-            statusElement.style.color = "#f59e0b";
-        } else {
-            statusElement.innerText = "No Payments";
-            statusElement.style.color = "#dc2626";
-        }
+        // Status
+        document.getElementById('memberStatus').innerText = "Payment Complete";
+        document.getElementById('memberStatus').style.color = "#059669";
     }
     
-    // ===================== MAIN FUNCTION =====================
-    
-    async function loadMemberData() {
-        const startTime = Date.now();
-        
-        // Update date and time
-        const now = new Date();
-        document.getElementById('currentDate').innerText = now.toLocaleDateString('en-IN');
-        document.getElementById('lastUpdatedTime').innerText = now.toLocaleTimeString('en-IN');
-        
-        // Check cache first
-        const cacheKey = getCacheKey();
-        const cachedData = getCachedData(cacheKey);
-        
-        if (cachedData && cachedData.data) {
-            console.log('Using cached member data');
-            showCacheStatus();
-            updateBasicInfo(cachedData.data);
-            updatePaymentHistory(cachedData.data);
-        }
-        
-        try {
-            // Fetch fresh data
-            console.log('Fetching fresh data...');
-            const allData = await fetchAllData();
-            const processedData = findMemberData(allData.memberData, allData.paymentData);
-            
-            if (!processedData) {
-                throw new Error('No data found');
-            }
-            
-            // Update UI with fresh data
-            updateBasicInfo(processedData);
-            updatePaymentHistory(processedData);
-            
-            // Cache the processed data
-            setCachedData(cacheKey, processedData);
-            
-            console.log(`Data loaded in ${Date.now() - startTime}ms`);
-            
-        } catch (error) {
-            console.error('Error:', error);
-            
-            // If no cached data and API fails, show error
-            if (!cachedData) {
-                showError('Failed to load data. Please check your connection.');
-                loadDemoData();
-            }
-        }
-    }
-    
-    // ===================== HELPER FUNCTIONS =====================
-    
-    function showCacheStatus() {
-        const status = document.getElementById('cacheStatus');
-        status.style.display = 'block';
-        setTimeout(() => {
-            status.style.display = 'none';
-        }, 3000);
-    }
-    
-    function showError(message) {
-        const errorElement = document.getElementById('errorMessage');
-        const errorText = document.getElementById('errorText');
-        
-        errorText.innerHTML = `
-            <strong>Error:</strong> ${message}<br>
-            <small style="font-size: 0.8rem;">Showing cached or demo data.</small>
-        `;
-        errorElement.style.display = 'block';
-    }
-    
-    function loadDemoData() {
-        // Fallback demo data
-        const demoData = {
-            member: [memberName, memberPhone || '+91 XXXXX XXXXX'],
-            payments: [
-                ['', '15/01/2025', 'January', '300', '50'],
-                ['', '10/04/2025', 'April', '300', '50'],
-                ['', '20/08/2025', 'August', '300', '50']
-            ],
-            indices: {
-                member: { name: 0, phone: 1, image: -1 },
-                payment: { name: 0, date: 1, month: 2, amount: 3, points: 4 }
-            }
-        };
-        
-        updateBasicInfo(demoData);
-        updatePaymentHistory(demoData);
-    }
-    
-    // ===================== INITIALIZATION =====================
-    
-    function init() {
-        // Mobile detection
-        function detectDevice() {
-            const screenWidth = window.innerWidth;
-            const message = document.querySelector('.mobile-message span');
-            
-            if (screenWidth <= 480) {
-                message.textContent = "Auto-zoomed 60% for mobile view";
-            } else if (screenWidth <= 768) {
-                message.textContent = "Auto-zoomed 70% for tablet view";
-            } else if (screenWidth <= 1024) {
-                message.textContent = "Auto-zoomed 80% for better view";
-            }
-            
-            setTimeout(() => {
-                const mobileMsg = document.querySelector('.mobile-message');
-                mobileMsg.style.opacity = '0';
-                setTimeout(() => {
-                    mobileMsg.style.display = 'none';
-                }, 500);
-            }, 5000);
-        }
-        
-        detectDevice();
-        window.addEventListener('resize', function() {
-            const message = document.querySelector('.mobile-message');
-            message.style.display = 'flex';
-            message.style.opacity = '1';
-            detectDevice();
-        });
-        
-        // Load data
-        loadMemberData();
-    }
-    
-    // Start when page loads
-    window.onload = init;
+    // Load data when page loads
+    window.onload = fetchMemberData;
 </script>
 
 </body>
