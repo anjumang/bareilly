@@ -5,59 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Member Receipt - Anjuman Ghulaman-E-Mustafa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
     <style>
-        /* ... आपका existing CSS वही रहेगा ... */
-        /* सिर्फ इन नए styles को जोड़ें */
-        
-        /* Progressive Loading Animation */
-        .loading-stages {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(255,255,255,0.95);
-            z-index: 10000;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
-        
-        .stage {
-            margin: 10px 0;
-            padding: 10px 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            min-width: 300px;
-            opacity: 0.5;
-            transition: all 0.3s;
-        }
-        
-        .stage.active {
-            opacity: 1;
-            border-left: 4px solid #0b4da0;
-            background: #f8fafc;
-        }
-        
-        .stage.completed {
-            opacity: 0.8;
-            border-left: 4px solid #10b981;
-        }
-        
-        .stage i {
-            width: 24px;
-            text-align: center;
-        }
-        
-        .progress-time {
-            font-size: 0.8rem;
-            color: #64748b;
-            margin-top: 20px;
-        }
-        
         * {
             margin: 0;
             padding: 0;
@@ -543,46 +492,10 @@
             }
         }
     </style>
-    </style>
 </head>
 
 <body>
-    <!-- Loading Stages Overlay -->
-    <div class="loading-stages" id="loadingStages">
-        <div class="stage active" id="stage1">
-            <i class="fas fa-user-circle"></i>
-            <div>
-                <div>Loading Member Information</div>
-                <div class="progress-time" id="time1">Starting...</div>
-            </div>
-        </div>
-        <div class="stage" id="stage2">
-            <i class="fas fa-file-invoice"></i>
-            <div>
-                <div>Fetching Payment History</div>
-                <div class="progress-time" id="time2">Waiting...</div>
-            </div>
-        </div>
-        <div class="stage" id="stage3">
-            <i class="fas fa-chart-bar"></i>
-            <div>
-                <div>Calculating Summary</div>
-                <div class="progress-time" id="time3">Waiting...</div>
-            </div>
-        </div>
-        <div class="stage" id="stage4">
-            <i class="fas fa-check-circle"></i>
-            <div>
-                <div>Rendering Receipt</div>
-                <div class="progress-time" id="time4">Waiting...</div>
-            </div>
-        </div>
-    </div>
-
-    <div class="container" style="opacity: 0;" id="mainContent">
-        <!-- आपका existing HTML content यहाँ रहेगा -->
-        <!-- Header, Profile, Payment History, Summary Cards, आदि -->
-         <div class="container">
+    <div class="container">
         <!-- Header -->
         <div class="receipt-header">
             <div class="header-top">
@@ -765,332 +678,264 @@
             <i class="fas fa-shield-alt"></i> Official Receipt – Anjuman Ghulamane Mustafa • This is a computer generated receipt
         </div>
     </div>
-    </div>
 
     <script>
-        // ============= CONFIGURATION =============
+        // Google Sheets Configuration
         const SPREADSHEET_ID = '1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw';
         const API_KEY = 'AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU';
         
-        // ============= PERFORMANCE OPTIMIZATIONS =============
+        // Get URL parameters
+        const urlParams = new URLSearchParams(window.location.search);
+        const memberName = urlParams.get('name') || 'Anonymous Member';
+        const memberPhone = urlParams.get('phone') || 'Not Available';
+        const memberImage = urlParams.get('image') || 'https://via.placeholder.com/150/0b4da0/ffffff?text=AGM';
         
-        // 1. PRE-FETCH CACHE SYSTEM
-        class ReceiptCache {
-            constructor() {
-                this.cache = new Map();
-                this.TTL = 5 * 60 * 1000; // 5 minutes
-            }
-            
-            set(key, data) {
-                this.cache.set(key, {
-                    data,
-                    timestamp: Date.now()
-                });
-                localStorage.setItem(`receipt_${key}`, JSON.stringify({
-                    data,
-                    timestamp: Date.now()
-                }));
-            }
-            
-            get(key) {
-                // Try memory cache first
-                const memoryCache = this.cache.get(key);
-                if (memoryCache && (Date.now() - memoryCache.timestamp < this.TTL)) {
-                    return memoryCache.data;
-                }
-                
-                // Try localStorage
-                try {
-                    const stored = localStorage.getItem(`receipt_${key}`);
-                    if (stored) {
-                        const parsed = JSON.parse(stored);
-                        if (Date.now() - parsed.timestamp < this.TTL) {
-                            this.cache.set(key, parsed);
-                            return parsed.data;
-                        }
-                    }
-                } catch (e) {
-                    // Ignore localStorage errors
-                }
-                
-                return null;
-            }
+        // Update date and time
+        const now = new Date();
+        document.getElementById('currentDate').innerText = now.toLocaleDateString('en-IN');
+        document.getElementById('lastUpdatedTime').innerText = now.toLocaleTimeString('en-IN');
+        
+        // Generate random receipt number
+        function generateReceiptNumber() {
+            const prefix = 'AGM';
+            const year = now.getFullYear();
+            const randomNum = Math.floor(1000 + Math.random() * 9000);
+            return `${prefix}/${year}/${randomNum}`;
         }
         
-        const cache = new ReceiptCache();
+        document.getElementById('receiptNumber').innerText = generateReceiptNumber();
         
-        // 2. PARALLEL DATA FETCHING
-        async function fetchDataInParallel() {
-            const startTime = Date.now();
-            const loadingStages = document.getElementById('loadingStages');
-            const mainContent = document.getElementById('mainContent');
-            
-            // Show loading stages
-            loadingStages.style.display = 'flex';
-            
-            // Get URL parameters
-            const urlParams = new URLSearchParams(window.location.search);
-            const memberName = decodeURIComponent(urlParams.get('name') || 'Anonymous Member');
-            const memberPhone = decodeURIComponent(urlParams.get('phone') || '');
-            const points = parseInt(urlParams.get('points')) || 0;
-            const memberImage = decodeURIComponent(urlParams.get('image') || 'https://via.placeholder.com/150/0b4da0/ffffff?text=AGM');
-            
-            // Stage 1: Load Basic Info (INSTANT)
-            updateStage(1, 'started');
-            updateBasicInfo(memberName, memberPhone, points, memberImage);
-            updateStage(1, 'completed');
-            
-            // Stage 2: Fetch Payment Data (WITH CACHE)
-            updateStage(2, 'started');
-            let paymentData = null;
-            
-            // Generate cache key
-            const cacheKey = `payment_${memberName.replace(/\s+/g, '_')}`;
-            
-            // Try cache first
-            const cached = cache.get(cacheKey);
-            if (cached) {
-                updateStage(2, 'completed', 'Loaded from cache');
-                paymentData = cached;
-            } else {
-                // Fetch fresh data
-                updateStage(2, 'started', 'Fetching from Google Sheets...');
-                paymentData = await fetchPaymentDataOptimized(memberName);
-                
-                if (paymentData) {
-                    cache.set(cacheKey, paymentData);
-                    updateStage(2, 'completed', 'Fetched successfully');
-                } else {
-                    updateStage(2, 'completed', 'Using fallback data');
-                }
-            }
-            
-            // Stage 3: Calculate Summary (FAST)
-            updateStage(3, 'started');
-            const summary = calculateSummary(paymentData, points);
-            updateStage(3, 'completed');
-            
-            // Stage 4: Render Everything (FAST)
-            updateStage(4, 'started');
-            renderPaymentData(paymentData);
-            renderSummary(summary);
-            updateStage(4, 'completed');
-            
-            // Calculate total time
-            const totalTime = Date.now() - startTime;
-            
-            // Hide loading and show content
-            setTimeout(() => {
-                loadingStages.style.display = 'none';
-                mainContent.style.opacity = 1;
-                
-                // Show performance info in console
-                console.log(`🚀 Receipt loaded in ${totalTime}ms`);
-                if (totalTime > 5000) {
-                    console.warn('⚠️ Loading took too long. Consider implementing server-side API.');
-                }
-            }, 500);
-        }
+        // Cache for faster loading
+        let paymentDataCache = null;
+        let lastFetchTime = 0;
+        const CACHE_DURATION = 30000; // 30 seconds
         
-        // 3. OPTIMIZED GOOGLE SHEETS FETCH
-        async function fetchPaymentDataOptimized(memberName) {
+        // Fetch and display member data
+        async function fetchMemberData() {
             try {
-                // OPTIMIZATION: Fetch only necessary columns
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/Sheet53!A:E?key=${API_KEY}`;
+                // Update member info from URL parameters immediately
+                document.getElementById('memberName').innerText = decodeURIComponent(memberName);
+                document.getElementById('memberPhone').innerText = decodeURIComponent(memberPhone);
+                document.getElementById('memberImage').src = decodeURIComponent(memberImage);
+                document.getElementById('displayPoints').innerText = '0'; // Initialize with 0
                 
-                // Add timeout to prevent hanging
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                // Set initial status
+                updateStatus(0);
                 
-                const response = await fetch(url, { signal: controller.signal });
-                clearTimeout(timeoutId);
+                // Try to fetch payment data (optional - faster loading without it)
+                fetchPaymentData();
+                
+            } catch (error) {
+                console.error('Error in fetchMemberData:', error);
+                showError("Using basic receipt data. Payment history may be unavailable.");
+                loadFallbackData();
+            }
+        }
+        
+        // Fetch payment data (runs in background)
+        async function fetchPaymentData() {
+            try {
+                const now = Date.now();
+                
+                // Check cache first
+                if (paymentDataCache && (now - lastFetchTime) < CACHE_DURATION) {
+                    processPaymentData(paymentDataCache);
+                    return;
+                }
+                
+                // Fetch from Google Sheets
+                const paymentUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/Sheet53?key=${API_KEY}`;
+                
+                const response = await fetch(paymentUrl);
                 
                 if (!response.ok) {
-                    console.warn('Google Sheets API failed, using fallback');
-                    return null;
+                    throw new Error(`HTTP error! Status: ${response.status}`);
                 }
                 
                 const data = await response.json();
                 
-                if (!data.values || data.values.length < 2) {
-                    return null;
+                if (!data.values || data.values.length === 0) {
+                    throw new Error("No payment data found");
                 }
                 
-                // OPTIMIZATION: Fast filtering with early exit
-                const headers = data.values[0];
-                const rows = data.values.slice(1);
+                // Cache the data
+                paymentDataCache = data;
+                lastFetchTime = Date.now();
                 
-                // Find indices quickly
-                const nameIndex = 0; // Usually column A
-                const dateIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('date')) || 1;
-                const monthIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('month')) || 2;
-                const paymentIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('payment')) || 3;
-                const pointsIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('point')) || 4;
-                
-                // OPTIMIZATION: Use Map for faster lookup if we have many members
-                const memberRows = [];
-                const searchName = memberName.toLowerCase().trim();
-                
-                for (let i = 0; i < rows.length; i++) {
-                    const row = rows[i];
-                    if (row[nameIndex] && row[nameIndex].toString().toLowerCase().trim() === searchName) {
-                        memberRows.push({
-                            date: row[dateIndex] || '',
-                            month: row[monthIndex] || '',
-                            payment: parseFloat(row[paymentIndex]) || 0,
-                            points: parseInt(row[pointsIndex]) || 0
-                        });
-                        
-                        // OPTIMIZATION: Limit to recent 20 records for speed
-                        if (memberRows.length >= 20) break;
-                    }
-                }
-                
-                return {
-                    headers,
-                    rows: memberRows,
-                    totalRows: memberRows.length
-                };
+                // Process the data
+                processPaymentData(data);
                 
             } catch (error) {
-                console.error('Error fetching payment data:', error);
-                return null;
+                console.log('Payment data fetch failed, using fallback:', error.message);
+                loadFallbackData();
             }
         }
         
-        // 4. FAST CALCULATION FUNCTIONS
-        function calculateSummary(paymentData, urlPoints) {
-            if (!paymentData || !paymentData.rows || paymentData.rows.length === 0) {
-                return getFallbackSummary(urlPoints);
+        // Process payment data
+        function processPaymentData(paymentData) {
+            const headers = paymentData.values[0];
+            const rows = paymentData.values.slice(1);
+            
+            // Find column indices
+            const nameIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('name'));
+            const dateIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('date'));
+            const monthIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('month'));
+            const paymentIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('payment'));
+            const pointsIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('point'));
+            
+            if (nameIndex === -1) {
+                loadFallbackData();
+                return;
             }
             
-            const rows = paymentData.rows;
+            // Filter data for the specific member
+            const decodedName = decodeURIComponent(memberName);
+            const memberPayments = rows.filter(row => {
+                return row[nameIndex] && row[nameIndex].toString().trim() === decodedName;
+            });
+            
+            // Calculate totals
             let totalPaid = 0;
-            let totalPoints = urlPoints;
-            let lastPaymentDate = '';
+            let totalPointsFromPayments = 0; // CHANGED: Sirf Sheet53 ke points
+            let lastPaymentDate = '-';
             let firstPaymentDate = null;
             
-            // Single pass calculation
-            for (const row of rows) {
-                totalPaid += row.payment;
-                totalPoints += row.points;
-                
-                if (row.date) {
-                    if (!firstPaymentDate) firstPaymentDate = row.date;
-                    lastPaymentDate = row.date;
-                }
-            }
-            
-            const targetAmount = 1200;
-            const pendingAmount = Math.max(0, targetAmount - totalPaid);
-            const completionRate = Math.min(100, Math.round((totalPaid / targetAmount) * 100));
-            const pointsProgress = Math.min(100, Math.round((totalPoints / 500) * 100));
-            const avgPoints = rows.length > 0 ? Math.round(totalPoints / rows.length) : 0;
-            
-            return {
-                totalPaid,
-                totalPoints,
-                pendingAmount,
-                completionRate,
-                pointsProgress,
-                avgPoints,
-                paymentCount: rows.length,
-                lastPaymentDate: lastPaymentDate || new Date().toLocaleDateString('en-IN'),
-                firstPaymentDate: firstPaymentDate || new Date().getFullYear().toString()
-            };
-        }
-        
-        function getFallbackSummary(points) {
-            const estimatedPaid = Math.round(points * 6);
-            const targetAmount = 1200;
-            const pendingAmount = Math.max(0, targetAmount - estimatedPaid);
-            const completionRate = Math.round((estimatedPaid / targetAmount) * 100);
-            const pointsProgress = Math.min(100, Math.round((points / 500) * 100));
-            
-            return {
-                totalPaid: estimatedPaid,
-                totalPoints: points,
-                pendingAmount,
-                completionRate,
-                pointsProgress,
-                avgPoints: points,
-                paymentCount: 1,
-                lastPaymentDate: new Date().toLocaleDateString('en-IN'),
-                firstPaymentDate: new Date().getFullYear().toString()
-            };
-        }
-        
-        // 5. QUICK RENDER FUNCTIONS
-        function updateBasicInfo(name, phone, points, image) {
-            // Update DOM elements directly
-            document.getElementById('memberName').innerText = name;
-            document.getElementById('memberPhone').innerText = phone;
-            document.getElementById('memberImage').src = image;
-            document.getElementById('displayPoints').innerText = points;
-            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-IN');
-            document.getElementById('lastUpdatedTime').innerText = new Date().toLocaleTimeString('en-IN');
-            document.getElementById('receiptNumber').innerText = `AGM/${new Date().getFullYear()}/${Math.floor(1000 + Math.random() * 9000)}`;
-        }
-        
-        function renderPaymentData(paymentData) {
+            // Populate payment history table
             const tbody = document.getElementById('paymentHistory');
             
-            if (!paymentData || !paymentData.rows || paymentData.rows.length === 0) {
+            if (memberPayments.length === 0) {
                 tbody.innerHTML = `
                     <tr>
                         <td colspan="5" style="text-align: center; padding: 30px; color: #64748b;">
                             <i class="fas fa-info-circle"></i><br>
-                            No detailed payment records found
+                            No detailed payment records found for this member
                         </td>
                     </tr>
                 `;
-                document.getElementById('totalPaymentsCount').innerText = '0';
+                loadFallbackData();
                 return;
             }
             
-            // Fast string concatenation
-            let html = '';
-            paymentData.rows.forEach((row, index) => {
-                html += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${row.date}</td>
-                        <td>${row.month}</td>
-                        <td style="font-weight: 600; color: ${row.payment > 0 ? '#059669' : '#64748b'}">
-                            ${row.payment > 0 ? '₹' + row.payment : '-'}
-                        </td>
-                        <td style="font-weight: 600; color: #0b4da0">${row.points || 0}</td>
-                    </tr>
+            // Clear loading message
+            tbody.innerHTML = '';
+            
+            memberPayments.forEach((row, index) => {
+                const payment = parseFloat(row[paymentIndex]) || 0;
+                const paymentPoints = parseInt(row[pointsIndex]) || 0;
+                const date = row[dateIndex] || '';
+                const month = row[monthIndex] || '';
+                
+                totalPaid += payment;
+                totalPointsFromPayments += paymentPoints; // CHANGED: Sirf Sheet53 ke points
+                
+                // Track dates
+                if (date) {
+                    if (!firstPaymentDate) firstPaymentDate = date;
+                    lastPaymentDate = date;
+                }
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${date}</td>
+                    <td>${month}</td>
+                    <td style="font-weight: 600; color: ${payment > 0 ? '#059669' : '#64748b'}">
+                        ${payment > 0 ? '₹' + payment : '-'}
+                    </td>
+                    <td style="font-weight: 600; color: #0b4da0">${paymentPoints || 0}</td>
                 `;
+                tbody.appendChild(tr);
             });
             
-            tbody.innerHTML = html;
-            document.getElementById('totalPaymentsCount').innerText = paymentData.rows.length;
-        }
-        
-        function renderSummary(summary) {
+            // Update payment count
+            document.getElementById('totalPaymentsCount').innerText = memberPayments.length;
+            document.getElementById('lastPaymentDate').innerText = lastPaymentDate;
+            
+            // Update member since year
+            if (firstPaymentDate) {
+                try {
+                    const year = new Date(firstPaymentDate).getFullYear();
+                    if (!isNaN(year)) {
+                        document.getElementById('memberSince').innerText = year;
+                    }
+                } catch (e) {
+                    document.getElementById('memberSince').innerText = now.getFullYear();
+                }
+            }
+            
+            // Calculate financial summary
+            const targetAmount = 1200;
+            const pendingAmount = Math.max(0, targetAmount - totalPaid);
+            const completionRate = Math.min(100, Math.round((totalPaid / targetAmount) * 100));
+            
             // Update financial summary
-            document.getElementById('totalPaidAmount').innerText = '₹' + summary.totalPaid;
-            document.getElementById('pendingAmount').innerText = summary.pendingAmount === 0 ? '₹0' : '₹' + summary.pendingAmount;
-            document.getElementById('completionPercentage').innerText = summary.completionRate + '%';
-            document.getElementById('completionRate').innerText = summary.completionRate + '%';
-            document.getElementById('lastPaymentDate').innerText = summary.lastPaymentDate;
-            document.getElementById('memberSince').innerText = summary.firstPaymentDate;
+            document.getElementById('totalPaidAmount').innerText = '₹' + totalPaid;
+            document.getElementById('pendingAmount').innerText = pendingAmount === 0 ? '₹0' : '₹' + pendingAmount;
+            document.getElementById('completionPercentage').innerText = completionRate + '%';
+            document.getElementById('completionRate').innerText = completionRate + '%';
+            
+            // Calculate points summary (CHANGED: Sirf Sheet53 ke points)
+            const totalPointsCombined = totalPointsFromPayments; // CHANGED: Sirf Sheet53 ke points
+            const maxPoints = 500;
+            const pointsProgress = Math.min(100, Math.round((totalPointsCombined / maxPoints) * 100));
+            const avgPoints = memberPayments.length > 0 ? Math.round(totalPointsCombined / memberPayments.length) : 0;
             
             // Update points summary
-            document.getElementById('totalPoints').innerText = summary.totalPoints;
-            document.getElementById('pointsProgress').innerText = summary.pointsProgress + '%';
-            document.getElementById('avgPoints').innerText = summary.avgPoints;
+            document.getElementById('totalPoints').innerText = totalPointsCombined;
+            document.getElementById('pointsProgress').innerText = pointsProgress + '%';
+            document.getElementById('avgPoints').innerText = avgPoints;
             
             // Update points display
-            document.getElementById('displayPoints').innerText = summary.totalPoints;
-            document.getElementById('pointsProgressBar').style.width = summary.pointsProgress + '%';
-            document.getElementById('progressText').innerText = summary.pointsProgress + '% Complete';
+            updatePointsDisplay(totalPointsCombined);
+            updateStatus(completionRate);
             
-            // Update status
-            updateStatus(summary.completionRate);
+            // Hide error message
+            document.getElementById('errorMessage').style.display = 'none';
         }
         
+        // Fallback demo data
+        function loadFallbackData() {
+            // Update with basic data from URL parameters
+            document.getElementById('totalPaymentsCount').innerText = '1';
+            document.getElementById('lastPaymentDate').innerText = now.toLocaleDateString('en-IN');
+            document.getElementById('memberSince').innerText = now.getFullYear();
+            
+            // Calculate completion based on points
+            const fallbackPoints = 0; // CHANGED: Sirf Sheet53 ke points
+            const completionRate = Math.min(100, Math.round((fallbackPoints / 500) * 20));
+            document.getElementById('completionRate').innerText = completionRate + '%';
+            
+            // Financial summary (estimated)
+            const estimatedPaid = Math.round(fallbackPoints * 6); // Estimate ₹6 per point
+            const targetAmount = 1200;
+            const pendingAmount = Math.max(0, targetAmount - estimatedPaid);
+            
+            document.getElementById('totalPaidAmount').innerText = '₹' + estimatedPaid;
+            document.getElementById('pendingAmount').innerText = '₹' + pendingAmount;
+            document.getElementById('completionPercentage').innerText = Math.round((estimatedPaid / targetAmount) * 100) + '%';
+            
+            // Points summary (CHANGED: Sirf Sheet53 ke points)
+            document.getElementById('totalPoints').innerText = fallbackPoints;
+            const pointsProgress = Math.min(100, Math.round((fallbackPoints / 500) * 100));
+            document.getElementById('pointsProgress').innerText = pointsProgress + '%';
+            document.getElementById('avgPoints').innerText = fallbackPoints;
+            
+            // Update points display
+            updatePointsDisplay(fallbackPoints);
+            updateStatus(completionRate);
+        }
+        
+        // Helper function to update points display
+        function updatePointsDisplay(totalPoints) {
+            const maxPoints = 500;
+            const pointsPercent = Math.min(100, (totalPoints / maxPoints) * 100);
+            
+            document.getElementById('displayPoints').innerText = totalPoints;
+            document.getElementById('pointsProgressBar').style.width = pointsPercent + '%';
+            document.getElementById('progressText').innerText = pointsPercent.toFixed(1) + '% Complete';
+        }
+        
+        // Helper function to update status
         function updateStatus(completionRate) {
             const statusElement = document.getElementById('memberStatus');
             if (completionRate === 100) {
@@ -1108,68 +953,36 @@
             }
         }
         
-        function updateStage(stageNumber, status, message = '') {
-            const stageElement = document.getElementById(`stage${stageNumber}`);
-            const timeElement = document.getElementById(`time${stageNumber}`);
-            const now = new Date();
-            
-            if (status === 'started') {
-                stageElement.classList.add('active');
-                stageElement.classList.remove('completed');
-                timeElement.textContent = `Started at ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
-            } else if (status === 'completed') {
-                stageElement.classList.remove('active');
-                stageElement.classList.add('completed');
-                timeElement.textContent = `Completed at ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}${message ? ' - ' + message : ''}`;
-            }
-        }
-        
-        // 6. INITIALIZATION
-        window.onload = function() {
-            // Start the optimized loading process
-            fetchDataInParallel();
-            
-            // Pre-fetch for other potential members
-            setTimeout(prefetchCommonMembers, 2000);
-        };
-        
-        // 7. ADVANCED: PRE-FETCHING FOR COMMON MEMBERS
-        async function prefetchCommonMembers() {
-            // This runs in background to cache data for common members
-            try {
-                const commonMembers = ['Mohsin Khan', 'Mohammad Ahmed']; // Add common member names
-                
-                for (const member of commonMembers) {
-                    const cacheKey = `payment_${member.replace(/\s+/g, '_')}`;
-                    if (!cache.get(cacheKey)) {
-                        const data = await fetchPaymentDataOptimized(member);
-                        if (data) {
-                            cache.set(cacheKey, data);
-                        }
-                    }
-                }
-            } catch (error) {
-                // Silent fail - pre-fetching is optional
-            }
-        }
-        
-        // 8. ADD THESE FUNCTIONS TO YOUR EXISTING CODE
-        // Replace your existing fetchMemberData() and fetchPaymentData() with these optimized versions
-        
         // Show error message
         function showError(message) {
-            console.error('Receipt Error:', message);
-            // You can optionally show a subtle error indicator
+            const errorElement = document.getElementById('errorMessage');
+            const errorText = document.getElementById('errorText');
+            
+            errorText.innerHTML = message;
+            errorElement.style.display = 'block';
+            
+            // Auto-hide error after 5 seconds
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 5000);
         }
         
-        // Auto-refresh with cache consideration
+        // Load data when page loads
+        window.onload = function() {
+            // Show basic info immediately
+            document.getElementById('memberName').innerText = decodeURIComponent(memberName);
+            document.getElementById('memberPhone').innerText = decodeURIComponent(memberPhone);
+            document.getElementById('memberImage').src = decodeURIComponent(memberImage);
+            document.getElementById('displayPoints').innerText = '0'; // CHANGED: Initialize with 0
+            
+            // Start fetching detailed data
+            fetchMemberData();
+        };
+        
+        // Auto-refresh data every 30 seconds if popup is open
         setInterval(() => {
             if (!document.hidden) {
-                // Only refresh if cache is old
-                const cacheAge = Date.now() - cache.lastUpdate;
-                if (cacheAge > 60000) { // 1 minute
-                    fetchDataInParallel();
-                }
+                fetchPaymentData();
             }
         }, 30000);
     </script>
