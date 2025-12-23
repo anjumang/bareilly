@@ -1,0 +1,898 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Anjuman Ghulaman-E-Mustafa - Members 2026</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #0b4da0;
+            --secondary: #0f8a63;
+            --accent: #10b981;
+            --dark: #1e293b;
+            --light: #f8fafc;
+        }
+
+        /* ================= Base ================= */
+        body {
+            background: linear-gradient(135deg,#f8fafc,#e2e8f0);
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ================= Header ================= */
+        .header {
+            background: linear-gradient(135deg,var(--primary),#083a7f);
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,.1);
+        }
+        .logo img {
+            height: 60px;
+            transition: .3s;
+        }
+        .logo img:hover {
+            transform: scale(1.05);
+        }
+
+        /* ================= Disclaimer ================= */
+        .dis-info {
+            background: linear-gradient(135deg,#fef3c7,#fde68a);
+            border-bottom: 3px solid #f59e0b;
+            padding: 12px 0;
+        }
+
+        /* ================= Page Title ================= */
+        .page-title {
+            margin: 30px 0;
+            padding: 25px;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 6px 20px rgba(0,0,0,.08);
+            border-left: 5px solid var(--secondary);
+            text-align: center;
+        }
+        .page-title h1 {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .page-title h2 {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        /* ================= Middle Head ================= */
+        .middle-head {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.06);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .round-status {
+            background: var(--accent);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        .switch-list ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+        .switch-list li {
+            background: var(--primary);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .3s;
+        }
+        .switch-list li:hover {
+            background: #083a7f;
+            transform: translateY(-2px);
+        }
+
+        /* ================= Member Card ================= */
+        .member-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 25px rgba(0,0,0,.1);
+            transition: .35s ease;
+            height: 100%;
+        }
+        .member-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0,0,0,.12);
+        }
+
+        /* ================= Image Section ================= */
+        .image-container {
+            position: relative;
+            height: 215px;
+            background: #f1f5f9;
+            overflow: visible;
+        }
+        .image-container::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(255,255,255,0.06);
+            z-index: 1;
+        }
+        .member-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            filter: brightness(1.12) contrast(.92) saturate(1.05);
+            transition: transform .5s ease;
+        }
+        .member-card:hover .member-image {
+            transform: scale(1.05);
+        }
+
+        /* ================= Profile Image ================= */
+        .profile-img {
+            position: absolute;
+            bottom: -38px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 105px;
+            height: 105px;
+            padding: 4px;
+            border-radius: 50%;
+            background: linear-gradient(135deg,#22c55e,#3b82f6,#a855f7);
+            box-shadow: 0 0 18px rgba(59,130,246,.6);
+            z-index: 3;
+        }
+        .profile-img img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #fff;
+        }
+
+        /* ================= Rank Badge ================= */
+        .rank-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: linear-gradient(135deg,var(--primary),#083a7f);
+            color: #fff;
+            padding: 7px 16px;
+            border-radius: 20px;
+            font-size: .85rem;
+            font-weight: 600;
+            z-index: 4;
+        }
+
+        /* ================= Member Info ================= */
+        .member-info {
+            padding: 58px 20px 25px;
+            text-align: center;
+        }
+        .member-name {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .member-phone {
+            margin: 10px 0;
+            color: #64748b;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .points-badge {
+            background: linear-gradient(135deg,#22c55e,#16a34a);
+            color: #fff;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-flex;
+            gap: 6px;
+            box-shadow: 0 6px 15px rgba(34,197,94,.4);
+        }
+
+        /* ================= Button ================= */
+        .action-btn {
+            margin-top: 18px;
+            width: 100%;
+            background: linear-gradient(135deg,#2563eb,#1e40af);
+            border: none;
+            color: #fff;
+            padding: 11px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: .3s;
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg,#1e40af,#2563eb);
+        }
+
+        /* ================= Footer ================= */
+        .footer {
+            background: var(--dark);
+            color: #fff;
+            padding: 30px 0;
+            margin-top: 50px;
+        }
+
+        /* ================= Loading Spinner ================= */
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .loading-spinner .spinner {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        .loading-spinner p {
+            color: white;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ================= Skeleton Loading ================= */
+        .skeleton-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 25px rgba(0,0,0,.05);
+            height: 100%;
+        }
+        .skeleton-image {
+            height: 215px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-profile {
+            position: absolute;
+            bottom: -38px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 105px;
+            height: 105px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            z-index: 3;
+        }
+        .skeleton-text {
+            height: 20px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .skeleton-text.small {
+            height: 16px;
+            width: 70%;
+            margin: 8px auto;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+
+        /* ================= Responsive ================= */
+        @media (max-width: 768px) {
+            .middle-head {
+                flex-direction: column;
+            }
+            .image-container {
+                height: 190px;
+            }
+            .profile-img {
+                width: 95px;
+                height: 95px;
+                bottom: -34px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .image-container {
+                height: 225px;
+            }
+            .member-image {
+                object-position: center 20%;
+                filter: brightness(1.15) contrast(.9) saturate(1.05);
+            }
+            .member-name {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-8 col-md-10">
+                    <div class="logo">
+                        <a href="index.html">
+                            <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="Anjuman Logo">
+                        </a>
+                    </div>
+                </div>
+                <div class="col-4 col-md-2 text-end">
+                    <button class="btn btn-light d-md-none">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Disclaimer -->
+    <div class="dis-info">
+        <div class="container">
+            <div class="d-flex align-items-center flex-wrap">
+                <i class="fas fa-info-circle text-warning me-2 fs-5"></i>
+                <strong class="me-2">Disclaimer:</strong>
+                <p class="mb-0">In the blessed month of Rabi' al-Awwal, your support can bring new light to the noble works of Anjuman-e-Ghulaman-e-Mustafa...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="inner-content py-4">
+        <div class="container">
+            <div class="page-title">
+                <h1 class="display-5">Anjuman Ghulaman-E-Mustafa</h1>
+                <h2 class="h3">Members Directory <span class="text-primary">2026</span></h2>
+                <p class="text-muted mt-2">Total Members: <span id="totalMembers">0</span></p>
+            </div>
+
+            <div class="middle-head">
+                <div class="round-status">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Current Month: <strong>10</strong> / 12</span>
+                </div>
+                <div class="switch-list">
+                    <ul>
+                        <li onclick="window.location.href='index.html'">
+                            <i class="fas fa-home"></i>
+                            <span>Home</span>
+                        </li>
+                        <li onclick="fetchData()" title="Refresh Data">
+                            <i class="fas fa-sync-alt"></i>
+                            <span>Refresh</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Members Grid -->
+            <div id="dynamic-data" class="row g-4">
+                <!-- Skeleton Loading -->
+                <div class="col-lg-4 col-md-6 col-12">
+                    <div class="skeleton-card">
+                        <div class="image-container">
+                            <div class="skeleton-image"></div>
+                            <div class="skeleton-profile"></div>
+                        </div>
+                        <div class="member-info">
+                            <div class="skeleton-text"></div>
+                            <div class="skeleton-text small"></div>
+                            <div class="skeleton-text" style="width: 50%; margin: 15px auto;"></div>
+                            <div class="skeleton-text" style="height: 40px; border-radius: 8px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 5 more skeleton cards -->
+                <div class="col-lg-4 col-md-6 col-12 d-none d-md-block">
+                    <div class="skeleton-card">
+                        <div class="image-container">
+                            <div class="skeleton-image"></div>
+                            <div class="skeleton-profile"></div>
+                        </div>
+                        <div class="member-info">
+                            <div class="skeleton-text"></div>
+                            <div class="skeleton-text small"></div>
+                            <div class="skeleton-text" style="width: 50%; margin: 15px auto;"></div>
+                            <div class="skeleton-text" style="height: 40px; border-radius: 8px;"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4 col-md-6 col-12 d-none d-lg-block">
+                    <div class="skeleton-card">
+                        <div class="image-container">
+                            <div class="skeleton-image"></div>
+                            <div class="skeleton-profile"></div>
+                        </div>
+                        <div class="member-info">
+                            <div class="skeleton-text"></div>
+                            <div class="skeleton-text small"></div>
+                            <div class="skeleton-text" style="width: 50%; margin: 15px auto;"></div>
+                            <div class="skeleton-text" style="height: 40px; border-radius: 8px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6">
+                    <h6 class="mb-2"><i class="fas fa-copyright me-2"></i> Copyright - All Rights Reserved</h6>
+                    <div class="sm-text fs-5">अंजुमने गुलामाने मुस्तफा</div>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="mb-0"><i class="fas fa-heart text-danger me-1"></i> Serving the community since 1990</p>
+                    <p class="mb-0 small">Last Updated: <span id="lastUpdateTime">--:--:--</span></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Spinner -->
+    <div class="loading-spinner" id="loadingSpinner">
+        <div class="spinner"></div>
+        <p id="loadingMessage">Loading Members Data...</p>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Global variables to store data
+        let membersData = [];
+        let isFetching = false;
+        let lastFetchTime = 0;
+        const cacheDuration = 30000; // 30 seconds cache
+        
+        // Google Sheets Configuration
+        const sheetId = "1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw";
+        const apiKey = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
+        const range = "Sheet1!A2:D";
+        
+        // DOM Elements
+        const loadingSpinner = document.getElementById('loadingSpinner');
+        const loadingMessage = document.getElementById('loadingMessage');
+        const lastUpdateTime = document.getElementById('lastUpdateTime');
+        const totalMembers = document.getElementById('totalMembers');
+        
+        // Show/Hide Loading
+        function showLoading(message = "Loading Members Data...") {
+            loadingMessage.textContent = message;
+            loadingSpinner.style.display = 'flex';
+        }
+        
+        function hideLoading() {
+            loadingSpinner.style.display = 'none';
+        }
+        
+        // Update last update time
+        function updateLastUpdateTime() {
+            const now = new Date();
+            lastUpdateTime.textContent = now.toLocaleTimeString();
+        }
+        
+        // Function to escape HTML for XSS protection
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        // Function to save member data to localStorage for faster receipt loading
+        function saveMemberDataToCache() {
+            try {
+                const cacheData = {
+                    members: membersData,
+                    timestamp: Date.now(),
+                    expiry: 5 * 60 * 1000 // 5 minutes cache
+                };
+                localStorage.setItem('membersCache', JSON.stringify(cacheData));
+                console.log('Data cached successfully');
+            } catch (e) {
+                console.log('Cache save failed:', e);
+            }
+        }
+        
+        // Function to get cached member data
+        function getCachedMemberData(memberName) {
+            try {
+                const cache = localStorage.getItem('membersCache');
+                if (!cache) return null;
+                
+                const cacheData = JSON.parse(cache);
+                
+                // Check if cache is expired
+                if (Date.now() - cacheData.timestamp > cacheData.expiry) {
+                    localStorage.removeItem('membersCache');
+                    return null;
+                }
+                
+                // Find the specific member
+                return cacheData.members.find(member => 
+                    member.name.toLowerCase() === memberName.toLowerCase()
+                );
+            } catch (e) {
+                return null;
+            }
+        }
+        
+        // Function to open receipt in popup window with caching support
+        function openReceipt(memberName, memberImage, memberPhone, memberPoints) {
+            showLoading('Preparing Receipt...');
+            
+            // Try to get data from cache first
+            const cachedMember = getCachedMemberData(memberName);
+            
+            // Create URLSearchParams for better parameter handling
+            const params = new URLSearchParams();
+            params.append('name', encodeURIComponent(memberName));
+            params.append('phone', encodeURIComponent(memberPhone));
+            params.append('points', memberPoints);
+            params.append('image', encodeURIComponent(memberImage));
+            
+            // Add cached data if available (for faster loading)
+            if (cachedMember) {
+                params.append('cached', 'true');
+                params.append('cachedPhone', encodeURIComponent(cachedMember.phone));
+                params.append('cachedImage', encodeURIComponent(cachedMember.image));
+                params.append('cachedPoints', cachedMember.points);
+            }
+            
+            const popupUrl = `receipt.html?${params.toString()}`;
+            
+            // Calculate popup position (center of screen)
+            const width = 1100;
+            const height = 750;
+            const left = (window.screen.width - width) / 2;
+            const top = (window.screen.height - height) / 2;
+            
+            // Open popup window
+            const popupWindow = window.open(
+                popupUrl,
+                'ReceiptPopup',
+                `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no,status=no`
+            );
+            
+            // Focus on the popup
+            if (popupWindow) {
+                popupWindow.focus();
+            }
+            
+            // Hide loading after 500ms (gives time for popup to open)
+            setTimeout(hideLoading, 500);
+        }
+        
+        // Function to fetch data from Google Sheets - OPTIMIZED VERSION
+        async function fetchData() {
+            if (isFetching) {
+                console.log('Already fetching data, skipping...');
+                return;
+            }
+            
+            isFetching = true;
+            showLoading('Fetching latest data from Google Sheets...');
+            
+            try {
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+                const response = await fetch(url);
+                
+                // CRITICAL FIX: Check if the HTTP response itself is OK
+                if (!response.ok) {
+                    let errorMsg = `HTTP error! Status: ${response.status}`;
+                    if (response.status === 429) {
+                        errorMsg = "Google API quota exceeded. Please try again in a few minutes.";
+                    } else if (response.status === 403) {
+                        errorMsg = "Access denied. Please check API key permissions.";
+                    } else if (response.status === 404) {
+                        errorMsg = "Google Sheet not found. Please check the Sheet ID.";
+                    }
+                    throw new Error(errorMsg);
+                }
+                
+                const data = await response.json();
+                
+                if (data.values && data.values.length > 0) {
+                    // Process data
+                    membersData = data.values.map((row, index) => {
+                        const name = row[0] || 'Unknown Member';
+                        const initial = name.charAt(0).toUpperCase();
+                        
+                        // Clean and validate image URL
+                        let imageUrl = (row[3] || '').trim();
+                        if (!imageUrl || imageUrl === '' || !imageUrl.startsWith('http')) {
+                            // Generate a placeholder with initial
+                            imageUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0b4da0&color=fff&size=400&bold=true&font-size=0.5`;
+                        }
+                        
+                        return {
+                            id: index + 1,
+                            name: name,
+                            phone: row[1] || 'N/A',
+                            points: parseInt(row[2]) || 0,
+                            image: imageUrl,
+                            initial: initial
+                        };
+                    });
+                    
+                    // Sort by points (descending)
+                    membersData.sort((a, b) => b.points - a.points);
+                    
+                    // Update total members count
+                    totalMembers.textContent = membersData.length;
+                    
+                    // Render members
+                    renderMembers();
+                    
+                    // Save to cache for faster receipt loading
+                    saveMemberDataToCache();
+                    
+                    // Update timestamps
+                    lastFetchTime = Date.now();
+                    updateLastUpdateTime();
+                    
+                    console.log(`Successfully loaded ${membersData.length} members`);
+                } else {
+                    showError("No data found in Google Sheets. Please check if the sheet has data.");
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                
+                // Provide user-friendly error messages
+                let errorMessage = "Failed to load data. Please check your internet connection.";
+                
+                if (error.message.includes("quota exceeded")) {
+                    errorMessage = "Google Sheets API quota exceeded. Please try again in 1-2 minutes.";
+                } else if (error.message.includes("Access denied")) {
+                    errorMessage = "Access denied to Google Sheets. Please check API key configuration.";
+                } else if (error.message.includes("not found")) {
+                    errorMessage = "Google Sheet not found. Please verify the Sheet ID.";
+                } else if (error.message.includes("Failed to fetch")) {
+                    errorMessage = "Network error. Please check your internet connection.";
+                }
+                
+                showError(errorMessage);
+                
+                // Try to use cached data if available
+                try {
+                    const cache = localStorage.getItem('membersCache');
+                    if (cache) {
+                        const cacheData = JSON.parse(cache);
+                        if (Date.now() - cacheData.timestamp < cacheData.expiry) {
+                            membersData = cacheData.members;
+                            membersData.sort((a, b) => b.points - a.points);
+                            renderMembers();
+                            totalMembers.textContent = membersData.length;
+                            showToast('Using cached data', 'info');
+                        }
+                    }
+                } catch (cacheError) {
+                    console.log('Could not load cached data:', cacheError);
+                }
+            } finally {
+                hideLoading();
+                isFetching = false;
+            }
+        }
+        
+        // Function to render members with professional design
+        function renderMembers() {
+            const container = document.getElementById('dynamic-data');
+            
+            if (membersData.length === 0) {
+                container.innerHTML = `
+                    <div class="col-12 text-center py-5">
+                        <div class="alert alert-warning">
+                            <i class="fas fa-users-slash fa-2x mb-3"></i>
+                            <h4>No Members Found</h4>
+                            <p>No member data is currently available.</p>
+                            <button class="btn btn-primary mt-3" onclick="fetchData()">
+                                <i class="fas fa-redo me-2"></i>Try Loading Again
+                            </button>
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            
+            membersData.forEach((member, index) => {
+                const rank = index + 1;
+                const escapedName = escapeHtml(member.name);
+                const safeName = escapedName.replace(/'/g, "\\'").replace(/"/g, '\\"');
+                
+                // Determine rank badge color
+                let rankClass = '';
+                if (rank === 1) {
+                    rankClass = 'bg-warning text-dark';
+                } else if (rank <= 3) {
+                    rankClass = 'bg-danger text-white';
+                } else if (rank <= 10) {
+                    rankClass = 'bg-primary text-white';
+                } else {
+                    rankClass = 'bg-secondary text-white';
+                }
+                
+                html += `
+                    <div class="col-lg-4 col-md-6 col-12">
+                        <div class="member-card">
+                            <div class="image-container">
+                                <img src="${member.image}" alt="${escapedName}" class="member-image"
+                                     onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=0b4da0&color=fff&size=400'">
+                                <div class="profile-img">
+                                    <img src="${member.image}" alt="${escapedName}"
+                                         onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=0b4da0&color=fff&size=120'">
+                                </div>
+                                <div class="rank-badge ${rankClass}">
+                                    <i class="fas ${rank === 1 ? 'fa-crown' : 'fa-medal'}"></i> Rank #${rank}
+                                </div>
+                            </div>
+                            <div class="member-info">
+                                <div class="member-name">${escapedName}</div>
+                                <div class="member-phone">
+                                    <i class="fas fa-phone-alt"></i> ${member.phone}
+                                </div>
+                                <div class="points-badge">
+                                    <i class="fas fa-star"></i> ${member.points} Points
+                                </div>
+                                <button class="action-btn" onclick="openReceipt('${safeName}', '${member.image}', '${member.phone}', ${member.points})">
+                                    <i class="fas fa-receipt"></i> View Receipt
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            container.innerHTML = html;
+        }
+        
+        // Function to show error
+        function showError(message) {
+            const container = document.getElementById('dynamic-data');
+            container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
+                        <h4>Error Loading Data</h4>
+                        <p>${escapeHtml(message)}</p>
+                        <div class="mt-3">
+                            <button class="btn btn-primary me-2" onclick="fetchData()">
+                                <i class="fas fa-redo me-2"></i>Try Again
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="window.location.reload()">
+                                <i class="fas fa-sync me-2"></i>Reload Page
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Toast notification function
+        function showToast(message, type = 'info') {
+            // Create toast element
+            const toast = document.createElement('div');
+            toast.className = `toast align-items-center text-white bg-${type === 'info' ? 'info' : type === 'success' ? 'success' : 'warning'} border-0`;
+            toast.setAttribute('role', 'alert');
+            toast.setAttribute('aria-live', 'assertive');
+            toast.setAttribute('aria-atomic', 'true');
+            
+            toast.innerHTML = `
+                <div class="d-flex">
+                    <div class="toast-body">
+                        <i class="fas ${type === 'info' ? 'fa-info-circle' : type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle'} me-2"></i>
+                        ${message}
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+                </div>
+            `;
+            
+            // Add to page
+            const toastContainer = document.getElementById('toastContainer') || (() => {
+                const container = document.createElement('div');
+                container.id = 'toastContainer';
+                container.className = 'toast-container position-fixed top-0 end-0 p-3';
+                container.style.zIndex = '10000';
+                document.body.appendChild(container);
+                return container;
+            })();
+            
+            toastContainer.appendChild(toast);
+            
+            // Initialize and show toast
+            const bsToast = new bootstrap.Toast(toast, { delay: 3000 });
+            bsToast.show();
+            
+            // Remove after hiding
+            toast.addEventListener('hidden.bs.toast', () => {
+                toast.remove();
+            });
+        }
+        
+        // Auto-refresh every 30 seconds if data is stale
+        setInterval(() => {
+            const now = Date.now();
+            if (!isFetching && (now - lastFetchTime > cacheDuration)) {
+                console.log('Auto-refreshing data...');
+                fetchData();
+            }
+        }, 10000); // Check every 10 seconds
+        
+        // Initial load when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('Page loaded, fetching data...');
+            updateLastUpdateTime();
+            
+            // Add toast container to body
+            const toastContainer = document.createElement('div');
+            toastContainer.id = 'toastContainer';
+            toastContainer.className = 'toast-container position-fixed top-0 end-0 p-3';
+            toastContainer.style.zIndex = '10000';
+            document.body.appendChild(toastContainer);
+            
+            // Fetch data
+            fetchData();
+            
+            // Show welcome message
+            setTimeout(() => {
+                showToast('Members directory loaded successfully!', 'success');
+            }, 1500);
+        });
+        
+        // Add keyboard shortcut for refresh (Ctrl+R or Cmd+R)
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
+                e.preventDefault();
+                fetchData();
+                showToast('Refreshing data...', 'info');
+            }
+        });
+    </script>
+</body>
+</html>
