@@ -688,6 +688,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const memberName = urlParams.get('name') || 'Anonymous Member';
         const memberPhone = urlParams.get('phone') || 'Not Available';
+        // URL se points NAAHI lenge - sirf Sheet53 ke points count honge
         const memberImage = urlParams.get('image') || 'https://via.placeholder.com/150/0b4da0/ffffff?text=AGM';
         
         // Update date and time
@@ -710,43 +711,47 @@
         let lastFetchTime = 0;
         const CACHE_DURATION = 30000; // 30 seconds
         
-        // Fetch and display member data
+        // Fetch and display member data - INSTANTLY LOAD
         async function fetchMemberData() {
             try {
-                // Update member info from URL parameters immediately
+                // Instantly update member info from URL parameters
                 document.getElementById('memberName').innerText = decodeURIComponent(memberName);
                 document.getElementById('memberPhone').innerText = decodeURIComponent(memberPhone);
                 document.getElementById('memberImage').src = decodeURIComponent(memberImage);
-                document.getElementById('displayPoints').innerText = '0'; // Initialize with 0
+                
+                // Points initially 0 set karo - sirf Sheet53 ke points aane par update hoga
+                document.getElementById('displayPoints').innerText = '0';
                 
                 // Set initial status
                 updateStatus(0);
                 
-                // Try to fetch payment data (optional - faster loading without it)
-                fetchPaymentData();
+                // Now fetch payment data - but don't wait for it
+                fetchPaymentData().catch(error => {
+                    console.log('Background data fetch failed:', error.message);
+                    // Still show basic receipt even if sheet data fails
+                });
                 
             } catch (error) {
                 console.error('Error in fetchMemberData:', error);
-                showError("Using basic receipt data. Payment history may be unavailable.");
-                loadFallbackData();
+                // Still show the receipt with basic info
             }
         }
         
-        // Fetch payment data (runs in background)
+        // Fetch payment data from Sheet53 - BACKGROUND MEI CHALE
         async function fetchPaymentData() {
             try {
-                const now = Date.now();
-                
-                // Check cache first
-                if (paymentDataCache && (now - lastFetchTime) < CACHE_DURATION) {
-                    processPaymentData(paymentDataCache);
-                    return;
-                }
-                
-                // Fetch from Google Sheets
+                // Try to fetch from Google Sheets
                 const paymentUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/Sheet53?key=${API_KEY}`;
                 
-                const response = await fetch(paymentUrl);
+                // Use fetch with timeout
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
+                
+                const response = await fetch(paymentUrl, { 
+                    signal: controller.signal 
+                });
+                
+                clearTimeout(timeoutId);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -758,20 +763,16 @@
                     throw new Error("No payment data found");
                 }
                 
-                // Cache the data
-                paymentDataCache = data;
-                lastFetchTime = Date.now();
-                
                 // Process the data
                 processPaymentData(data);
                 
             } catch (error) {
-                console.log('Payment data fetch failed, using fallback:', error.message);
-                loadFallbackData();
+                console.log('Sheet53 data not available, showing basic receipt:', error.message);
+                // We don't show error - just continue with basic receipt
             }
         }
         
-        // Process payment data
+        // Process payment data - SIRF SHEET53 KE POINTS COUNT HO
         function processPaymentData(paymentData) {
             const headers = paymentData.values[0];
             const rows = paymentData.values.slice(1);
@@ -784,8 +785,7 @@
             const pointsIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('point'));
             
             if (nameIndex === -1) {
-                loadFallbackData();
-                return;
+                return; // Sheet structure different
             }
             
             // Filter data for the specific member
@@ -794,9 +794,9 @@
                 return row[nameIndex] && row[nameIndex].toString().trim() === decodedName;
             });
             
-            // Calculate totals
+            // Calculate totals - SIRF SHEET53 KE DATA SE
             let totalPaid = 0;
-            let totalPointsFromPayments = 0; // CHANGED: Sirf Sheet53 ke points
+            let totalPointsFromSheet53 = 0; // YEH SIRF SHEET53 KE POINTS HAIN
             let lastPaymentDate = '-';
             let firstPaymentDate = null;
             
@@ -808,11 +808,10 @@
                     <tr>
                         <td colspan="5" style="text-align: center; padding: 30px; color: #64748b;">
                             <i class="fas fa-info-circle"></i><br>
-                            No detailed payment records found for this member
+                            No payment records found in Sheet53
                         </td>
                     </tr>
                 `;
-                loadFallbackData();
                 return;
             }
             
@@ -826,7 +825,7 @@
                 const month = row[monthIndex] || '';
                 
                 totalPaid += payment;
-                totalPointsFromPayments += paymentPoints; // CHANGED: Sirf Sheet53 ke points
+                totalPointsFromSheet53 += paymentPoints; // SIRF SHEET53 KE POINTS
                 
                 // Track dates
                 if (date) {
@@ -874,54 +873,19 @@
             document.getElementById('completionPercentage').innerText = completionRate + '%';
             document.getElementById('completionRate').innerText = completionRate + '%';
             
-            // Calculate points summary (CHANGED: Sirf Sheet53 ke points)
-            const totalPointsCombined = totalPointsFromPayments; // CHANGED: Sirf Sheet53 ke points
+            // Calculate points summary - SIRF SHEET53 KE POINTS
+            const totalPoints = totalPointsFromSheet53; // SIRF SHEET53 KE POINTS
             const maxPoints = 500;
-            const pointsProgress = Math.min(100, Math.round((totalPointsCombined / maxPoints) * 100));
-            const avgPoints = memberPayments.length > 0 ? Math.round(totalPointsCombined / memberPayments.length) : 0;
+            const pointsProgress = Math.min(100, Math.round((totalPoints / maxPoints) * 100));
+            const avgPoints = memberPayments.length > 0 ? Math.round(totalPoints / memberPayments.length) : 0;
             
             // Update points summary
-            document.getElementById('totalPoints').innerText = totalPointsCombined;
+            document.getElementById('totalPoints').innerText = totalPoints;
             document.getElementById('pointsProgress').innerText = pointsProgress + '%';
             document.getElementById('avgPoints').innerText = avgPoints;
             
-            // Update points display
-            updatePointsDisplay(totalPointsCombined);
-            updateStatus(completionRate);
-            
-            // Hide error message
-            document.getElementById('errorMessage').style.display = 'none';
-        }
-        
-        // Fallback demo data
-        function loadFallbackData() {
-            // Update with basic data from URL parameters
-            document.getElementById('totalPaymentsCount').innerText = '1';
-            document.getElementById('lastPaymentDate').innerText = now.toLocaleDateString('en-IN');
-            document.getElementById('memberSince').innerText = now.getFullYear();
-            
-            // Calculate completion based on points
-            const fallbackPoints = 0; // CHANGED: Sirf Sheet53 ke points
-            const completionRate = Math.min(100, Math.round((fallbackPoints / 500) * 20));
-            document.getElementById('completionRate').innerText = completionRate + '%';
-            
-            // Financial summary (estimated)
-            const estimatedPaid = Math.round(fallbackPoints * 6); // Estimate ₹6 per point
-            const targetAmount = 1200;
-            const pendingAmount = Math.max(0, targetAmount - estimatedPaid);
-            
-            document.getElementById('totalPaidAmount').innerText = '₹' + estimatedPaid;
-            document.getElementById('pendingAmount').innerText = '₹' + pendingAmount;
-            document.getElementById('completionPercentage').innerText = Math.round((estimatedPaid / targetAmount) * 100) + '%';
-            
-            // Points summary (CHANGED: Sirf Sheet53 ke points)
-            document.getElementById('totalPoints').innerText = fallbackPoints;
-            const pointsProgress = Math.min(100, Math.round((fallbackPoints / 500) * 100));
-            document.getElementById('pointsProgress').innerText = pointsProgress + '%';
-            document.getElementById('avgPoints').innerText = fallbackPoints;
-            
-            // Update points display
-            updatePointsDisplay(fallbackPoints);
+            // Update points display - SIRF SHEET53 KE POINTS
+            updatePointsDisplay(totalPoints);
             updateStatus(completionRate);
         }
         
@@ -967,24 +931,17 @@
             }, 5000);
         }
         
-        // Load data when page loads
+        // Load data when page loads - INSTANTLY SHOW RECEIPT
         window.onload = function() {
-            // Show basic info immediately
+            // Instantly show basic info
             document.getElementById('memberName').innerText = decodeURIComponent(memberName);
             document.getElementById('memberPhone').innerText = decodeURIComponent(memberPhone);
             document.getElementById('memberImage').src = decodeURIComponent(memberImage);
-            document.getElementById('displayPoints').innerText = '0'; // CHANGED: Initialize with 0
+            document.getElementById('displayPoints').innerText = '0'; // Initially 0
             
-            // Start fetching detailed data
+            // Start fetching detailed data in background
             fetchMemberData();
         };
-        
-        // Auto-refresh data every 30 seconds if popup is open
-        setInterval(() => {
-            if (!document.hidden) {
-                fetchPaymentData();
-            }
-        }, 30000);
     </script>
 </body>
 </html>
