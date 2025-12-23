@@ -688,7 +688,6 @@
         const urlParams = new URLSearchParams(window.location.search);
         const memberName = urlParams.get('name') || 'Anonymous Member';
         const memberPhone = urlParams.get('phone') || 'Not Available';
-        // URL se points NAAHI lenge - sirf Sheet53 ke points count honge
         const memberImage = urlParams.get('image') || 'https://via.placeholder.com/150/0b4da0/ffffff?text=AGM';
         
         // Update date and time
@@ -706,12 +705,12 @@
         
         document.getElementById('receiptNumber').innerText = generateReceiptNumber();
         
-        // Cache for faster loading
-        let paymentDataCache = null;
-        let lastFetchTime = 0;
-        const CACHE_DURATION = 30000; // 30 seconds
+        // Local storage keys
+        const CACHE_KEY = 'agm_sheet53_cache';
+        const CACHE_TIMESTAMP_KEY = 'agm_sheet53_timestamp';
+        const CACHE_DURATION = 24 * 60 * 60 * 1000; // 24 hours cache
         
-        // Fetch and display member data - INSTANTLY LOAD
+        // Fetch and display member data - INSTANT LOAD
         async function fetchMemberData() {
             try {
                 // Instantly update member info from URL parameters
@@ -719,17 +718,33 @@
                 document.getElementById('memberPhone').innerText = decodeURIComponent(memberPhone);
                 document.getElementById('memberImage').src = decodeURIComponent(memberImage);
                 
-                // Points initially 0 set karo - sirf Sheet53 ke points aane par update hoga
+                // Points initially 0 set karo
                 document.getElementById('displayPoints').innerText = '0';
+                
+                // Try to load from cache first
+                const cachedData = getCachedData();
+                if (cachedData) {
+                    console.log('Using cached data');
+                    processPaymentData(cachedData);
+                } else {
+                    console.log('No cache found, loading fresh data');
+                    // Show loading message
+                    document.getElementById('paymentHistory').innerHTML = `
+                        <tr>
+                            <td colspan="5" class="loading">
+                                <i class="fas fa-spinner"></i><br>
+                                Loading payment history from server...<br>
+                                <small style="color:#64748b;">This may take up to 45 seconds</small>
+                            </td>
+                        </tr>
+                    `;
+                }
                 
                 // Set initial status
                 updateStatus(0);
                 
-                // Now fetch payment data - but don't wait for it
-                fetchPaymentData().catch(error => {
-                    console.log('Background data fetch failed:', error.message);
-                    // Still show basic receipt even if sheet data fails
-                });
+                // Start fetching fresh data in background
+                fetchPaymentData();
                 
             } catch (error) {
                 console.error('Error in fetchMemberData:', error);
@@ -737,21 +752,48 @@
             }
         }
         
-        // Fetch payment data from Sheet53 - BACKGROUND MEI CHALE
+        // Get cached data from local storage
+        function getCachedData() {
+            try {
+                const cached = localStorage.getItem(CACHE_KEY);
+                const timestamp = localStorage.getItem(CACHE_TIMESTAMP_KEY);
+                
+                if (!cached || !timestamp) {
+                    return null;
+                }
+                
+                const age = Date.now() - parseInt(timestamp);
+                if (age > CACHE_DURATION) {
+                    // Cache expired
+                    return null;
+                }
+                
+                return JSON.parse(cached);
+            } catch (e) {
+                console.error('Error reading cache:', e);
+                return null;
+            }
+        }
+        
+        // Save data to cache
+        function saveToCache(data) {
+            try {
+                localStorage.setItem(CACHE_KEY, JSON.stringify(data));
+                localStorage.setItem(CACHE_TIMESTAMP_KEY, Date.now().toString());
+            } catch (e) {
+                console.error('Error saving cache:', e);
+            }
+        }
+        
+        // Fetch payment data from Sheet53
         async function fetchPaymentData() {
             try {
-                // Try to fetch from Google Sheets
+                console.log('Fetching data from Sheet53...');
+                
+                // Try to fetch from Google Sheets - NO TIMEOUT
                 const paymentUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/Sheet53?key=${API_KEY}`;
                 
-                // Use fetch with timeout
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 second timeout
-                
-                const response = await fetch(paymentUrl, { 
-                    signal: controller.signal 
-                });
-                
-                clearTimeout(timeoutId);
+                const response = await fetch(paymentUrl);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! Status: ${response.status}`);
@@ -763,17 +805,23 @@
                     throw new Error("No payment data found");
                 }
                 
+                // Save to cache
+                saveToCache(data);
+                console.log('Data saved to cache');
+                
                 // Process the data
                 processPaymentData(data);
                 
             } catch (error) {
-                console.log('Sheet53 data not available, showing basic receipt:', error.message);
-                // We don't show error - just continue with basic receipt
+                console.log('Sheet53 fetch error:', error.message);
+                // Don't show error to user, just use cached data if available
             }
         }
         
-        // Process payment data - SIRF SHEET53 KE POINTS COUNT HO
+        // Process payment data - SIRF SHEET53 KE POINTS
         function processPaymentData(paymentData) {
+            console.log('Processing Sheet53 data...');
+            
             const headers = paymentData.values[0];
             const rows = paymentData.values.slice(1);
             
@@ -785,7 +833,8 @@
             const pointsIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('point'));
             
             if (nameIndex === -1) {
-                return; // Sheet structure different
+                console.log('Sheet structure not recognized');
+                return;
             }
             
             // Filter data for the specific member
@@ -794,9 +843,9 @@
                 return row[nameIndex] && row[nameIndex].toString().trim() === decodedName;
             });
             
-            // Calculate totals - SIRF SHEET53 KE DATA SE
+            // Calculate totals - SIRF SHEET53 SE
             let totalPaid = 0;
-            let totalPointsFromSheet53 = 0; // YEH SIRF SHEET53 KE POINTS HAIN
+            let totalPointsFromSheet53 = 0; // SIRF SHEET53 KE POINTS
             let lastPaymentDate = '-';
             let firstPaymentDate = null;
             
@@ -808,10 +857,13 @@
                     <tr>
                         <td colspan="5" style="text-align: center; padding: 30px; color: #64748b;">
                             <i class="fas fa-info-circle"></i><br>
-                            No payment records found in Sheet53
+                            No payment records found for ${decodedName} in Sheet53
                         </td>
                     </tr>
                 `;
+                
+                // Still update basic info
+                updateBasicInfo(0, 0, '-', now.getFullYear());
                 return;
             }
             
@@ -846,21 +898,57 @@
                 tbody.appendChild(tr);
             });
             
-            // Update payment count
-            document.getElementById('totalPaymentsCount').innerText = memberPayments.length;
-            document.getElementById('lastPaymentDate').innerText = lastPaymentDate;
-            
             // Update member since year
+            let memberSince = now.getFullYear();
             if (firstPaymentDate) {
                 try {
                     const year = new Date(firstPaymentDate).getFullYear();
                     if (!isNaN(year)) {
-                        document.getElementById('memberSince').innerText = year;
+                        memberSince = year;
                     }
                 } catch (e) {
-                    document.getElementById('memberSince').innerText = now.getFullYear();
+                    // Keep current year
                 }
             }
+            
+            // Update all info
+            updateAllInfo(memberPayments.length, totalPaid, totalPointsFromSheet53, 
+                         lastPaymentDate, memberSince);
+            
+            console.log('Data processing complete');
+        }
+        
+        // Update basic info (when no data found)
+        function updateBasicInfo(paymentsCount, totalPoints, lastDate, memberSinceYear) {
+            document.getElementById('totalPaymentsCount').innerText = paymentsCount;
+            document.getElementById('lastPaymentDate').innerText = lastDate;
+            document.getElementById('memberSince').innerText = memberSinceYear;
+            
+            // Financial summary
+            const targetAmount = 1200;
+            const pendingAmount = targetAmount;
+            const completionRate = 0;
+            
+            document.getElementById('totalPaidAmount').innerText = '₹0';
+            document.getElementById('pendingAmount').innerText = '₹' + targetAmount;
+            document.getElementById('completionPercentage').innerText = '0%';
+            document.getElementById('completionRate').innerText = '0%';
+            
+            // Points summary
+            document.getElementById('totalPoints').innerText = totalPoints;
+            document.getElementById('pointsProgress').innerText = '0%';
+            document.getElementById('avgPoints').innerText = '0';
+            
+            // Update points display
+            updatePointsDisplay(totalPoints);
+            updateStatus(completionRate);
+        }
+        
+        // Update all information
+        function updateAllInfo(paymentsCount, totalPaid, totalPoints, lastDate, memberSinceYear) {
+            document.getElementById('totalPaymentsCount').innerText = paymentsCount;
+            document.getElementById('lastPaymentDate').innerText = lastDate;
+            document.getElementById('memberSince').innerText = memberSinceYear;
             
             // Calculate financial summary
             const targetAmount = 1200;
@@ -874,19 +962,21 @@
             document.getElementById('completionRate').innerText = completionRate + '%';
             
             // Calculate points summary - SIRF SHEET53 KE POINTS
-            const totalPoints = totalPointsFromSheet53; // SIRF SHEET53 KE POINTS
             const maxPoints = 500;
             const pointsProgress = Math.min(100, Math.round((totalPoints / maxPoints) * 100));
-            const avgPoints = memberPayments.length > 0 ? Math.round(totalPoints / memberPayments.length) : 0;
+            const avgPoints = paymentsCount > 0 ? Math.round(totalPoints / paymentsCount) : 0;
             
             // Update points summary
             document.getElementById('totalPoints').innerText = totalPoints;
             document.getElementById('pointsProgress').innerText = pointsProgress + '%';
             document.getElementById('avgPoints').innerText = avgPoints;
             
-            // Update points display - SIRF SHEET53 KE POINTS
+            // Update points display
             updatePointsDisplay(totalPoints);
             updateStatus(completionRate);
+            
+            // Update last updated time
+            document.getElementById('lastUpdatedTime').innerText = new Date().toLocaleTimeString('en-IN');
         }
         
         // Helper function to update points display
@@ -931,17 +1021,34 @@
             }, 5000);
         }
         
-        // Load data when page loads - INSTANTLY SHOW RECEIPT
+        // Load data when page loads
         window.onload = function() {
             // Instantly show basic info
             document.getElementById('memberName').innerText = decodeURIComponent(memberName);
             document.getElementById('memberPhone').innerText = decodeURIComponent(memberPhone);
             document.getElementById('memberImage').src = decodeURIComponent(memberImage);
-            document.getElementById('displayPoints').innerText = '0'; // Initially 0
+            document.getElementById('displayPoints').innerText = '0';
             
-            // Start fetching detailed data in background
+            // Start fetching data
             fetchMemberData();
+            
+            // Add refresh button functionality
+            const closeBtn = document.querySelector('.btn-close');
+            closeBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh Data';
+            closeBtn.onclick = function() {
+                // Clear cache and reload
+                localStorage.removeItem(CACHE_KEY);
+                localStorage.removeItem(CACHE_TIMESTAMP_KEY);
+                location.reload();
+            };
         };
+        
+        // Background sync every 5 minutes if page is open
+        setInterval(() => {
+            if (!document.hidden) {
+                fetchPaymentData();
+            }
+        }, 5 * 60 * 1000); // 5 minutes
     </script>
 </body>
 </html>
