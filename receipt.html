@@ -57,6 +57,492 @@
             color: #64748b;
             margin-top: 20px;
         }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: #1e293b;
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        /* ================= HEADER ================= */
+        .receipt-header {
+            background: linear-gradient(135deg, #0b4da0 0%, #083a7f 100%);
+            color: #fff;
+            padding: 25px 30px;
+            border-bottom: 5px solid #10b981;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.1);
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid rgba(255,255,255,0.2);
+        }
+
+        .logo img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            margin-bottom: 5px;
+            color: white;
+        }
+
+        .header-title p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+            color: white;
+        }
+
+        .header-info {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            background: rgba(255,255,255,0.1);
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .info-value {
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* ================= PROFILE ================= */
+        .profile-section {
+            padding: 30px;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .profile-image {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #e2e8f0;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+
+        .profile-info {
+            flex: 1;
+        }
+
+        .member-name {
+            font-size: 2rem;
+            color: #0b4da0;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .member-contact {
+            color: #64748b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .info-card {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+            border-left: 4px solid #0b4da0;
+            transition: transform 0.3s;
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .info-label {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .info-value {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        /* ================= PAYMENT HISTORY ================= */
+        .history-section {
+            padding: 30px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .section-title {
+            color: #0b4da0;
+            font-size: 1.5rem;
+            margin-bottom: 25px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .payment-table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 20px;
+        }
+
+        .payment-table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+
+        .payment-table thead {
+            background: linear-gradient(135deg, #0b4da0 0%, #083a7f 100%);
+            color: white;
+        }
+
+        .payment-table th {
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .payment-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #1e293b;
+        }
+
+        .payment-table tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .payment-table tbody tr:hover {
+            background: #f1f5f9;
+        }
+
+        /* ================= SUMMARY CARDS ================= */
+        .summary-cards {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            padding: 30px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .summary-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            padding: 25px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid #e2e8f0;
+        }
+
+        .summary-card h3 {
+            color: #0b4da0;
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .summary-label {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .summary-value {
+            color: #1e293b;
+            font-weight: 600;
+        }
+
+        .summary-value.highlight {
+            color: #059669;
+        }
+
+        /* ================= POINTS DISPLAY ================= */
+        .points-section {
+            padding: 30px;
+            text-align: center;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+        }
+
+        .points-display {
+            padding: 40px;
+            background: white;
+            border-radius: 15px;
+            margin-top: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e2e8f0;
+        }
+
+        .points-number {
+            font-size: 4rem;
+            font-weight: 800;
+            color: #0b4da0;
+            margin: 20px 0;
+            text-shadow: 0 5px 15px rgba(11, 77, 160, 0.2);
+        }
+
+        .progress-container {
+            height: 12px;
+            background: #e2e8f0;
+            border-radius: 6px;
+            margin: 30px 0;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #0b4da0);
+            border-radius: 6px;
+            transition: width 1s ease;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 10px;
+        }
+
+        /* ================= ACTION BUTTONS ================= */
+        .action-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 30px;
+            background: white;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn {
+            padding: 14px 35px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+            min-width: 160px;
+            justify-content: center;
+        }
+
+        .btn-print {
+            background: linear-gradient(135deg, #0b4da0, #083a7f);
+            color: #fff;
+        }
+
+        .btn-close {
+            background: linear-gradient(135deg, #64748b, #475569);
+            color: #fff;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        /* ================= ERROR MESSAGE ================= */
+        .error-message {
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 30px;
+            border-left: 4px solid #dc2626;
+            display: none;
+        }
+
+        .error-message i {
+            margin-right: 10px;
+        }
+
+        /* ================= LOADING ================= */
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
+        .loading i {
+            font-size: 2rem;
+            color: #0b4da0;
+            margin-bottom: 15px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ================= RESPONSIVE ================= */
+        @media (max-width: 768px) {
+            .container {
+                border-radius: 10px;
+            }
+            
+            .profile-section {
+                flex-direction: column;
+                text-align: center;
+                gap: 20px;
+            }
+            
+            .info-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .summary-cards {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                padding: 20px;
+            }
+            
+            .header-info {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .btn {
+                width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-section {
+                padding: 20px;
+            }
+            
+            .history-section, .points-section {
+                padding: 20px;
+            }
+            
+            .member-name {
+                font-size: 1.5rem;
+            }
+            
+            .points-number {
+                font-size: 3rem;
+            }
+            
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+            
+            .container {
+                box-shadow: none;
+                border-radius: 0;
+            }
+            
+            .action-buttons {
+                display: none;
+            }
+        }
+    </style>
     </style>
 </head>
 
@@ -96,6 +582,189 @@
     <div class="container" style="opacity: 0;" id="mainContent">
         <!-- आपका existing HTML content यहाँ रहेगा -->
         <!-- Header, Profile, Payment History, Summary Cards, आदि -->
+         <div class="container">
+        <!-- Header -->
+        <div class="receipt-header">
+            <div class="header-top">
+                <div class="logo-container">
+                    <div class="logo">
+                        <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="AGM Logo">
+                    </div>
+                    <div class="header-title">
+                        <h1>Anjuman Ghulamane Mustafa</h1>
+                        <p>Official Membership Receipt</p>
+                    </div>
+                </div>
+                <div style="text-align: right; color: rgba(255,255,255,0.9);">
+                    <div style="font-size: 0.9rem; margin-bottom: 5px;">Last Updated:</div>
+                    <div id="lastUpdatedTime"></div>
+                </div>
+            </div>
+            
+            <div class="header-info">
+                <div class="info-item">
+                    <div class="info-label">Receipt No:</div>
+                    <div class="info-value" id="receiptNumber">AGM/2025/0016</div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Date:</div>
+                    <div class="info-value" id="currentDate"></div>
+                </div>
+                <div class="info-item">
+                    <div class="info-label">Status:</div>
+                    <div class="info-value" id="memberStatus" style="color:#10b981">Loading...</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <div id="errorMessage" class="error-message" style="display: none;">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span id="errorText">Error loading data. Please try again.</span>
+        </div>
+
+        <!-- Profile Section -->
+        <div class="profile-section">
+            <img id="memberImage" class="profile-image"
+                 src="https://via.placeholder.com/150/0b4da0/ffffff?text=AGM">
+            <div class="profile-info">
+                <div id="memberName" class="member-name">Loading...</div>
+                <div class="member-contact">
+                    <i class="fas fa-phone"></i>
+                    <span id="memberPhone">Loading...</span>
+                </div>
+                
+                <div class="info-grid">
+                    <div class="info-card">
+                        <div class="info-label">Member Since</div>
+                        <div id="memberSince" class="info-value">-</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Total Payments</div>
+                        <div id="totalPaymentsCount" class="info-value">0</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Completion</div>
+                        <div id="completionRate" class="info-value">0%</div>
+                    </div>
+                    <div class="info-card">
+                        <div class="info-label">Last Payment</div>
+                        <div id="lastPaymentDate" class="info-value">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment History -->
+        <div class="history-section">
+            <h3 class="section-title">
+                <i class="fas fa-history"></i>
+                Payment History
+            </h3>
+            <div class="payment-table-container">
+                <table class="payment-table">
+                    <thead>
+                        <tr>
+                            <th>Sr.</th>
+                            <th>Date</th>
+                            <th>Month</th>
+                            <th>Payment</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody id="paymentHistory">
+                        <tr>
+                            <td colspan="5" class="loading">
+                                <i class="fas fa-spinner"></i><br>
+                                Loading payment history...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <h3><i class="fas fa-chart-line"></i> Financial Summary</h3>
+                <div class="summary-item">
+                    <span class="summary-label">Total Paid Amount</span>
+                    <span id="totalPaidAmount" class="summary-value">₹0</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Pending Amount</span>
+                    <span id="pendingAmount" class="summary-value">₹0</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Target Amount</span>
+                    <span id="targetAmount" class="summary-value">₹1200</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Payment Completion</span>
+                    <span id="completionPercentage" class="summary-value highlight">0%</span>
+                </div>
+            </div>
+
+            <div class="summary-card">
+                <h3><i class="fas fa-star"></i> Points Summary</h3>
+                <div class="summary-item">
+                    <span class="summary-label">Total Points</span>
+                    <span id="totalPoints" class="summary-value">0</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Max Points</span>
+                    <span id="maxPoints" class="summary-value">500</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Points Progress</span>
+                    <span id="pointsProgress" class="summary-value">0%</span>
+                </div>
+                <div class="summary-item">
+                    <span class="summary-label">Average Points/Payment</span>
+                    <span id="avgPoints" class="summary-value">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Points Display -->
+        <div class="points-section">
+            <h3 class="section-title">
+                <i class="fas fa-trophy"></i>
+                Achievement Overview
+            </h3>
+            <div class="points-display">
+                <i class="fas fa-award" style="font-size: 48px; color: #fbbf24;"></i>
+                <div id="displayPoints" class="points-number">0</div>
+                <div style="font-weight: 600; color: #0b4da0; margin-bottom: 15px;">Total Achievement Points</div>
+                
+                <div class="progress-container">
+                    <div id="pointsProgressBar" class="progress-bar" style="width: 0%;"></div>
+                </div>
+                
+                <div class="progress-labels">
+                    <span>0 Points</span>
+                    <span id="progressText">0% Complete</span>
+                    <span>500 Points</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-print" onclick="window.print()">
+                <i class="fas fa-print"></i> Print Receipt
+            </button>
+            <button class="btn btn-close" onclick="window.close()">
+                <i class="fas fa-times"></i> Close Window
+            </button>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer-note" style="text-align:center; margin-top:25px; padding-top:15px; border-top:1px solid #e2e8f0; color:#64748b; font-size:0.9rem;">
+            <i class="fas fa-shield-alt"></i> Official Receipt – Anjuman Ghulamane Mustafa • This is a computer generated receipt
+        </div>
+    </div>
     </div>
 
     <script>
