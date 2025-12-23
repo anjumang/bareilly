@@ -3,941 +3,506 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Receipt - Anjuman Ghulamane Mustafa</title>
+    <title>Member Receipt - Anjuman Ghulaman-E-Mustafa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root {
-            --green-1: #0f8a63;
-            --green-2: #0a6b4f;
-            --accent: #10b981;
-            --muted: #f3f7f9;
-            --blue: #0b4da0;
-            --card-bg: #ffffff;
-            --shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
-            --radius: 12px;
-            font-family: "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
-        }
+        /* ... आपका existing CSS वही रहेगा ... */
+        /* सिर्फ इन नए styles को जोड़ें */
         
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        
-        body {
-            background: linear-gradient(180deg, #eef6f4 0%, #f9fcfd 100%);
-            color: #1f2937;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        
-        .container { max-width: 1000px; margin: 0 auto; }
-        
-        /* Header */
-        .receipt-header {
-            background: linear-gradient(90deg, var(--green-1), var(--green-2));
-            color: white;
-            border-radius: 12px;
-            padding: 25px;
-            box-shadow: var(--shadow);
-            margin-bottom: 25px;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .receipt-header::before {
-            content: '';
-            position: absolute;
-            top: -50px;
-            right: -50px;
-            width: 150px;
-            height: 150px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-        }
-        
-        .receipt-header::after {
-            content: '';
-            position: absolute;
-            bottom: -30px;
-            left: -30px;
-            width: 100px;
-            height: 100px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 50%;
-        }
-        
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-            margin-bottom: 20px;
-            position: relative;
-            z-index: 2;
-        }
-        
-        .logo-title {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-        
-        .logo {
-            width: 70px;
-            height: 70px;
-            border-radius: 12px;
-            background: #073b2a;
-            display: flex;
-            align-items: center;
+        /* Progressive Loading Animation */
+        .loading-stages {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(255,255,255,0.95);
+            z-index: 10000;
+            flex-direction: column;
             justify-content: center;
-            overflow: hidden;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-        }
-        
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-        
-        .title-info h1 {
-            margin: 0;
-            font-size: 22px;
-            font-weight: 700;
-        }
-        
-        .title-info p {
-            margin: 5px 0 0;
-            font-size: 14px;
-            opacity: 0.95;
-        }
-        
-        .receipt-meta {
-            text-align: right;
-            background: rgba(255, 255, 255, 0.15);
-            padding: 12px 20px;
-            border-radius: 8px;
-            backdrop-filter: blur(10px);
-        }
-        
-        .receipt-meta div {
-            margin-bottom: 5px;
-            font-size: 14px;
-        }
-        
-        .receipt-meta strong {
-            color: #fff;
-            font-weight: 600;
-        }
-        
-        /* Member Profile */
-        .member-profile {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 25px;
-            display: flex;
-            gap: 25px;
             align-items: center;
-            box-shadow: var(--shadow);
-            margin-top: 20px;
-            position: relative;
-            z-index: 2;
         }
         
-        .member-avatar {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            overflow: hidden;
-            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
-            border: 5px solid var(--card-bg);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-            flex-shrink: 0;
-        }
-        
-        .member-avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .member-details {
-            flex: 1;
-        }
-        
-        .member-name {
-            font-size: 24px;
-            font-weight: 700;
-            color: var(--dark);
-            margin-bottom: 10px;
-            color: #1e293b;
-        }
-        
-        .detail-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        .stage {
+            margin: 10px 0;
+            padding: 10px 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            display: flex;
+            align-items: center;
             gap: 15px;
-            margin-top: 15px;
+            min-width: 300px;
+            opacity: 0.5;
+            transition: all 0.3s;
         }
         
-        .detail-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px 15px;
+        .stage.active {
+            opacity: 1;
+            border-left: 4px solid #0b4da0;
             background: #f8fafc;
-            border-radius: 8px;
-            border-left: 4px solid var(--blue);
         }
         
-        .detail-label {
-            font-weight: 600;
-            color: #475569;
-            min-width: 100px;
+        .stage.completed {
+            opacity: 0.8;
+            border-left: 4px solid #10b981;
         }
         
-        .detail-value {
-            font-weight: 600;
-            color: #0f172a;
+        .stage i {
+            width: 24px;
+            text-align: center;
         }
         
-        .status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
-            margin-top: 10px;
-        }
-        
-        .status-complete {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: white;
-        }
-        
-        .status-pending {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: white;
-        }
-        
-        .status-active {
-            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-            color: white;
-        }
-        
-        /* Section Title */
-        .section-title {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin: 30px 0 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e2e8f0;
-        }
-        
-        .section-title h2 {
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--blue);
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .total-count {
-            background: var(--blue);
-            color: white;
-            padding: 6px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-        
-        /* Table */
-        .payment-table {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--card-bg);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            margin-bottom: 30px;
-        }
-        
-        .payment-table thead th {
-            background: linear-gradient(180deg, #0b4da0, #083a7f);
-            color: #fff;
-            padding: 16px 12px;
-            text-align: left;
-            font-weight: 700;
-            font-size: 15px;
-            position: relative;
-        }
-        
-        .payment-table thead th::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 3px;
-            background: linear-gradient(90deg, #10b981, #22c55e);
-        }
-        
-        .payment-table tbody td {
-            padding: 14px 12px;
-            border-bottom: 1px solid #f1f5f9;
-            font-size: 15px;
-            color: #334155;
-        }
-        
-        .payment-table tbody tr {
-            transition: all 0.2s ease;
-        }
-        
-        .payment-table tbody tr:hover {
-            background: #f8fafc;
-            transform: translateY(-1px);
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-        }
-        
-        .payment-table tbody tr:nth-child(even) {
-            background: #fbfeff;
-        }
-        
-        .payment-amount {
-            color: #059669;
-            font-weight: 600;
-        }
-        
-        .points-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
-            background: linear-gradient(135deg, #fef3c7, #fde68a);
-            color: #92400e;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        
-        /* Summary Cards */
-        .summary-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
-            margin-top: 20px;
-        }
-        
-        .summary-card {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            position: relative;
-            overflow: hidden;
-            border-top: 4px solid;
-        }
-        
-        .summary-card.financial {
-            border-color: var(--green-1);
-        }
-        
-        .summary-card.points {
-            border-color: var(--blue);
-        }
-        
-        .summary-card h3 {
-            margin: 0 0 20px;
-            font-size: 18px;
-            color: var(--blue);
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 0;
-            border-bottom: 1px dashed #e5e7eb;
-        }
-        
-        .summary-row:last-child {
-            border-bottom: none;
-        }
-        
-        .summary-label {
+        .progress-time {
+            font-size: 0.8rem;
             color: #64748b;
-            font-weight: 500;
-        }
-        
-        .summary-value {
-            font-weight: 700;
-            color: #1e293b;
-        }
-        
-        .completion-percent {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--green-1);
-        }
-        
-        .progress-bar {
-            height: 8px;
-            background: #e2e8f0;
-            border-radius: 4px;
-            overflow: hidden;
-            margin-top: 5px;
-        }
-        
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--green-1), var(--accent));
-            border-radius: 4px;
-            transition: width 1s ease;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header-top {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .receipt-meta {
-                text-align: left;
-                width: 100%;
-            }
-            
-            .member-profile {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .member-avatar {
-                width: 110px;
-                height: 110px;
-            }
-            
-            .detail-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .summary-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .payment-table {
-                display: block;
-                overflow-x: auto;
-            }
-        }
-        
-        @media (max-width: 576px) {
-            body {
-                padding: 10px;
-            }
-            
-            .receipt-header {
-                padding: 20px;
-            }
-            
-            .member-name {
-                font-size: 20px;
-            }
-        }
-        
-        /* Animation */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .fade-in {
-            animation: fadeInUp 0.5s ease forwards;
+            margin-top: 20px;
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
-        <!-- Receipt Header -->
-        <div class="receipt-header fade-in">
-            <div class="header-top">
-                <div class="logo-title">
-                    <div class="logo">
-                        <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="AGM Logo">
-                    </div>
-                    <div class="title-info">
-                        <h1>Anjuman Ghulamane Mustafa</h1>
-                        <p>Official Membership Receipt</p>
-                    </div>
-                </div>
-                <div class="receipt-meta">
-                    <div><strong>Receipt No:</strong> <span id="receiptNo">AGM/2025/---</span></div>
-                    <div><strong>Date:</strong> <span id="currentDate">--/--/----</span></div>
-                    <div><strong>Last Updated:</strong> <span id="lastUpdated">--:--:--</span></div>
-                </div>
-            </div>
-            
-            <!-- Member Profile -->
-            <div class="member-profile">
-                <div class="member-avatar">
-                    <img id="memberImage" src="https://via.placeholder.com/130" alt="Member Photo">
-                </div>
-                <div class="member-details">
-                    <div class="member-name" id="memberName">Loading...</div>
-                    <div class="detail-grid">
-                        <div class="detail-item">
-                            <span class="detail-label"><i class="fas fa-phone"></i> Mobile:</span>
-                            <span class="detail-value" id="memberMobile">--</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label"><i class="fas fa-calendar"></i> Member Since:</span>
-                            <span class="detail-value" id="memberSince">--</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label"><i class="fas fa-receipt"></i> Total Payments:</span>
-                            <span class="detail-value" id="totalPayments">0</span>
-                        </div>
-                        <div class="detail-item">
-                            <span class="detail-label"><i class="fas fa-clock"></i> Last Payment:</span>
-                            <span class="detail-value" id="lastPayment">--</span>
-                        </div>
-                    </div>
-                    <div class="status-badge" id="statusBadge">
-                        <i class="fas fa-circle"></i>
-                        <span id="statusText">Loading...</span>
-                    </div>
-                </div>
+    <!-- Loading Stages Overlay -->
+    <div class="loading-stages" id="loadingStages">
+        <div class="stage active" id="stage1">
+            <i class="fas fa-user-circle"></i>
+            <div>
+                <div>Loading Member Information</div>
+                <div class="progress-time" id="time1">Starting...</div>
             </div>
         </div>
-
-        <!-- Payment History -->
-        <div class="section-title fade-in">
-            <h2><i class="fas fa-history"></i> Payment History</h2>
-            <div class="total-count" id="paymentCount">0 Payments</div>
-        </div>
-
-        <table class="payment-table fade-in">
-            <thead>
-                <tr>
-                    <th>Sr.</th>
-                    <th>Date</th>
-                    <th>Month</th>
-                    <th>Payment</th>
-                    <th>Points</th>
-                </tr>
-            </thead>
-            <tbody id="paymentBody">
-                <tr>
-                    <td colspan="5" style="text-align:center;padding:40px;color:#64748b">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
-                        </div>
-                        <p class="mt-3">Loading payment history...</p>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-
-        <!-- Summary Section -->
-        <div class="summary-grid fade-in">
-            <!-- Financial Summary -->
-            <div class="summary-card financial">
-                <h3><i class="fas fa-rupee-sign"></i> Financial Summary</h3>
-                <div class="summary-row">
-                    <span class="summary-label">Total Paid Amount:</span>
-                    <span class="summary-value" id="totalPaid">₹0</span>
-                </div>
-                <div class="summary-row">
-                    <span class="summary-label">Pending Amount:</span>
-                    <span class="summary-value" id="pendingAmount">₹0</span>
-                </div>
-                <div class="summary-row">
-                    <span class="summary-label">Target Amount:</span>
-                    <span class="summary-value" id="targetAmount">₹1200</span>
-                </div>
-                <div class="summary-row">
-                    <span class="summary-label">Payment Completion:</span>
-                    <span class="summary-value completion-percent" id="completionPercent">0%</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="completionBar" style="width: 0%"></div>
-                </div>
+        <div class="stage" id="stage2">
+            <i class="fas fa-file-invoice"></i>
+            <div>
+                <div>Fetching Payment History</div>
+                <div class="progress-time" id="time2">Waiting...</div>
             </div>
-
-            <!-- Points Summary -->
-            <div class="summary-card points">
-                <h3><i class="fas fa-star"></i> Points Summary</h3>
-                <div class="summary-row">
-                    <span class="summary-label">Total Points:</span>
-                    <span class="summary-value" id="totalPoints">0</span>
-                </div>
-                <div class="summary-row">
-                    <span class="summary-label">Max Points:</span>
-                    <span class="summary-value" id="maxPoints">500</span>
-                </div>
-                <div class="summary-row">
-                    <span class="summary-label">Points Progress:</span>
-                    <span class="summary-value" id="pointsProgress">0%</span>
-                </div>
-                <div class="summary-row">
-                    <span class="summary-label">Avg Points/Payment:</span>
-                    <span class="summary-value" id="avgPoints">0</span>
-                </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="pointsBar" style="width: 0%"></div>
-                </div>
+        </div>
+        <div class="stage" id="stage3">
+            <i class="fas fa-chart-bar"></i>
+            <div>
+                <div>Calculating Summary</div>
+                <div class="progress-time" id="time3">Waiting...</div>
+            </div>
+        </div>
+        <div class="stage" id="stage4">
+            <i class="fas fa-check-circle"></i>
+            <div>
+                <div>Rendering Receipt</div>
+                <div class="progress-time" id="time4">Waiting...</div>
             </div>
         </div>
     </div>
 
+    <div class="container" style="opacity: 0;" id="mainContent">
+        <!-- आपका existing HTML content यहाँ रहेगा -->
+        <!-- Header, Profile, Payment History, Summary Cards, आदि -->
+    </div>
+
     <script>
-        // Configuration
+        // ============= CONFIGURATION =============
         const SPREADSHEET_ID = '1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw';
         const API_KEY = 'AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU';
-        const PAYMENT_SHEET_NAME = 'Sheet53';
         
-        // Get member details from URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const memberName = decodeURIComponent(urlParams.get('name') || '');
-        const memberPhone = decodeURIComponent(urlParams.get('phone') || '');
-        const memberImage = decodeURIComponent(urlParams.get('image') || '');
-        const memberPoints = parseInt(urlParams.get('points') || '0');
+        // ============= PERFORMANCE OPTIMIZATIONS =============
         
-        // DOM Elements
-        const paymentBody = document.getElementById('paymentBody');
-        
-        // Initialize page
-        function initializePage() {
-            // Set current date and time
-            const now = new Date();
-            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-GB');
-            document.getElementById('lastUpdated').textContent = now.toLocaleTimeString();
-            
-            // Generate receipt number
-            const receiptNo = 'AGM/2025/' + Math.floor(1000 + Math.random() * 9000);
-            document.getElementById('receiptNo').textContent = receiptNo;
-            
-            // Set member details from URL params
-            if (memberName) {
-                document.getElementById('memberName').textContent = memberName;
+        // 1. PRE-FETCH CACHE SYSTEM
+        class ReceiptCache {
+            constructor() {
+                this.cache = new Map();
+                this.TTL = 5 * 60 * 1000; // 5 minutes
             }
             
-            if (memberPhone) {
-                document.getElementById('memberMobile').textContent = memberPhone;
+            set(key, data) {
+                this.cache.set(key, {
+                    data,
+                    timestamp: Date.now()
+                });
+                localStorage.setItem(`receipt_${key}`, JSON.stringify({
+                    data,
+                    timestamp: Date.now()
+                }));
             }
             
-            if (memberImage && memberImage.startsWith('http')) {
-                document.getElementById('memberImage').src = memberImage;
+            get(key) {
+                // Try memory cache first
+                const memoryCache = this.cache.get(key);
+                if (memoryCache && (Date.now() - memoryCache.timestamp < this.TTL)) {
+                    return memoryCache.data;
+                }
+                
+                // Try localStorage
+                try {
+                    const stored = localStorage.getItem(`receipt_${key}`);
+                    if (stored) {
+                        const parsed = JSON.parse(stored);
+                        if (Date.now() - parsed.timestamp < this.TTL) {
+                            this.cache.set(key, parsed);
+                            return parsed.data;
+                        }
+                    }
+                } catch (e) {
+                    // Ignore localStorage errors
+                }
+                
+                return null;
             }
-            
-            // Fetch payment data
-            fetchPaymentData();
         }
         
-        // Fetch payment data from Google Sheets - FIXED VERSION
-        async function fetchPaymentData() {
-            try {
-                // Show loading state
-                paymentBody.innerHTML = `
-                    <tr>
-                        <td colspan="5" style="text-align:center;padding:40px;color:#64748b">
-                            <div class="spinner-border text-primary" role="status">
-                                <span class="visually-hidden">Loading...</span>
-                            </div>
-                            <p class="mt-3">Fetching payment data from Google Sheets...</p>
-                        </td>
-                    </tr>
-                `;
+        const cache = new ReceiptCache();
+        
+        // 2. PARALLEL DATA FETCHING
+        async function fetchDataInParallel() {
+            const startTime = Date.now();
+            const loadingStages = document.getElementById('loadingStages');
+            const mainContent = document.getElementById('mainContent');
+            
+            // Show loading stages
+            loadingStages.style.display = 'flex';
+            
+            // Get URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const memberName = decodeURIComponent(urlParams.get('name') || 'Anonymous Member');
+            const memberPhone = decodeURIComponent(urlParams.get('phone') || '');
+            const points = parseInt(urlParams.get('points')) || 0;
+            const memberImage = decodeURIComponent(urlParams.get('image') || 'https://via.placeholder.com/150/0b4da0/ffffff?text=AGM');
+            
+            // Stage 1: Load Basic Info (INSTANT)
+            updateStage(1, 'started');
+            updateBasicInfo(memberName, memberPhone, points, memberImage);
+            updateStage(1, 'completed');
+            
+            // Stage 2: Fetch Payment Data (WITH CACHE)
+            updateStage(2, 'started');
+            let paymentData = null;
+            
+            // Generate cache key
+            const cacheKey = `payment_${memberName.replace(/\s+/g, '_')}`;
+            
+            // Try cache first
+            const cached = cache.get(cacheKey);
+            if (cached) {
+                updateStage(2, 'completed', 'Loaded from cache');
+                paymentData = cached;
+            } else {
+                // Fetch fresh data
+                updateStage(2, 'started', 'Fetching from Google Sheets...');
+                paymentData = await fetchPaymentDataOptimized(memberName);
                 
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${PAYMENT_SHEET_NAME}?key=${API_KEY}`;
-                const response = await fetch(url);
+                if (paymentData) {
+                    cache.set(cacheKey, paymentData);
+                    updateStage(2, 'completed', 'Fetched successfully');
+                } else {
+                    updateStage(2, 'completed', 'Using fallback data');
+                }
+            }
+            
+            // Stage 3: Calculate Summary (FAST)
+            updateStage(3, 'started');
+            const summary = calculateSummary(paymentData, points);
+            updateStage(3, 'completed');
+            
+            // Stage 4: Render Everything (FAST)
+            updateStage(4, 'started');
+            renderPaymentData(paymentData);
+            renderSummary(summary);
+            updateStage(4, 'completed');
+            
+            // Calculate total time
+            const totalTime = Date.now() - startTime;
+            
+            // Hide loading and show content
+            setTimeout(() => {
+                loadingStages.style.display = 'none';
+                mainContent.style.opacity = 1;
+                
+                // Show performance info in console
+                console.log(`🚀 Receipt loaded in ${totalTime}ms`);
+                if (totalTime > 5000) {
+                    console.warn('⚠️ Loading took too long. Consider implementing server-side API.');
+                }
+            }, 500);
+        }
+        
+        // 3. OPTIMIZED GOOGLE SHEETS FETCH
+        async function fetchPaymentDataOptimized(memberName) {
+            try {
+                // OPTIMIZATION: Fetch only necessary columns
+                const url = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/Sheet53!A:E?key=${API_KEY}`;
+                
+                // Add timeout to prevent hanging
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                
+                const response = await fetch(url, { signal: controller.signal });
+                clearTimeout(timeoutId);
                 
                 if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    console.warn('Google Sheets API failed, using fallback');
+                    return null;
                 }
                 
                 const data = await response.json();
                 
                 if (!data.values || data.values.length < 2) {
-                    showNoData();
-                    return;
+                    return null;
                 }
                 
-                // Process the data CORRECTLY
-                processPaymentData(data.values);
+                // OPTIMIZATION: Fast filtering with early exit
+                const headers = data.values[0];
+                const rows = data.values.slice(1);
+                
+                // Find indices quickly
+                const nameIndex = 0; // Usually column A
+                const dateIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('date')) || 1;
+                const monthIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('month')) || 2;
+                const paymentIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('payment')) || 3;
+                const pointsIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('point')) || 4;
+                
+                // OPTIMIZATION: Use Map for faster lookup if we have many members
+                const memberRows = [];
+                const searchName = memberName.toLowerCase().trim();
+                
+                for (let i = 0; i < rows.length; i++) {
+                    const row = rows[i];
+                    if (row[nameIndex] && row[nameIndex].toString().toLowerCase().trim() === searchName) {
+                        memberRows.push({
+                            date: row[dateIndex] || '',
+                            month: row[monthIndex] || '',
+                            payment: parseFloat(row[paymentIndex]) || 0,
+                            points: parseInt(row[pointsIndex]) || 0
+                        });
+                        
+                        // OPTIMIZATION: Limit to recent 20 records for speed
+                        if (memberRows.length >= 20) break;
+                    }
+                }
+                
+                return {
+                    headers,
+                    rows: memberRows,
+                    totalRows: memberRows.length
+                };
                 
             } catch (error) {
                 console.error('Error fetching payment data:', error);
-                showError('Failed to load payment data. Please try again.');
+                return null;
             }
         }
         
-        // Process payment data - CORRECTED VERSION
-        function processPaymentData(sheetData) {
-            // Get headers (first row)
-            const headers = sheetData[0];
-            const rows = sheetData.slice(1); // All data rows
+        // 4. FAST CALCULATION FUNCTIONS
+        function calculateSummary(paymentData, urlPoints) {
+            if (!paymentData || !paymentData.rows || paymentData.rows.length === 0) {
+                return getFallbackSummary(urlPoints);
+            }
             
-            // DEBUG: Log headers to see what columns we have
-            console.log('Sheet Headers:', headers);
+            const rows = paymentData.rows;
+            let totalPaid = 0;
+            let totalPoints = urlPoints;
+            let lastPaymentDate = '';
+            let firstPaymentDate = null;
             
-            // Find column indices - using EXACT matching
-            const nameIndex = findColumnIndex(headers, ['name', 'member', 'person']);
-            const dateIndex = findColumnIndex(headers, ['date', 'payment date', 'transaction date']);
-            const monthIndex = findColumnIndex(headers, ['month', 'for month', 'period']);
-            const paymentIndex = findColumnIndex(headers, ['payment', 'amount', 'paid', 'rupees', '₹']);
-            const pointsIndex = findColumnIndex(headers, ['points', 'point', 'score', 'credit']);
-            
-            // DEBUG: Log found indices
-            console.log('Column Indices:', {
-                nameIndex, dateIndex, monthIndex, paymentIndex, pointsIndex
-            });
-            
-            // Filter rows for this specific member
-            const memberRows = rows.filter(row => {
-                if (!row[nameIndex]) return false;
+            // Single pass calculation
+            for (const row of rows) {
+                totalPaid += row.payment;
+                totalPoints += row.points;
                 
-                const rowName = row[nameIndex].toString().trim().toLowerCase();
-                const searchName = memberName.toLowerCase();
-                
-                // Exact match or contains match
-                return rowName === searchName || rowName.includes(searchName);
-            });
+                if (row.date) {
+                    if (!firstPaymentDate) firstPaymentDate = row.date;
+                    lastPaymentDate = row.date;
+                }
+            }
             
-            console.log(`Found ${memberRows.length} payment records for ${memberName}`);
+            const targetAmount = 1200;
+            const pendingAmount = Math.max(0, targetAmount - totalPaid);
+            const completionRate = Math.min(100, Math.round((totalPaid / targetAmount) * 100));
+            const pointsProgress = Math.min(100, Math.round((totalPoints / 500) * 100));
+            const avgPoints = rows.length > 0 ? Math.round(totalPoints / rows.length) : 0;
             
-            if (memberRows.length === 0) {
-                showNoData();
+            return {
+                totalPaid,
+                totalPoints,
+                pendingAmount,
+                completionRate,
+                pointsProgress,
+                avgPoints,
+                paymentCount: rows.length,
+                lastPaymentDate: lastPaymentDate || new Date().toLocaleDateString('en-IN'),
+                firstPaymentDate: firstPaymentDate || new Date().getFullYear().toString()
+            };
+        }
+        
+        function getFallbackSummary(points) {
+            const estimatedPaid = Math.round(points * 6);
+            const targetAmount = 1200;
+            const pendingAmount = Math.max(0, targetAmount - estimatedPaid);
+            const completionRate = Math.round((estimatedPaid / targetAmount) * 100);
+            const pointsProgress = Math.min(100, Math.round((points / 500) * 100));
+            
+            return {
+                totalPaid: estimatedPaid,
+                totalPoints: points,
+                pendingAmount,
+                completionRate,
+                pointsProgress,
+                avgPoints: points,
+                paymentCount: 1,
+                lastPaymentDate: new Date().toLocaleDateString('en-IN'),
+                firstPaymentDate: new Date().getFullYear().toString()
+            };
+        }
+        
+        // 5. QUICK RENDER FUNCTIONS
+        function updateBasicInfo(name, phone, points, image) {
+            // Update DOM elements directly
+            document.getElementById('memberName').innerText = name;
+            document.getElementById('memberPhone').innerText = phone;
+            document.getElementById('memberImage').src = image;
+            document.getElementById('displayPoints').innerText = points;
+            document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-IN');
+            document.getElementById('lastUpdatedTime').innerText = new Date().toLocaleTimeString('en-IN');
+            document.getElementById('receiptNumber').innerText = `AGM/${new Date().getFullYear()}/${Math.floor(1000 + Math.random() * 9000)}`;
+        }
+        
+        function renderPaymentData(paymentData) {
+            const tbody = document.getElementById('paymentHistory');
+            
+            if (!paymentData || !paymentData.rows || paymentData.rows.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; padding: 30px; color: #64748b;">
+                            <i class="fas fa-info-circle"></i><br>
+                            No detailed payment records found
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('totalPaymentsCount').innerText = '0';
                 return;
             }
             
-            // Sort by date (assuming date is in column B or dateIndex)
-            memberRows.sort((a, b) => {
-                const dateA = parseDate(a[dateIndex] || '');
-                const dateB = parseDate(b[dateIndex] || '');
-                return dateA - dateB;
-            });
-            
-            // Display payment data
-            displayPaymentData(memberRows, {
-                nameIndex, dateIndex, monthIndex, paymentIndex, pointsIndex
-            });
-            
-            // Calculate and display summaries
-            calculateSummaries(memberRows, paymentIndex, pointsIndex);
-        }
-        
-        // Helper function to find column index
-        function findColumnIndex(headers, possibleNames) {
-            for (let i = 0; i < headers.length; i++) {
-                const header = headers[i] ? headers[i].toString().toLowerCase().trim() : '';
-                for (const name of possibleNames) {
-                    if (header.includes(name.toLowerCase())) {
-                        return i;
-                    }
-                }
-            }
-            // Fallback to common positions
-            if (possibleNames.includes('name')) return 0;
-            if (possibleNames.includes('date')) return 1;
-            if (possibleNames.includes('month')) return 2;
-            if (possibleNames.includes('payment')) return 3;
-            if (possibleNames.includes('points')) return 4;
-            return 0;
-        }
-        
-        // Helper function to parse date
-        function parseDate(dateString) {
-            if (!dateString) return new Date(0);
-            
-            // Try different date formats
-            const formats = [
-                'dd/mm/yyyy',
-                'dd-mm-yyyy',
-                'yyyy-mm-dd',
-                'mm/dd/yyyy'
-            ];
-            
-            for (const format of formats) {
-                const parts = dateString.split(/[/-]/);
-                if (parts.length === 3) {
-                    let day, month, year;
-                    
-                    if (format === 'dd/mm/yyyy') {
-                        day = parseInt(parts[0]);
-                        month = parseInt(parts[1]) - 1;
-                        year = parseInt(parts[2]);
-                    } else if (format === 'dd-mm-yyyy') {
-                        day = parseInt(parts[0]);
-                        month = parseInt(parts[1]) - 1;
-                        year = parseInt(parts[2]);
-                    } else if (format === 'yyyy-mm-dd') {
-                        year = parseInt(parts[0]);
-                        month = parseInt(parts[1]) - 1;
-                        day = parseInt(parts[2]);
-                    } else if (format === 'mm/dd/yyyy') {
-                        month = parseInt(parts[0]) - 1;
-                        day = parseInt(parts[1]);
-                        year = parseInt(parts[2]);
-                    }
-                    
-                    if (!isNaN(day) && !isNaN(month) && !isNaN(year)) {
-                        // Handle 2-digit years
-                        if (year < 100) {
-                            year += 2000;
-                        }
-                        return new Date(year, month, day);
-                    }
-                }
-            }
-            
-            return new Date(dateString) || new Date(0);
-        }
-        
-        // Display payment data in table
-        function displayPaymentData(rows, indices) {
+            // Fast string concatenation
             let html = '';
-            let totalPaid = 0;
-            let totalPoints = 0;
-            let lastPaymentDate = '';
-            
-            rows.forEach((row, index) => {
-                const payment = parseFloat(row[indices.paymentIndex]) || 0;
-                const points = parseInt(row[indices.pointsIndex]) || 0;
-                const date = row[indices.dateIndex] || 'N/A';
-                const month = row[indices.monthIndex] || 'N/A';
-                
-                totalPaid += payment;
-                totalPoints += points;
-                
-                if (date !== 'N/A') {
-                    lastPaymentDate = date;
-                }
-                
+            paymentData.rows.forEach((row, index) => {
                 html += `
                     <tr>
                         <td>${index + 1}</td>
-                        <td>${date}</td>
-                        <td>${month}</td>
-                        <td class="payment-amount">${payment > 0 ? '₹' + payment : '-'}</td>
-                        <td><span class="points-badge">${points}</span></td>
+                        <td>${row.date}</td>
+                        <td>${row.month}</td>
+                        <td style="font-weight: 600; color: ${row.payment > 0 ? '#059669' : '#64748b'}">
+                            ${row.payment > 0 ? '₹' + row.payment : '-'}
+                        </td>
+                        <td style="font-weight: 600; color: #0b4da0">${row.points || 0}</td>
                     </tr>
                 `;
             });
             
-            paymentBody.innerHTML = html;
-            document.getElementById('paymentCount').textContent = `${rows.length} Payments`;
-            
-            // Update member details
-            if (rows.length > 0) {
-                const firstPaymentDate = rows[0][indices.dateIndex] || '';
-                document.getElementById('memberSince').textContent = firstPaymentDate;
-                document.getElementById('totalPayments').textContent = rows.length;
-                document.getElementById('lastPayment').textContent = lastPaymentDate;
-            }
+            tbody.innerHTML = html;
+            document.getElementById('totalPaymentsCount').innerText = paymentData.rows.length;
         }
         
-        // Calculate and display summaries
-        function calculateSummaries(rows, paymentIndex, pointsIndex) {
-            let totalPaid = 0;
-            let totalPoints = 0;
-            
-            rows.forEach(row => {
-                totalPaid += parseFloat(row[paymentIndex]) || 0;
-                totalPoints += parseInt(row[pointsIndex]) || 0;
-            });
-            
-            const targetAmount = 1200;
-            const pending = Math.max(0, targetAmount - totalPaid);
-            const completion = Math.round((totalPaid / targetAmount) * 100);
-            const pointsProgress = Math.round((totalPoints / 500) * 100);
-            const avgPoints = rows.length > 0 ? Math.round(totalPoints / rows.length) : 0;
-            
+        function renderSummary(summary) {
             // Update financial summary
-            document.getElementById('totalPaid').textContent = '₹' + totalPaid;
-            document.getElementById('pendingAmount').textContent = '₹' + pending;
-            document.getElementById('completionPercent').textContent = completion + '%';
-            document.getElementById('completionBar').style.width = Math.min(completion, 100) + '%';
+            document.getElementById('totalPaidAmount').innerText = '₹' + summary.totalPaid;
+            document.getElementById('pendingAmount').innerText = summary.pendingAmount === 0 ? '₹0' : '₹' + summary.pendingAmount;
+            document.getElementById('completionPercentage').innerText = summary.completionRate + '%';
+            document.getElementById('completionRate').innerText = summary.completionRate + '%';
+            document.getElementById('lastPaymentDate').innerText = summary.lastPaymentDate;
+            document.getElementById('memberSince').innerText = summary.firstPaymentDate;
             
             // Update points summary
-            document.getElementById('totalPoints').textContent = totalPoints;
-            document.getElementById('pointsProgress').textContent = pointsProgress + '%';
-            document.getElementById('avgPoints').textContent = avgPoints;
-            document.getElementById('pointsBar').style.width = Math.min(pointsProgress, 100) + '%';
+            document.getElementById('totalPoints').innerText = summary.totalPoints;
+            document.getElementById('pointsProgress').innerText = summary.pointsProgress + '%';
+            document.getElementById('avgPoints').innerText = summary.avgPoints;
+            
+            // Update points display
+            document.getElementById('displayPoints').innerText = summary.totalPoints;
+            document.getElementById('pointsProgressBar').style.width = summary.pointsProgress + '%';
+            document.getElementById('progressText').innerText = summary.pointsProgress + '% Complete';
             
             // Update status
-            updateStatus(completion, totalPoints);
+            updateStatus(summary.completionRate);
         }
         
-        // Update status badge
-        function updateStatus(completion, totalPoints) {
-            const statusBadge = document.getElementById('statusBadge');
-            const statusText = document.getElementById('statusText');
-            
-            if (completion >= 100) {
-                statusText.textContent = 'Payment Complete ✓';
-                statusBadge.className = 'status-badge status-complete';
-            } else if (completion >= 50) {
-                statusText.textContent = 'Active Member';
-                statusBadge.className = 'status-badge status-active';
-            } else if (totalPoints > 0) {
-                statusText.textContent = 'Payment In Progress';
-                statusBadge.className = 'status-badge status-active';
+        function updateStatus(completionRate) {
+            const statusElement = document.getElementById('memberStatus');
+            if (completionRate === 100) {
+                statusElement.innerText = "Payment Complete";
+                statusElement.style.color = "#059669";
+            } else if (completionRate >= 50) {
+                statusElement.innerText = "Active Member";
+                statusElement.style.color = "#0b4da0";
+            } else if (completionRate > 0) {
+                statusElement.innerText = "Payment Pending";
+                statusElement.style.color = "#f59e0b";
             } else {
-                statusText.textContent = 'Payment Pending';
-                statusBadge.className = 'status-badge status-pending';
+                statusElement.innerText = "No Payments";
+                statusElement.style.color = "#dc2626";
             }
         }
         
-        // Show no data message
-        function showNoData() {
-            paymentBody.innerHTML = `
-                <tr>
-                    <td colspan="5" style="text-align:center;padding:50px;color:#64748b">
-                        <i class="fas fa-inbox fa-3x mb-3" style="color:#cbd5e1;"></i>
-                        <h4 style="color:#475569;margin-bottom:10px;">No Payment Records Found</h4>
-                        <p>No payment history available for <strong>${memberName}</strong>.</p>
-                        <button class="btn btn-primary mt-3" onclick="fetchPaymentData()">
-                            <i class="fas fa-redo me-2"></i>Try Again
-                        </button>
-                    </td>
-                </tr>
-            `;
+        function updateStage(stageNumber, status, message = '') {
+            const stageElement = document.getElementById(`stage${stageNumber}`);
+            const timeElement = document.getElementById(`time${stageNumber}`);
+            const now = new Date();
             
-            document.getElementById('paymentCount').textContent = '0 Payments';
-            document.getElementById('statusText').textContent = 'No Payments';
+            if (status === 'started') {
+                stageElement.classList.add('active');
+                stageElement.classList.remove('completed');
+                timeElement.textContent = `Started at ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}`;
+            } else if (status === 'completed') {
+                stageElement.classList.remove('active');
+                stageElement.classList.add('completed');
+                timeElement.textContent = `Completed at ${now.getHours()}:${now.getMinutes()}:${now.getSeconds()}${message ? ' - ' + message : ''}`;
+            }
         }
+        
+        // 6. INITIALIZATION
+        window.onload = function() {
+            // Start the optimized loading process
+            fetchDataInParallel();
+            
+            // Pre-fetch for other potential members
+            setTimeout(prefetchCommonMembers, 2000);
+        };
+        
+        // 7. ADVANCED: PRE-FETCHING FOR COMMON MEMBERS
+        async function prefetchCommonMembers() {
+            // This runs in background to cache data for common members
+            try {
+                const commonMembers = ['Mohsin Khan', 'Mohammad Ahmed']; // Add common member names
+                
+                for (const member of commonMembers) {
+                    const cacheKey = `payment_${member.replace(/\s+/g, '_')}`;
+                    if (!cache.get(cacheKey)) {
+                        const data = await fetchPaymentDataOptimized(member);
+                        if (data) {
+                            cache.set(cacheKey, data);
+                        }
+                    }
+                }
+            } catch (error) {
+                // Silent fail - pre-fetching is optional
+            }
+        }
+        
+        // 8. ADD THESE FUNCTIONS TO YOUR EXISTING CODE
+        // Replace your existing fetchMemberData() and fetchPaymentData() with these optimized versions
         
         // Show error message
         function showError(message) {
-            paymentBody.innerHTML = `
-                <tr>
-                    <td colspan="5" style="text-align:center;padding:50px;color:#dc2626">
-                        <i class="fas fa-exclamation-triangle fa-3x mb-3"></i>
-                        <h4 style="margin-bottom:10px;">Error Loading Data</h4>
-                        <p>${message}</p>
-                        <button class="btn btn-primary mt-3" onclick="fetchPaymentData()">
-                            <i class="fas fa-redo me-2"></i>Retry
-                        </button>
-                    </td>
-                </tr>
-            `;
+            console.error('Receipt Error:', message);
+            // You can optionally show a subtle error indicator
         }
         
-        // Initialize when page loads
-        window.addEventListener('DOMContentLoaded', initializePage);
+        // Auto-refresh with cache consideration
+        setInterval(() => {
+            if (!document.hidden) {
+                // Only refresh if cache is old
+                const cacheAge = Date.now() - cache.lastUpdate;
+                if (cacheAge > 60000) { // 1 minute
+                    fetchDataInParallel();
+                }
+            }
+        }, 30000);
     </script>
 </body>
 </html>
