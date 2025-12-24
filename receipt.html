@@ -491,6 +491,18 @@
                 display: none;
             }
         }
+
+        /* ================= SUCCESS MESSAGE ================= */
+        .success-message {
+            background: #d1fae5;
+            color: #059669;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin: 10px 30px;
+            border-left: 4px solid #059669;
+            display: none;
+            font-size: 0.9rem;
+        }
     </style>
 </head>
 
@@ -528,6 +540,12 @@
                     <div class="info-value" id="memberStatus" style="color:#10b981">Loading...</div>
                 </div>
             </div>
+        </div>
+
+        <!-- Success Message (for cache) -->
+        <div id="successMessage" class="success-message" style="display: none;">
+            <i class="fas fa-check-circle"></i>
+            <span id="successText">Loading cached data for faster access...</span>
         </div>
 
         <!-- Error Message -->
@@ -671,6 +689,9 @@
             <button class="btn btn-close" onclick="window.close()">
                 <i class="fas fa-times"></i> Close Window
             </button>
+            <button class="btn btn-refresh" onclick="refreshData()" style="background: linear-gradient(135deg, #10b981, #059669);">
+                <i class="fas fa-sync-alt"></i> Refresh Data
+            </button>
         </div>
 
         <!-- Footer -->
@@ -701,77 +722,154 @@
         
         document.getElementById('receiptNumber').innerText = generateReceiptNumber();
         
-        // Fetch and display member data from local API
-        async function fetchMemberData() {
+        // Cache for member data
+        const CACHE_KEY_PREFIX = 'agm_member_';
+        const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes cache
+        
+        // Get cache key for member
+        function getCacheKey(name, phone) {
+            return `${CACHE_KEY_PREFIX}${name}_${phone}`.replace(/\s+/g, '_');
+        }
+        
+        // Save data to cache
+        function saveToCache(key, data) {
             try {
-                // Instantly update member info from URL parameters
-                document.getElementById('memberName').innerText = decodeURIComponent(memberName);
-                document.getElementById('memberPhone').innerText = decodeURIComponent(memberPhone);
-                document.getElementById('memberImage').src = decodeURIComponent(memberImage);
+                const cacheData = {
+                    timestamp: Date.now(),
+                    data: data
+                };
+                localStorage.setItem(key, JSON.stringify(cacheData));
+                return true;
+            } catch (e) {
+                console.log('Cache save failed:', e.message);
+                return false;
+            }
+        }
+        
+        // Get data from cache
+        function getFromCache(key) {
+            try {
+                const cached = localStorage.getItem(key);
+                if (!cached) return null;
                 
-                // Show loading state
-                document.getElementById('memberStatus').innerText = "Loading data...";
-                document.getElementById('displayPoints').innerText = '0';
+                const cacheData = JSON.parse(cached);
+                const age = Date.now() - cacheData.timestamp;
                 
-                // Build API URL with parameters
-                let apiUrl = 'api.php';
-                const params = new URLSearchParams();
-                if (memberName) params.append('name', memberName);
-                if (memberPhone) params.append('phone', memberPhone);
-                
-                if (params.toString()) {
-                    apiUrl += '?' + params.toString();
+                // Check if cache is still valid
+                if (age < CACHE_DURATION) {
+                    return cacheData.data;
                 }
-                
-                // Fetch from local API
-                const response = await fetch(apiUrl);
+                return null;
+            } catch (e) {
+                console.log('Cache read failed:', e.message);
+                return null;
+            }
+        }
+        
+        // Fetch data from API with timeout
+        async function fetchFromAPI() {
+            // Build API URL
+            let apiUrl = 'api.php';
+            const params = new URLSearchParams();
+            if (memberName) params.append('name', memberName);
+            if (memberPhone) params.append('phone', memberPhone);
+            
+            if (params.toString()) {
+                apiUrl += '?' + params.toString();
+            }
+            
+            // Create timeout promise
+            const timeoutPromise = new Promise((_, reject) => {
+                setTimeout(() => reject(new Error('Request timeout after 10 seconds')), 10000);
+            });
+            
+            // Create fetch promise
+            const fetchPromise = fetch(apiUrl);
+            
+            try {
+                // Race between fetch and timeout
+                const response = await Promise.race([fetchPromise, timeoutPromise]);
                 
                 if (!response.ok) {
                     throw new Error(`API error: ${response.status}`);
                 }
                 
-                const data = await response.json();
-                
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-                
-                // Process the data
-                processMemberData(data);
-                
+                return await response.json();
             } catch (error) {
-                console.error('Error fetching member data:', error);
-                showError(error.message || 'Failed to load member data. Showing basic info.');
-                
-                // Set default values for basic receipt
-                document.getElementById('memberStatus').innerText = "Data Not Available";
-                document.getElementById('memberStatus').style.color = "#dc2626";
-                document.getElementById('totalPaymentsCount').innerText = "0";
-                document.getElementById('completionRate').innerText = "0%";
-                document.getElementById('lastPaymentDate').innerText = "-";
-                document.getElementById('memberSince').innerText = "-";
-                document.getElementById('totalPaidAmount').innerText = "₹0";
-                document.getElementById('pendingAmount').innerText = "₹0";
-                document.getElementById('completionPercentage').innerText = "0%";
-                document.getElementById('totalPoints').innerText = "0";
-                document.getElementById('pointsProgress').innerText = "0%";
-                document.getElementById('avgPoints').innerText = "0";
-                
-                // Clear payment history table
-                const tbody = document.getElementById('paymentHistory');
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5" style="text-align: center; padding: 30px; color: #64748b;">
-                            <i class="fas fa-info-circle"></i><br>
-                            No payment data available
-                        </td>
-                    </tr>
-                `;
+                console.log('API fetch failed:', error.message);
+                throw error;
             }
         }
         
-        // Process member data from API
+        // Main function to load member data
+        async function loadMemberData(forceRefresh = false) {
+            const cacheKey = getCacheKey(memberName, memberPhone);
+            
+            // Try to get from cache first (unless forcing refresh)
+            if (!forceRefresh) {
+                const cachedData = getFromCache(cacheKey);
+                if (cachedData) {
+                    showSuccess('Loading cached data for faster access...');
+                    processMemberData(cachedData);
+                    
+                    // Try to update from API in background
+                    setTimeout(() => fetchAndUpdate(cacheKey), 100);
+                    return;
+                }
+            }
+            
+            // Show loading state
+            document.getElementById('memberStatus').innerText = "Fetching data...";
+            
+            try {
+                // Try to fetch from API
+                const apiData = await fetchFromAPI();
+                
+                // Save to cache
+                saveToCache(cacheKey, apiData);
+                
+                // Process the data
+                processMemberData(apiData);
+                
+            } catch (apiError) {
+                console.log('API failed, trying cache...');
+                
+                // Try cache as fallback
+                const cachedData = getFromCache(cacheKey);
+                if (cachedData) {
+                    showError('API unavailable. Using cached data.');
+                    processMemberData(cachedData);
+                } else {
+                    showError('Unable to load data. Please check your connection.');
+                    showBasicReceipt();
+                }
+            }
+        }
+        
+        // Fetch and update cache in background
+        async function fetchAndUpdate(cacheKey) {
+            try {
+                const apiData = await fetchFromAPI();
+                saveToCache(cacheKey, apiData);
+                
+                // Update UI with fresh data
+                processMemberData(apiData);
+                showSuccess('Data updated successfully!');
+                
+            } catch (error) {
+                console.log('Background update failed:', error.message);
+                // Silent fail - we already have cached data
+            }
+        }
+        
+        // Process member data
         function processMemberData(data) {
+            if (!data) return;
+            
+            // Update status to show data is loaded
+            document.getElementById('memberStatus').innerText = "Data Loaded";
+            document.getElementById('memberStatus').style.color = "#059669";
+            
             // Update profile information
             if (data.member_since) {
                 document.getElementById('memberSince').innerText = data.member_since;
@@ -869,6 +967,45 @@
                     updateStatus(completionRate);
                 }
             }
+            
+            // Hide any success messages after 3 seconds
+            setTimeout(() => {
+                const successMsg = document.getElementById('successMessage');
+                if (successMsg.style.display !== 'none') {
+                    successMsg.style.display = 'none';
+                }
+            }, 3000);
+        }
+        
+        // Show basic receipt when no data is available
+        function showBasicReceipt() {
+            document.getElementById('memberStatus').innerText = "Basic Mode";
+            document.getElementById('memberStatus').style.color = "#f59e0b";
+            
+            // Set default values
+            document.getElementById('totalPaymentsCount').innerText = "0";
+            document.getElementById('completionRate').innerText = "0%";
+            document.getElementById('lastPaymentDate').innerText = "-";
+            document.getElementById('memberSince').innerText = "-";
+            document.getElementById('totalPaidAmount').innerText = "₹0";
+            document.getElementById('pendingAmount').innerText = "₹0";
+            document.getElementById('completionPercentage').innerText = "0%";
+            document.getElementById('totalPoints').innerText = "0";
+            document.getElementById('pointsProgress').innerText = "0%";
+            document.getElementById('avgPoints').innerText = "0";
+            
+            // Clear payment history table
+            const tbody = document.getElementById('paymentHistory');
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 30px; color: #64748b;">
+                        <i class="fas fa-info-circle"></i><br>
+                        No payment data available
+                    </td>
+                </tr>
+            `;
+            
+            updatePointsDisplay(0);
         }
         
         // Helper function to update points display
@@ -899,6 +1036,15 @@
             }
         }
         
+        // Show success message
+        function showSuccess(message) {
+            const successElement = document.getElementById('successMessage');
+            const successText = document.getElementById('successText');
+            
+            successText.innerHTML = message;
+            successElement.style.display = 'block';
+        }
+        
         // Show error message
         function showError(message) {
             const errorElement = document.getElementById('errorMessage');
@@ -911,6 +1057,13 @@
             setTimeout(() => {
                 errorElement.style.display = 'none';
             }, 5000);
+        }
+        
+        // Refresh data manually
+        function refreshData() {
+            document.getElementById('memberStatus').innerText = "Refreshing...";
+            document.getElementById('memberStatus').style.color = "#0b4da0";
+            loadMemberData(true); // Force refresh
         }
         
         // Load data when page loads
@@ -926,12 +1079,9 @@
             document.getElementById('memberImage').src = decodeURIComponent(memberImage);
             document.getElementById('displayPoints').innerText = '0';
             
-            // Fetch detailed data
-            fetchMemberData();
+            // Start loading data
+            loadMemberData();
         };
-        
-        // Optional: Add auto-refresh every 30 seconds to check for updates
-        // setInterval(fetchMemberData, 30000);
     </script>
 </body>
 </html>
