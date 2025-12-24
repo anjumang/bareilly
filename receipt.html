@@ -6,491 +6,67 @@
     <title>Member Receipt - Anjuman Ghulaman-E-Mustafa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <!-- SAME CSS - NO CHANGES -->
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            color: #1e293b;
-            line-height: 1.6;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
-
-        /* ================= HEADER ================= */
-        .receipt-header {
-            background: linear-gradient(135deg, #0b4da0 0%, #083a7f 100%);
-            color: #fff;
-            padding: 25px 30px;
-            border-bottom: 5px solid #10b981;
-        }
-
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .logo-container {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .logo {
-            width: 70px;
-            height: 70px;
-            border-radius: 12px;
-            background: rgba(255,255,255,0.1);
-            padding: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid rgba(255,255,255,0.2);
-        }
-
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 8px;
-        }
-
-        .header-title h1 {
-            font-size: 1.8rem;
-            margin-bottom: 5px;
-            color: white;
-        }
-
-        .header-title p {
-            font-size: 0.9rem;
-            opacity: 0.9;
-            color: white;
-        }
-
-        .header-info {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            background: rgba(255,255,255,0.1);
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-top: 10px;
-            font-size: 0.9rem;
-        }
-
-        .info-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .info-label {
-            font-size: 0.8rem;
-            opacity: 0.9;
-            margin-bottom: 5px;
-        }
-
-        .info-value {
-            font-weight: 600;
-            font-size: 1rem;
-        }
-
-        /* ================= PROFILE ================= */
-        .profile-section {
-            padding: 30px;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .profile-image {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 5px solid #e2e8f0;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            flex-shrink: 0;
-        }
-
-        .profile-info {
-            flex: 1;
-        }
-
-        .member-name {
-            font-size: 2rem;
-            color: #0b4da0;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .member-contact {
-            color: #64748b;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.1rem;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .info-card {
-            background: #f8fafc;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            border-left: 4px solid #0b4da0;
-            transition: transform 0.3s;
-        }
-
-        .info-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .info-label {
-            font-size: 0.8rem;
-            color: #64748b;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-
-        .info-value {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        /* ================= PAYMENT HISTORY ================= */
-        .history-section {
-            padding: 30px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .section-title {
-            color: #0b4da0;
-            font-size: 1.5rem;
-            margin-bottom: 25px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .payment-table-container {
-            overflow-x: auto;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            margin-bottom: 20px;
-        }
-
-        .payment-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
-        }
-
-        .payment-table thead {
-            background: linear-gradient(135deg, #0b4da0 0%, #083a7f 100%);
-            color: white;
-        }
-
-        .payment-table th {
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .payment-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e2e8f0;
-            color: #1e293b;
-        }
-
-        .payment-table tbody tr:nth-child(even) {
-            background: #f8fafc;
-        }
-
-        .payment-table tbody tr:hover {
-            background: #f1f5f9;
-        }
-
-        /* ================= SUMMARY CARDS ================= */
-        .summary-cards {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-            padding: 30px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .summary-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            padding: 25px 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            border: 1px solid #e2e8f0;
-        }
-
-        .summary-card h3 {
-            color: #0b4da0;
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px dashed #e2e8f0;
-        }
-
-        .summary-item:last-child {
-            border-bottom: none;
-        }
-
-        .summary-label {
-            color: #64748b;
-            font-weight: 500;
-        }
-
-        .summary-value {
-            color: #1e293b;
-            font-weight: 600;
-        }
-
-        .summary-value.highlight {
-            color: #059669;
-        }
-
-        /* ================= POINTS DISPLAY ================= */
-        .points-section {
-            padding: 30px;
-            text-align: center;
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-        }
-
-        .points-display {
-            padding: 40px;
-            background: white;
-            border-radius: 15px;
-            margin-top: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: 1px solid #e2e8f0;
-        }
-
-        .points-number {
-            font-size: 4rem;
-            font-weight: 800;
-            color: #0b4da0;
-            margin: 20px 0;
-            text-shadow: 0 5px 15px rgba(11, 77, 160, 0.2);
-        }
-
-        .progress-container {
-            height: 12px;
-            background: #e2e8f0;
-            border-radius: 6px;
-            margin: 30px 0;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #10b981, #0b4da0);
-            border-radius: 6px;
-            transition: width 1s ease;
-        }
-
-        .progress-labels {
-            display: flex;
-            justify-content: space-between;
-            color: #64748b;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-
-        /* ================= ACTION BUTTONS ================= */
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 30px;
-            background: white;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .btn {
-            padding: 14px 35px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 16px;
-            transition: all 0.3s;
-            min-width: 160px;
-            justify-content: center;
-        }
-
-        .btn-print {
-            background: linear-gradient(135deg, #0b4da0, #083a7f);
-            color: #fff;
-        }
-
-        .btn-close {
-            background: linear-gradient(135deg, #64748b, #475569);
-            color: #fff;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        .btn:active {
-            transform: translateY(-1px);
-        }
-
-        /* ================= ERROR MESSAGE ================= */
-        .error-message {
-            background: #fee2e2;
-            color: #dc2626;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 30px;
-            border-left: 4px solid #dc2626;
-            display: none;
-        }
-
-        .error-message i {
-            margin-right: 10px;
-        }
-
-        /* ================= LOADING ================= */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #64748b;
-        }
-
-        .loading i {
-            font-size: 2rem;
-            color: #0b4da0;
-            margin-bottom: 15px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* ================= RESPONSIVE ================= */
-        @media (max-width: 768px) {
-            .container {
-                border-radius: 10px;
-            }
-            
-            .profile-section {
-                flex-direction: column;
-                text-align: center;
-                gap: 20px;
-            }
-            
-            .info-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .summary-cards {
-                grid-template-columns: 1fr;
-                gap: 15px;
-                padding: 20px;
-            }
-            
-            .header-info {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .btn {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .profile-section {
-                padding: 20px;
-            }
-            
-            .history-section, .points-section {
-                padding: 20px;
-            }
-            
-            .member-name {
-                font-size: 1.5rem;
-            }
-            
-            .points-number {
-                font-size: 3rem;
-            }
-            
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            
-            .container {
-                box-shadow: none;
-                border-radius: 0;
-            }
-            
-            .action-buttons {
-                display: none;
-            }
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); color: #1e293b; line-height: 1.6; min-height: 100vh; padding: 20px; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); overflow: hidden; }
+        .receipt-header { background: linear-gradient(135deg, #0b4da0 0%, #083a7f 100%); color: #fff; padding: 25px 30px; border-bottom: 5px solid #10b981; }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .logo-container { display: flex; align-items: center; gap: 15px; }
+        .logo { width: 70px; height: 70px; border-radius: 12px; background: rgba(255,255,255,0.1); padding: 5px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.2); }
+        .logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
+        .header-title h1 { font-size: 1.8rem; margin-bottom: 5px; color: white; }
+        .header-title p { font-size: 0.9rem; opacity: 0.9; color: white; }
+        .header-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; background: rgba(255,255,255,0.1); padding: 15px 20px; border-radius: 10px; margin-top: 10px; font-size: 0.9rem; }
+        .info-item { display: flex; flex-direction: column; }
+        .info-label { font-size: 0.8rem; opacity: 0.9; margin-bottom: 5px; }
+        .info-value { font-weight: 600; font-size: 1rem; }
+        .profile-section { padding: 30px; display: flex; align-items: center; gap: 30px; border-bottom: 1px solid #e2e8f0; }
+        .profile-image { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 5px solid #e2e8f0; box-shadow: 0 8px 20px rgba(0,0,0,0.15); flex-shrink: 0; }
+        .profile-info { flex: 1; }
+        .member-name { font-size: 2rem; color: #0b4da0; font-weight: 700; margin-bottom: 8px; }
+        .member-contact { color: #64748b; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
+        .info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
+        .info-card { background: #f8fafc; padding: 15px; border-radius: 12px; text-align: center; border-left: 4px solid #0b4da0; transition: transform 0.3s; }
+        .info-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .history-section { padding: 30px; border-bottom: 1px solid #e2e8f0; }
+        .section-title { color: #0b4da0; font-size: 1.5rem; margin-bottom: 25px; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0; display: flex; align-items: center; gap: 10px; }
+        .payment-table-container { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
+        .payment-table { width: 100%; border-collapse: collapse; min-width: 600px; }
+        .payment-table thead { background: linear-gradient(135deg, #0b4da0 0%, #083a7f 100%); color: white; }
+        .payment-table th { padding: 15px; text-align: left; font-weight: 600; font-size: 0.9rem; }
+        .payment-table td { padding: 12px 15px; border-bottom: 1px solid #e2e8f0; color: #1e293b; }
+        .payment-table tbody tr:nth-child(even) { background: #f8fafc; }
+        .payment-table tbody tr:hover { background: #f1f5f9; }
+        .summary-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; padding: 30px; border-bottom: 1px solid #e2e8f0; }
+        .summary-card { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 25px 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
+        .summary-card h3 { color: #0b4da0; font-size: 1.3rem; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; display: flex; align-items: center; gap: 10px; }
+        .summary-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed #e2e8f0; }
+        .summary-item:last-child { border-bottom: none; }
+        .summary-label { color: #64748b; font-weight: 500; }
+        .summary-value { color: #1e293b; font-weight: 600; }
+        .summary-value.highlight { color: #059669; }
+        .points-section { padding: 30px; text-align: center; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); }
+        .points-display { padding: 40px; background: white; border-radius: 15px; margin-top: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
+        .points-number { font-size: 4rem; font-weight: 800; color: #0b4da0; margin: 20px 0; text-shadow: 0 5px 15px rgba(11, 77, 160, 0.2); }
+        .progress-container { height: 12px; background: #e2e8f0; border-radius: 6px; margin: 30px 0; overflow: hidden; }
+        .progress-bar { height: 100%; background: linear-gradient(90deg, #10b981, #0b4da0); border-radius: 6px; transition: width 1s ease; }
+        .progress-labels { display: flex; justify-content: space-between; color: #64748b; font-size: 0.9rem; margin-top: 10px; }
+        .action-buttons { display: flex; justify-content: center; gap: 20px; padding: 30px; background: white; border-top: 1px solid #e2e8f0; }
+        .btn { padding: 14px 35px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 16px; transition: all 0.3s; min-width: 160px; justify-content: center; }
+        .btn-print { background: linear-gradient(135deg, #0b4da0, #083a7f); color: #fff; }
+        .btn-close { background: linear-gradient(135deg, #64748b, #475569); color: #fff; }
+        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        .btn:active { transform: translateY(-1px); }
+        .error-message { background: #fee2e2; color: #dc2626; padding: 15px; border-radius: 10px; margin: 20px 30px; border-left: 4px solid #dc2626; display: none; }
+        .error-message i { margin-right: 10px; }
+        .loading { text-align: center; padding: 40px; color: #64748b; }
+        .loading i { font-size: 2rem; color: #0b4da0; margin-bottom: 15px; animation: spin 1s linear infinite; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        @media (max-width: 768px) { .container { border-radius: 10px; } .profile-section { flex-direction: column; text-align: center; gap: 20px; } .info-grid { grid-template-columns: repeat(2, 1fr); } .summary-cards { grid-template-columns: 1fr; gap: 15px; padding: 20px; } .header-info { grid-template-columns: 1fr; gap: 10px; } .action-buttons { flex-direction: column; gap: 15px; } .btn { width: 100%; } }
+        @media (max-width: 480px) { .profile-section { padding: 20px; } .history-section, .points-section { padding: 20px; } .member-name { font-size: 1.5rem; } .points-number { font-size: 3rem; } .info-grid { grid-template-columns: 1fr; } }
+        @media print { body { background: white; padding: 0; } .container { box-shadow: none; border-radius: 0; } .action-buttons { display: none; } }
     </style>
 </head>
 
@@ -525,21 +101,14 @@
                 </div>
                 <div class="info-item">
                     <div class="info-label">Status:</div>
-                    <div class="info-value" id="memberStatus" style="color:#10b981">Loading...</div>
+                    <div class="info-value" id="memberStatus">Loading...</div>
                 </div>
             </div>
         </div>
 
-        <!-- Error Message -->
-        <div id="errorMessage" class="error-message" style="display: none;">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span id="errorText">Error loading data. Please try again.</span>
-        </div>
-
         <!-- Profile Section -->
         <div class="profile-section">
-            <img id="memberImage" class="profile-image"
-                 src="https://via.placeholder.com/150/0b4da0/ffffff?text=AGM">
+            <img id="memberImage" class="profile-image" src="https://via.placeholder.com/150/0b4da0/ffffff?text=AGM">
             <div class="profile-info">
                 <div id="memberName" class="member-name">Loading...</div>
                 <div class="member-contact">
@@ -570,28 +139,14 @@
 
         <!-- Payment History -->
         <div class="history-section">
-            <h3 class="section-title">
-                <i class="fas fa-history"></i>
-                Payment History
-            </h3>
+            <h3 class="section-title"><i class="fas fa-history"></i>Payment History</h3>
             <div class="payment-table-container">
                 <table class="payment-table">
                     <thead>
-                        <tr>
-                            <th>Sr.</th>
-                            <th>Date</th>
-                            <th>Month</th>
-                            <th>Payment</th>
-                            <th>Points</th>
-                        </tr>
+                        <tr><th>Sr.</th><th>Date</th><th>Month</th><th>Payment</th><th>Points</th></tr>
                     </thead>
                     <tbody id="paymentHistory">
-                        <tr>
-                            <td colspan="5" class="loading">
-                                <i class="fas fa-spinner"></i><br>
-                                Loading payment history...
-                            </td>
-                        </tr>
+                        <tr><td colspan="5" class="loading"><i class="fas fa-spinner"></i><br>Loading payment history...</td></tr>
                     </tbody>
                 </table>
             </div>
@@ -601,368 +156,225 @@
         <div class="summary-cards">
             <div class="summary-card">
                 <h3><i class="fas fa-chart-line"></i> Financial Summary</h3>
-                <div class="summary-item">
-                    <span class="summary-label">Total Paid Amount</span>
-                    <span id="totalPaidAmount" class="summary-value">₹0</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">Pending Amount</span>
-                    <span id="pendingAmount" class="summary-value">₹0</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">Target Amount</span>
-                    <span id="targetAmount" class="summary-value">₹1200</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">Payment Completion</span>
-                    <span id="completionPercentage" class="summary-value highlight">0%</span>
-                </div>
+                <div class="summary-item"><span class="summary-label">Total Paid Amount</span><span id="totalPaidAmount" class="summary-value">₹0</span></div>
+                <div class="summary-item"><span class="summary-label">Pending Amount</span><span id="pendingAmount" class="summary-value">₹0</span></div>
+                <div class="summary-item"><span class="summary-label">Target Amount</span><span id="targetAmount" class="summary-value">₹1200</span></div>
+                <div class="summary-item"><span class="summary-label">Payment Completion</span><span id="completionPercentage" class="summary-value highlight">0%</span></div>
             </div>
-
             <div class="summary-card">
                 <h3><i class="fas fa-star"></i> Points Summary</h3>
-                <div class="summary-item">
-                    <span class="summary-label">Total Points</span>
-                    <span id="totalPoints" class="summary-value">0</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">Max Points</span>
-                    <span id="maxPoints" class="summary-value">500</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">Points Progress</span>
-                    <span id="pointsProgress" class="summary-value">0%</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">Average Points/Payment</span>
-                    <span id="avgPoints" class="summary-value">0</span>
-                </div>
+                <div class="summary-item"><span class="summary-label">Total Points</span><span id="totalPoints" class="summary-value">0</span></div>
+                <div class="summary-item"><span class="summary-label">Max Points</span><span id="maxPoints" class="summary-value">500</span></div>
+                <div class="summary-item"><span class="summary-label">Points Progress</span><span id="pointsProgress" class="summary-value">0%</span></div>
+                <div class="summary-item"><span class="summary-label">Average Points/Payment</span><span id="avgPoints" class="summary-value">0</span></div>
             </div>
         </div>
 
         <!-- Points Display -->
         <div class="points-section">
-            <h3 class="section-title">
-                <i class="fas fa-trophy"></i>
-                Achievement Overview
-            </h3>
+            <h3 class="section-title"><i class="fas fa-trophy"></i>Achievement Overview</h3>
             <div class="points-display">
-                <i class="fas fa-award" style="font-size: 48px; color: #fbbf24;"></i>
+                <i class="fas fa-award" style="font-size:48px;color:#fbbf24"></i>
                 <div id="displayPoints" class="points-number">0</div>
-                <div style="font-weight: 600; color: #0b4da0; margin-bottom: 15px;">Total Achievement Points</div>
-                
-                <div class="progress-container">
-                    <div id="pointsProgressBar" class="progress-bar" style="width: 0%;"></div>
-                </div>
-                
-                <div class="progress-labels">
-                    <span>0 Points</span>
-                    <span id="progressText">0% Complete</span>
-                    <span>500 Points</span>
-                </div>
+                <div style="font-weight:600;color:#0b4da0;margin-bottom:15px">Total Achievement Points</div>
+                <div class="progress-container"><div id="pointsProgressBar" class="progress-bar" style="width:0%"></div></div>
+                <div class="progress-labels"><span>0 Points</span><span id="progressText">0% Complete</span><span>500 Points</span></div>
             </div>
         </div>
 
         <!-- Action Buttons -->
         <div class="action-buttons">
-            <button class="btn btn-print" onclick="window.print()">
-                <i class="fas fa-print"></i> Print Receipt
-            </button>
-            <button class="btn btn-close" onclick="window.close()">
-                <i class="fas fa-times"></i> Close Window
-            </button>
+            <button class="btn btn-print" onclick="window.print()"><i class="fas fa-print"></i> Print Receipt</button>
+            <button class="btn btn-close" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Refresh</button>
         </div>
 
-        <!-- Footer -->
-        <div class="footer-note" style="text-align:center; margin-top:25px; padding-top:15px; border-top:1px solid #e2e8f0; color:#64748b; font-size:0.9rem;">
+        <div class="footer-note" style="text-align:center;margin-top:25px;padding-top:15px;border-top:1px solid #e2e8f0;color:#64748b;font-size:0.9rem;">
             <i class="fas fa-shield-alt"></i> Official Receipt – Anjuman Ghulamane Mustafa • This is a computer generated receipt
         </div>
     </div>
 
     <script>
-        // FAST API Configuration - YEH LINE CHANGE KARNA HAI
-        const API_ENDPOINT = 'https://anjumang.infinityfreeapp.com/api.php';
+        // 🚀 ULTRA-FAST CONFIGURATION
+        const API_URL = 'https://anjumang.infinityfreeapp.com/api.php';
         
         // Get URL parameters
         const urlParams = new URLSearchParams(window.location.search);
-        const memberName = urlParams.get('name') || 'Anonymous Member';
+        const memberName = urlParams.get('name') || '';
         const memberPhone = urlParams.get('phone') || 'Not Available';
         const memberImage = urlParams.get('image') || 'https://via.placeholder.com/150/0b4da0/ffffff?text=AGM';
         
-        // Update date and time
-        const now = new Date();
-        document.getElementById('currentDate').innerText = now.toLocaleDateString('en-IN');
-        document.getElementById('lastUpdatedTime').innerText = now.toLocaleTimeString('en-IN');
+        // ⚡ INSTANTLY SHOW BASIC INFO (No waiting)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Show basic info immediately
+            document.getElementById('memberName').textContent = decodeURIComponent(memberName) || 'Member';
+            document.getElementById('memberPhone').textContent = decodeURIComponent(memberPhone);
+            document.getElementById('memberImage').src = decodeURIComponent(memberImage);
+            
+            // Set dates
+            const now = new Date();
+            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-IN');
+            document.getElementById('lastUpdatedTime').textContent = now.toLocaleTimeString('en-IN');
+            
+            // Generate receipt number
+            document.getElementById('receiptNumber').textContent = 
+                `AGM/${now.getFullYear()}/${Math.floor(1000 + Math.random() * 9000)}`;
+            
+            // ⚡ START FETCHING DATA ASYNC (No blocking)
+            setTimeout(() => fetchMemberData(), 10);
+        });
         
-        // Generate random receipt number
-        function generateReceiptNumber() {
-            const prefix = 'AGM';
-            const year = now.getFullYear();
-            const randomNum = Math.floor(1000 + Math.random() * 9000);
-            return `${prefix}/${year}/${randomNum}`;
-        }
-        
-        document.getElementById('receiptNumber').innerText = generateReceiptNumber();
-        
-        // Fetch member data - SUPER FAST (1-2 seconds)
+        // 🚀 ASYNC DATA FETCHING
         async function fetchMemberData() {
+            if (!memberName) return;
+            
+            console.time('API_Fetch_Time');
+            
             try {
-                console.log('Fetching data for:', memberName);
-                
-                // Instantly show basic info
-                document.getElementById('memberName').innerText = decodeURIComponent(memberName);
-                document.getElementById('memberPhone').innerText = decodeURIComponent(memberPhone);
-                document.getElementById('memberImage').src = decodeURIComponent(memberImage);
-                document.getElementById('displayPoints').innerText = '0';
-                
                 // Build API URL
-                const apiUrl = `${API_ENDPOINT}?name=${encodeURIComponent(memberName)}&phone=${encodeURIComponent(memberPhone)}&image=${encodeURIComponent(memberImage)}`;
+                const apiUrl = `${API_URL}?name=${encodeURIComponent(memberName)}&phone=${encodeURIComponent(memberPhone)}&image=${encodeURIComponent(memberImage)}`;
                 
-                console.log('API URL:', apiUrl);
+                // Fetch with Promise.race (timeout + fetch)
+                const fetchPromise = fetch(apiUrl, {
+                    headers: { 'Accept': 'application/json' }
+                });
                 
-                // Fetch with 5 second timeout
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 5000);
+                const timeoutPromise = new Promise((_, reject) => 
+                    setTimeout(() => reject(new Error('Timeout after 5 seconds')), 5000)
+                );
                 
-                try {
-                    const response = await fetch(apiUrl, {
-                        signal: controller.signal,
-                        headers: {
-                            'Accept': 'application/json'
-                        }
-                    });
-                    
-                    clearTimeout(timeoutId);
-                    
-                    if (!response.ok) {
-                        throw new Error(`API error: ${response.status}`);
-                    }
-                    
-                    const result = await response.json();
-                    console.log('API Response:', result);
-                    
-                    if (result.success && result.data) {
-                        console.log('✅ Data received successfully');
-                        processMemberData(result.data);
-                        document.getElementById('lastUpdatedTime').innerText = new Date().toLocaleTimeString('en-IN');
-                        if (result.cached) {
-                            document.getElementById('lastUpdatedTime').innerText += ' (Cached)';
-                        }
-                    } else {
-                        console.log('⚠️ Member not found, showing basic receipt');
-                        showBasicReceipt();
-                    }
-                    
-                } catch (fetchError) {
-                    console.log('⏱️ Fetch timeout or error:', fetchError.message);
-                    showBasicReceipt();
+                const response = await Promise.race([fetchPromise, timeoutPromise]);
+                
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const result = await response.json();
+                console.timeEnd('API_Fetch_Time');
+                
+                if (result.success && result.data) {
+                    processMemberData(result.data);
+                    console.log('✅ Data loaded successfully');
+                } else {
+                    showFallbackData();
                 }
                 
             } catch (error) {
-                console.error('Error:', error);
-                showError("Could not load data. Showing basic receipt.");
-                showBasicReceipt();
+                console.warn('⚠️ Using fallback data:', error.message);
+                showFallbackData();
             }
         }
         
-        // Process member data from API
-        function processMemberData(memberData) {
-            console.log('Processing data for:', memberData.name);
-            
+        // 🎯 PROCESS DATA QUICKLY
+        function processMemberData(data) {
             // Update basic info
-            document.getElementById('memberName').innerText = memberData.name || decodeURIComponent(memberName);
-            document.getElementById('memberPhone').innerText = memberData.phone || decodeURIComponent(memberPhone);
+            document.getElementById('memberName').textContent = data.name || memberName;
+            document.getElementById('memberPhone').textContent = data.phone || memberPhone;
+            document.getElementById('memberImage').src = data.image || memberImage;
             
-            // Fix image URL if needed
-            let imageUrl = memberData.image || decodeURIComponent(memberImage);
-            if (imageUrl.includes('\\/')) {
-                imageUrl = imageUrl.replace(/\\\//g, '/');
-            }
-            document.getElementById('memberImage').src = imageUrl;
+            // Update info cards
+            document.getElementById('memberSince').textContent = data.member_since || '-';
+            document.getElementById('totalPaymentsCount').textContent = data.payments?.length || 0;
+            document.getElementById('lastPaymentDate').textContent = formatDate(data.last_payment) || '-';
             
-            // Populate payment history table
-            const tbody = document.getElementById('paymentHistory');
-            const payments = memberData.payments || [];
-            
-            if (payments.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="5" style="text-align: center; padding: 30px; color: #64748b;">
-                            <i class="fas fa-info-circle"></i><br>
-                            No payment records found for this member
-                        </td>
-                    </tr>
-                `;
-            } else {
-                // Clear loading message
-                tbody.innerHTML = '';
-                
-                payments.forEach((payment, index) => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td>${index + 1}</td>
-                        <td>${formatDate(payment.date)}</td>
-                        <td>${payment.month || '-'}</td>
-                        <td style="font-weight: 600; color: ${payment.payment > 0 ? '#059669' : '#64748b'}">
-                            ${payment.payment > 0 ? '₹' + payment.payment : '-'}
-                        </td>
-                        <td style="font-weight: 600; color: #0b4da0">${payment.point || 0}</td>
-                    `;
-                    tbody.appendChild(tr);
-                });
-            }
-            
-            // Update payment count and dates
-            document.getElementById('totalPaymentsCount').innerText = payments.length;
-            document.getElementById('lastPaymentDate').innerText = formatDate(memberData.last_payment || '-');
-            document.getElementById('memberSince').innerText = memberData.member_since || now.getFullYear();
-            
-            // Calculate financial summary
-            const totalPaid = memberData.total_paid || 0;
+            // Calculate financials
+            const totalPaid = data.total_paid || 0;
             const targetAmount = 1200;
             const pendingAmount = Math.max(0, targetAmount - totalPaid);
             const completionRate = Math.min(100, Math.round((totalPaid / targetAmount) * 100));
             
             // Update financial summary
-            document.getElementById('totalPaidAmount').innerText = '₹' + totalPaid;
-            document.getElementById('pendingAmount').innerText = pendingAmount === 0 ? '₹0' : '₹' + pendingAmount;
-            document.getElementById('completionPercentage').innerText = completionRate + '%';
-            document.getElementById('completionRate').innerText = completionRate + '%';
+            document.getElementById('totalPaidAmount').textContent = `₹${totalPaid}`;
+            document.getElementById('pendingAmount').textContent = `₹${pendingAmount}`;
+            document.getElementById('completionPercentage').textContent = `${completionRate}%`;
+            document.getElementById('completionRate').textContent = `${completionRate}%`;
             
-            // Calculate points summary
-            const totalPoints = memberData.total_points || 0;
-            const maxPoints = 500;
-            const pointsProgress = Math.min(100, Math.round((totalPoints / maxPoints) * 100));
-            const avgPoints = payments.length > 0 ? Math.round(totalPoints / payments.length) : 0;
+            // Update points
+            const totalPoints = data.total_points || 0;
+            const pointsPercent = Math.min(100, (totalPoints / 500) * 100);
+            const avgPoints = data.payments?.length ? Math.round(totalPoints / data.payments.length) : 0;
             
-            // Update points summary
-            document.getElementById('totalPoints').innerText = totalPoints;
-            document.getElementById('pointsProgress').innerText = pointsProgress + '%';
-            document.getElementById('avgPoints').innerText = avgPoints;
+            document.getElementById('totalPoints').textContent = totalPoints;
+            document.getElementById('pointsProgress').textContent = `${Math.round(pointsPercent)}%`;
+            document.getElementById('avgPoints').textContent = avgPoints;
+            document.getElementById('displayPoints').textContent = totalPoints;
+            document.getElementById('pointsProgressBar').style.width = `${pointsPercent}%`;
+            document.getElementById('progressText').textContent = `${pointsPercent.toFixed(1)}% Complete`;
             
-            // Update points display
-            updatePointsDisplay(totalPoints);
+            // Update status
             updateStatus(completionRate);
             
-            console.log('✅ Data processing complete');
+            // Update payment history
+            updatePaymentHistory(data.payments || []);
+            
+            // Update timestamp
+            document.getElementById('lastUpdatedTime').textContent = new Date().toLocaleTimeString('en-IN');
         }
         
-        // Format date from DD/MM/YYYY to readable format
-        function formatDate(dateStr) {
-            if (!dateStr || dateStr === '-') return '-';
+        // 📅 UPDATE PAYMENT HISTORY TABLE
+        function updatePaymentHistory(payments) {
+            const tbody = document.getElementById('paymentHistory');
             
-            // Handle DD/MM/YYYY format
-            if (dateStr.includes('/')) {
-                const parts = dateStr.split('/');
-                if (parts.length === 3) {
-                    // Convert to Date object
-                    const day = parseInt(parts[0]);
-                    const month = parseInt(parts[1]) - 1; // Months are 0-indexed
-                    const year = parseInt(parts[2]);
-                    
-                    try {
-                        const date = new Date(year, month, day);
-                        if (!isNaN(date.getTime())) {
-                            return date.toLocaleDateString('en-IN', {
-                                day: '2-digit',
-                                month: 'short',
-                                year: 'numeric'
-                            });
-                        }
-                    } catch (e) {
-                        // If parsing fails, return original
-                    }
-                }
+            if (!payments.length) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:#64748b">
+                    <i class="fas fa-info-circle"></i><br>No payment records found</td></tr>`;
+                return;
             }
             
+            let html = '';
+            payments.forEach((payment, index) => {
+                html += `<tr>
+                    <td>${index + 1}</td>
+                    <td>${formatDate(payment.date)}</td>
+                    <td>${payment.month || '-'}</td>
+                    <td style="font-weight:600;color:#059669">₹${payment.payment || 0}</td>
+                    <td style="font-weight:600;color:#0b4da0">${payment.point || 0}</td>
+                </tr>`;
+            });
+            
+            tbody.innerHTML = html;
+        }
+        
+        // 📅 FORMAT DATE
+        function formatDate(dateStr) {
+            if (!dateStr || dateStr === '-') return '-';
+            if (dateStr.includes('/')) {
+                const [day, month, year] = dateStr.split('/');
+                return `${day}/${month}/${year}`;
+            }
             return dateStr;
         }
         
-        // Show basic receipt when no data found
-        function showBasicReceipt() {
-            document.getElementById('memberName').innerText = decodeURIComponent(memberName);
-            document.getElementById('memberPhone').innerText = decodeURIComponent(memberPhone);
-            document.getElementById('memberImage').src = decodeURIComponent(memberImage);
-            
-            document.getElementById('totalPaymentsCount').innerText = '0';
-            document.getElementById('lastPaymentDate').innerText = '-';
-            document.getElementById('memberSince').innerText = now.getFullYear();
-            
-            // Default values
-            document.getElementById('totalPaidAmount').innerText = '₹0';
-            document.getElementById('pendingAmount').innerText = '₹1200';
-            document.getElementById('completionPercentage').innerText = '0%';
-            document.getElementById('completionRate').innerText = '0%';
-            
-            document.getElementById('totalPoints').innerText = '0';
-            document.getElementById('pointsProgress').innerText = '0%';
-            document.getElementById('avgPoints').innerText = '0';
-            
-            updatePointsDisplay(0);
-            updateStatus(0);
-            
-            // Update payment history message
-            document.getElementById('paymentHistory').innerHTML = `
-                <tr>
-                    <td colspan="5" style="text-align: center; padding: 30px; color: #64748b;">
-                        <i class="fas fa-info-circle"></i><br>
-                        No payment data available for this member
-                    </td>
-                </tr>
-            `;
-        }
-        
-        // Helper function to update points display
-        function updatePointsDisplay(totalPoints) {
-            const maxPoints = 500;
-            const pointsPercent = Math.min(100, (totalPoints / maxPoints) * 100);
-            
-            document.getElementById('displayPoints').innerText = totalPoints;
-            document.getElementById('pointsProgressBar').style.width = pointsPercent + '%';
-            document.getElementById('progressText').innerText = pointsPercent.toFixed(1) + '% Complete';
-        }
-        
-        // Helper function to update status
+        // 🎯 UPDATE STATUS
         function updateStatus(completionRate) {
-            const statusElement = document.getElementById('memberStatus');
+            const status = document.getElementById('memberStatus');
             if (completionRate === 100) {
-                statusElement.innerText = "Payment Complete";
-                statusElement.style.color = "#059669";
+                status.textContent = "Payment Complete";
+                status.style.color = "#059669";
             } else if (completionRate >= 50) {
-                statusElement.innerText = "Active Member";
-                statusElement.style.color = "#0b4da0";
+                status.textContent = "Active Member";
+                status.style.color = "#0b4da0";
             } else if (completionRate > 0) {
-                statusElement.innerText = "Payment Pending";
-                statusElement.style.color = "#f59e0b";
+                status.textContent = "Payment Pending";
+                status.style.color = "#f59e0b";
             } else {
-                statusElement.innerText = "No Payments";
-                statusElement.style.color = "#dc2626";
+                status.textContent = "No Payments";
+                status.style.color = "#dc2626";
             }
         }
         
-        // Show error message
-        function showError(message) {
-            const errorElement = document.getElementById('errorMessage');
-            const errorText = document.getElementById('errorText');
+        // 🔄 FALLBACK DATA
+        function showFallbackData() {
+            document.getElementById('memberSince').textContent = new Date().getFullYear();
+            document.getElementById('completionRate').textContent = '0%';
+            document.getElementById('completionPercentage').textContent = '0%';
+            document.getElementById('pointsProgress').textContent = '0%';
+            updateStatus(0);
             
-            errorText.innerHTML = message;
-            errorElement.style.display = 'block';
+            // Show fallback message
+            document.getElementById('paymentHistory').innerHTML = 
+                `<tr><td colspan="5" style="text-align:center;padding:20px;color:#64748b">
+                    <i class="fas fa-exclamation-triangle"></i><br>
+                    Data loading failed. Please try refreshing.
+                </td></tr>`;
         }
-        
-        // Load data when page loads
-        window.onload = function() {
-            console.log('Page loaded, fetching data...');
-            
-            // Update refresh button
-            const closeBtn = document.querySelector('.btn-close');
-            closeBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Refresh';
-            closeBtn.onclick = function() {
-                location.reload();
-            };
-            
-            // Start fetching data
-            fetchMemberData();
-        };
     </script>
 </body>
-    </html>
+</html>
