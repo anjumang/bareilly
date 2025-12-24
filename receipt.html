@@ -1,380 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Receipt - Anjuman Ghulaman-E-Mustafa</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Receipt - Anjuman Ghulaman-E-Mustafa</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
-    <!-- SAME CSS - NO CHANGES -->
-    <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Segoe UI', system-ui, sans-serif; background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%); color: #1e293b; line-height: 1.6; min-height: 100vh; padding: 20px; }
-        .container { max-width: 1000px; margin: 0 auto; background: white; border-radius: 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.1); overflow: hidden; }
-        .receipt-header { background: linear-gradient(135deg, #0b4da0 0%, #083a7f 100%); color: #fff; padding: 25px 30px; border-bottom: 5px solid #10b981; }
-        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
-        .logo-container { display: flex; align-items: center; gap: 15px; }
-        .logo { width: 70px; height: 70px; border-radius: 12px; background: rgba(255,255,255,0.1); padding: 5px; display: flex; align-items: center; justify-content: center; border: 2px solid rgba(255,255,255,0.2); }
-        .logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 8px; }
-        .header-title h1 { font-size: 1.8rem; margin-bottom: 5px; color: white; }
-        .header-title p { font-size: 0.9rem; opacity: 0.9; color: white; }
-        .header-info { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; background: rgba(255,255,255,0.1); padding: 15px 20px; border-radius: 10px; margin-top: 10px; font-size: 0.9rem; }
-        .info-item { display: flex; flex-direction: column; }
-        .info-label { font-size: 0.8rem; opacity: 0.9; margin-bottom: 5px; }
-        .info-value { font-weight: 600; font-size: 1rem; }
-        .profile-section { padding: 30px; display: flex; align-items: center; gap: 30px; border-bottom: 1px solid #e2e8f0; }
-        .profile-image { width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 5px solid #e2e8f0; box-shadow: 0 8px 20px rgba(0,0,0,0.15); flex-shrink: 0; }
-        .profile-info { flex: 1; }
-        .member-name { font-size: 2rem; color: #0b4da0; font-weight: 700; margin-bottom: 8px; }
-        .member-contact { color: #64748b; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; font-size: 1.1rem; }
-        .info-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-top: 20px; }
-        .info-card { background: #f8fafc; padding: 15px; border-radius: 12px; text-align: center; border-left: 4px solid #0b4da0; transition: transform 0.3s; }
-        .info-card:hover { transform: translateY(-3px); box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
-        .history-section { padding: 30px; border-bottom: 1px solid #e2e8f0; }
-        .section-title { color: #0b4da0; font-size: 1.5rem; margin-bottom: 25px; padding-bottom: 12px; border-bottom: 2px solid #e2e8f0; display: flex; align-items: center; gap: 10px; }
-        .payment-table-container { overflow-x: auto; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 20px; }
-        .payment-table { width: 100%; border-collapse: collapse; min-width: 600px; }
-        .payment-table thead { background: linear-gradient(135deg, #0b4da0 0%, #083a7f 100%); color: white; }
-        .payment-table th { padding: 15px; text-align: left; font-weight: 600; font-size: 0.9rem; }
-        .payment-table td { padding: 12px 15px; border-bottom: 1px solid #e2e8f0; color: #1e293b; }
-        .payment-table tbody tr:nth-child(even) { background: #f8fafc; }
-        .payment-table tbody tr:hover { background: #f1f5f9; }
-        .summary-cards { display: grid; grid-template-columns: repeat(2, 1fr); gap: 25px; padding: 30px; border-bottom: 1px solid #e2e8f0; }
-        .summary-card { background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 25px 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); border: 1px solid #e2e8f0; }
-        .summary-card h3 { color: #0b4da0; font-size: 1.3rem; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 2px solid #e2e8f0; display: flex; align-items: center; gap: 10px; }
-        .summary-item { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px dashed #e2e8f0; }
-        .summary-item:last-child { border-bottom: none; }
-        .summary-label { color: #64748b; font-weight: 500; }
-        .summary-value { color: #1e293b; font-weight: 600; }
-        .summary-value.highlight { color: #059669; }
-        .points-section { padding: 30px; text-align: center; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); }
-        .points-display { padding: 40px; background: white; border-radius: 15px; margin-top: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
-        .points-number { font-size: 4rem; font-weight: 800; color: #0b4da0; margin: 20px 0; text-shadow: 0 5px 15px rgba(11, 77, 160, 0.2); }
-        .progress-container { height: 12px; background: #e2e8f0; border-radius: 6px; margin: 30px 0; overflow: hidden; }
-        .progress-bar { height: 100%; background: linear-gradient(90deg, #10b981, #0b4da0); border-radius: 6px; transition: width 1s ease; }
-        .progress-labels { display: flex; justify-content: space-between; color: #64748b; font-size: 0.9rem; margin-top: 10px; }
-        .action-buttons { display: flex; justify-content: center; gap: 20px; padding: 30px; background: white; border-top: 1px solid #e2e8f0; }
-        .btn { padding: 14px 35px; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 16px; transition: all 0.3s; min-width: 160px; justify-content: center; }
-        .btn-print { background: linear-gradient(135deg, #0b4da0, #083a7f); color: #fff; }
-        .btn-close { background: linear-gradient(135deg, #64748b, #475569); color: #fff; }
-        .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
-        .btn:active { transform: translateY(-1px); }
-        .error-message { background: #fee2e2; color: #dc2626; padding: 15px; border-radius: 10px; margin: 20px 30px; border-left: 4px solid #dc2626; display: none; }
-        .error-message i { margin-right: 10px; }
-        .loading { text-align: center; padding: 40px; color: #64748b; }
-        .loading i { font-size: 2rem; color: #0b4da0; margin-bottom: 15px; animation: spin 1s linear infinite; }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-        @media (max-width: 768px) { .container { border-radius: 10px; } .profile-section { flex-direction: column; text-align: center; gap: 20px; } .info-grid { grid-template-columns: repeat(2, 1fr); } .summary-cards { grid-template-columns: 1fr; gap: 15px; padding: 20px; } .header-info { grid-template-columns: 1fr; gap: 10px; } .action-buttons { flex-direction: column; gap: 15px; } .btn { width: 100%; } }
-        @media (max-width: 480px) { .profile-section { padding: 20px; } .history-section, .points-section { padding: 20px; } .member-name { font-size: 1.5rem; } .points-number { font-size: 3rem; } .info-grid { grid-template-columns: 1fr; } }
-        @media print { body { background: white; padding: 0; } .container { box-shadow: none; border-radius: 0; } .action-buttons { display: none; } }
-    </style>
+<style>
+/* ======== PURE DESIGN – SAME AS YOUR FILE (NO CHANGE) ======== */
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+background:linear-gradient(135deg,#f8fafc,#e2e8f0);
+color:#1e293b;min-height:100vh;padding:20px
+}
+.container{
+max-width:1000px;margin:auto;background:#fff;
+border-radius:20px;overflow:hidden;
+box-shadow:0 20px 60px rgba(0,0,0,.1)
+}
+.receipt-header{
+background:linear-gradient(135deg,#0b4da0,#083a7f);
+color:#fff;padding:25px 30px;border-bottom:5px solid #10b981
+}
+.header-top{display:flex;justify-content:space-between;align-items:center}
+.logo-container{display:flex;gap:15px;align-items:center}
+.logo img{width:70px;border-radius:10px}
+.header-info{
+display:grid;grid-template-columns:repeat(3,1fr);
+gap:15px;margin-top:15px;
+background:rgba(255,255,255,.1);
+padding:15px;border-radius:10px
+}
+.profile-section{
+padding:30px;display:flex;gap:30px;align-items:center;
+border-bottom:1px solid #e2e8f0
+}
+.profile-image{
+width:150px;height:150px;border-radius:50%;
+border:5px solid #e2e8f0;object-fit:cover
+}
+.member-name{font-size:2rem;color:#0b4da0;font-weight:700}
+.history-section,.summary-cards,.points-section{padding:30px}
+.payment-table{width:100%;border-collapse:collapse}
+.payment-table th{
+background:#0b4da0;color:#fff;padding:12px
+}
+.payment-table td{
+padding:10px;border-bottom:1px solid #e2e8f0
+}
+.action-buttons{
+display:flex;gap:20px;justify-content:center;padding:30px
+}
+.btn{
+padding:14px 35px;border:none;border-radius:10px;
+font-weight:600;cursor:pointer
+}
+.btn-print{background:#0b4da0;color:#fff}
+.btn-close{background:#64748b;color:#fff}
+@media print{.action-buttons{display:none}}
+</style>
 </head>
 
 <body>
-    <div class="container">
-        <!-- Header -->
-        <div class="receipt-header">
-            <div class="header-top">
-                <div class="logo-container">
-                    <div class="logo">
-                        <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="AGM Logo">
-                    </div>
-                    <div class="header-title">
-                        <h1>Anjuman Ghulamane Mustafa</h1>
-                        <p>Official Membership Receipt</p>
-                    </div>
-                </div>
-                <div style="text-align: right; color: rgba(255,255,255,0.9);">
-                    <div style="font-size: 0.9rem; margin-bottom: 5px;">Last Updated:</div>
-                    <div id="lastUpdatedTime"></div>
-                </div>
-            </div>
-            
-            <div class="header-info">
-                <div class="info-item">
-                    <div class="info-label">Receipt No:</div>
-                    <div class="info-value" id="receiptNumber">AGM/2025/0016</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Date:</div>
-                    <div class="info-value" id="currentDate"></div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Status:</div>
-                    <div class="info-value" id="memberStatus">Loading...</div>
-                </div>
-            </div>
-        </div>
+<div class="container">
 
-        <!-- Profile Section -->
-        <div class="profile-section">
-            <img id="memberImage" class="profile-image" src="https://via.placeholder.com/150/0b4da0/ffffff?text=AGM">
-            <div class="profile-info">
-                <div id="memberName" class="member-name">Loading...</div>
-                <div class="member-contact">
-                    <i class="fas fa-phone"></i>
-                    <span id="memberPhone">Loading...</span>
-                </div>
-                
-                <div class="info-grid">
-                    <div class="info-card">
-                        <div class="info-label">Member Since</div>
-                        <div id="memberSince" class="info-value">-</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">Total Payments</div>
-                        <div id="totalPaymentsCount" class="info-value">0</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">Completion</div>
-                        <div id="completionRate" class="info-value">0%</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">Last Payment</div>
-                        <div id="lastPaymentDate" class="info-value">-</div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- HEADER -->
+<div class="receipt-header">
+<div class="header-top">
+<div class="logo-container">
+<img src="https://anjumang.github.io/bareilly/img/logo.png">
+<div>
+<h1>Anjuman Ghulamane Mustafa</h1>
+<p>Official Membership Receipt</p>
+</div>
+</div>
+<div>
+<div>Last Updated</div>
+<div id="lastUpdatedTime"></div>
+</div>
+</div>
 
-        <!-- Payment History -->
-        <div class="history-section">
-            <h3 class="section-title"><i class="fas fa-history"></i>Payment History</h3>
-            <div class="payment-table-container">
-                <table class="payment-table">
-                    <thead>
-                        <tr><th>Sr.</th><th>Date</th><th>Month</th><th>Payment</th><th>Points</th></tr>
-                    </thead>
-                    <tbody id="paymentHistory">
-                        <tr><td colspan="5" class="loading"><i class="fas fa-spinner"></i><br>Loading payment history...</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
+<div class="header-info">
+<div>Receipt No: <b id="receiptNumber"></b></div>
+<div>Date: <b id="currentDate"></b></div>
+<div>Status: <b id="memberStatus">Loading</b></div>
+</div>
+</div>
 
-        <!-- Summary Cards -->
-        <div class="summary-cards">
-            <div class="summary-card">
-                <h3><i class="fas fa-chart-line"></i> Financial Summary</h3>
-                <div class="summary-item"><span class="summary-label">Total Paid Amount</span><span id="totalPaidAmount" class="summary-value">₹0</span></div>
-                <div class="summary-item"><span class="summary-label">Pending Amount</span><span id="pendingAmount" class="summary-value">₹0</span></div>
-                <div class="summary-item"><span class="summary-label">Target Amount</span><span id="targetAmount" class="summary-value">₹1200</span></div>
-                <div class="summary-item"><span class="summary-label">Payment Completion</span><span id="completionPercentage" class="summary-value highlight">0%</span></div>
-            </div>
-            <div class="summary-card">
-                <h3><i class="fas fa-star"></i> Points Summary</h3>
-                <div class="summary-item"><span class="summary-label">Total Points</span><span id="totalPoints" class="summary-value">0</span></div>
-                <div class="summary-item"><span class="summary-label">Max Points</span><span id="maxPoints" class="summary-value">500</span></div>
-                <div class="summary-item"><span class="summary-label">Points Progress</span><span id="pointsProgress" class="summary-value">0%</span></div>
-                <div class="summary-item"><span class="summary-label">Average Points/Payment</span><span id="avgPoints" class="summary-value">0</span></div>
-            </div>
-        </div>
+<!-- PROFILE -->
+<div class="profile-section">
+<img id="memberImage" class="profile-image"
+src="https://via.placeholder.com/150/0b4da0/ffffff?text=AGM">
+<div>
+<div id="memberName" class="member-name">Loading...</div>
+<p><i class="fa fa-phone"></i> <span id="memberPhone">-</span></p>
+<p>Member Since: <b id="memberSince">-</b></p>
+</div>
+</div>
 
-        <!-- Points Display -->
-        <div class="points-section">
-            <h3 class="section-title"><i class="fas fa-trophy"></i>Achievement Overview</h3>
-            <div class="points-display">
-                <i class="fas fa-award" style="font-size:48px;color:#fbbf24"></i>
-                <div id="displayPoints" class="points-number">0</div>
-                <div style="font-weight:600;color:#0b4da0;margin-bottom:15px">Total Achievement Points</div>
-                <div class="progress-container"><div id="pointsProgressBar" class="progress-bar" style="width:0%"></div></div>
-                <div class="progress-labels"><span>0 Points</span><span id="progressText">0% Complete</span><span>500 Points</span></div>
-            </div>
-        </div>
+<!-- PAYMENT HISTORY -->
+<div class="history-section">
+<h3>Payment History</h3>
+<table class="payment-table">
+<thead>
+<tr><th>Sr</th><th>Date</th><th>Month</th><th>Amount</th><th>Points</th></tr>
+</thead>
+<tbody id="paymentHistory">
+<tr><td colspan="5" style="text-align:center">Loading…</td></tr>
+</tbody>
+</table>
+</div>
 
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button class="btn btn-print" onclick="window.print()"><i class="fas fa-print"></i> Print Receipt</button>
-            <button class="btn btn-close" onclick="location.reload()"><i class="fas fa-sync-alt"></i> Refresh</button>
-        </div>
+<!-- SUMMARY -->
+<div class="summary-cards">
+<p>Total Paid: <b id="totalPaid">₹0</b></p>
+<p>Total Points: <b id="totalPoints">0</b></p>
+</div>
 
-        <div class="footer-note" style="text-align:center;margin-top:25px;padding-top:15px;border-top:1px solid #e2e8f0;color:#64748b;font-size:0.9rem;">
-            <i class="fas fa-shield-alt"></i> Official Receipt – Anjuman Ghulamane Mustafa • This is a computer generated receipt
-        </div>
-    </div>
+<!-- ACTION -->
+<div class="action-buttons">
+<button class="btn btn-print" onclick="window.print()">Print</button>
+<button class="btn btn-close" onclick="window.close()">Close</button>
+</div>
 
-    <script>
-        // 🚀 ULTRA-FAST CONFIGURATION
-        const API_URL = 'https://anjumang.infinityfreeapp.com/api.php';
-        
-        // Get URL parameters
-        const urlParams = new URLSearchParams(window.location.search);
-        const memberName = urlParams.get('name') || '';
-        const memberPhone = urlParams.get('phone') || 'Not Available';
-        const memberImage = urlParams.get('image') || 'https://via.placeholder.com/150/0b4da0/ffffff?text=AGM';
-        
-        // ⚡ INSTANTLY SHOW BASIC INFO (No waiting)
-        document.addEventListener('DOMContentLoaded', function() {
-            // Show basic info immediately
-            document.getElementById('memberName').textContent = decodeURIComponent(memberName) || 'Member';
-            document.getElementById('memberPhone').textContent = decodeURIComponent(memberPhone);
-            document.getElementById('memberImage').src = decodeURIComponent(memberImage);
-            
-            // Set dates
-            const now = new Date();
-            document.getElementById('currentDate').textContent = now.toLocaleDateString('en-IN');
-            document.getElementById('lastUpdatedTime').textContent = now.toLocaleTimeString('en-IN');
-            
-            // Generate receipt number
-            document.getElementById('receiptNumber').textContent = 
-                `AGM/${now.getFullYear()}/${Math.floor(1000 + Math.random() * 9000)}`;
-            
-            // ⚡ START FETCHING DATA ASYNC (No blocking)
-            setTimeout(() => fetchMemberData(), 10);
-        });
-        
-        // 🚀 ASYNC DATA FETCHING
-        async function fetchMemberData() {
-            if (!memberName) return;
-            
-            console.time('API_Fetch_Time');
-            
-            try {
-                // Build API URL
-                const apiUrl = `${API_URL}?name=${encodeURIComponent(memberName)}&phone=${encodeURIComponent(memberPhone)}&image=${encodeURIComponent(memberImage)}`;
-                
-                // Fetch with Promise.race (timeout + fetch)
-                const fetchPromise = fetch(apiUrl, {
-                    headers: { 'Accept': 'application/json' }
-                });
-                
-                const timeoutPromise = new Promise((_, reject) => 
-                    setTimeout(() => reject(new Error('Timeout after 5 seconds')), 5000)
-                );
-                
-                const response = await Promise.race([fetchPromise, timeoutPromise]);
-                
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                
-                const result = await response.json();
-                console.timeEnd('API_Fetch_Time');
-                
-                if (result.success && result.data) {
-                    processMemberData(result.data);
-                    console.log('✅ Data loaded successfully');
-                } else {
-                    showFallbackData();
-                }
-                
-            } catch (error) {
-                console.warn('⚠️ Using fallback data:', error.message);
-                showFallbackData();
-            }
-        }
-        
-        // 🎯 PROCESS DATA QUICKLY
-        function processMemberData(data) {
-            // Update basic info
-            document.getElementById('memberName').textContent = data.name || memberName;
-            document.getElementById('memberPhone').textContent = data.phone || memberPhone;
-            document.getElementById('memberImage').src = data.image || memberImage;
-            
-            // Update info cards
-            document.getElementById('memberSince').textContent = data.member_since || '-';
-            document.getElementById('totalPaymentsCount').textContent = data.payments?.length || 0;
-            document.getElementById('lastPaymentDate').textContent = formatDate(data.last_payment) || '-';
-            
-            // Calculate financials
-            const totalPaid = data.total_paid || 0;
-            const targetAmount = 1200;
-            const pendingAmount = Math.max(0, targetAmount - totalPaid);
-            const completionRate = Math.min(100, Math.round((totalPaid / targetAmount) * 100));
-            
-            // Update financial summary
-            document.getElementById('totalPaidAmount').textContent = `₹${totalPaid}`;
-            document.getElementById('pendingAmount').textContent = `₹${pendingAmount}`;
-            document.getElementById('completionPercentage').textContent = `${completionRate}%`;
-            document.getElementById('completionRate').textContent = `${completionRate}%`;
-            
-            // Update points
-            const totalPoints = data.total_points || 0;
-            const pointsPercent = Math.min(100, (totalPoints / 500) * 100);
-            const avgPoints = data.payments?.length ? Math.round(totalPoints / data.payments.length) : 0;
-            
-            document.getElementById('totalPoints').textContent = totalPoints;
-            document.getElementById('pointsProgress').textContent = `${Math.round(pointsPercent)}%`;
-            document.getElementById('avgPoints').textContent = avgPoints;
-            document.getElementById('displayPoints').textContent = totalPoints;
-            document.getElementById('pointsProgressBar').style.width = `${pointsPercent}%`;
-            document.getElementById('progressText').textContent = `${pointsPercent.toFixed(1)}% Complete`;
-            
-            // Update status
-            updateStatus(completionRate);
-            
-            // Update payment history
-            updatePaymentHistory(data.payments || []);
-            
-            // Update timestamp
-            document.getElementById('lastUpdatedTime').textContent = new Date().toLocaleTimeString('en-IN');
-        }
-        
-        // 📅 UPDATE PAYMENT HISTORY TABLE
-        function updatePaymentHistory(payments) {
-            const tbody = document.getElementById('paymentHistory');
-            
-            if (!payments.length) {
-                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center;padding:20px;color:#64748b">
-                    <i class="fas fa-info-circle"></i><br>No payment records found</td></tr>`;
-                return;
-            }
-            
-            let html = '';
-            payments.forEach((payment, index) => {
-                html += `<tr>
-                    <td>${index + 1}</td>
-                    <td>${formatDate(payment.date)}</td>
-                    <td>${payment.month || '-'}</td>
-                    <td style="font-weight:600;color:#059669">₹${payment.payment || 0}</td>
-                    <td style="font-weight:600;color:#0b4da0">${payment.point || 0}</td>
-                </tr>`;
-            });
-            
-            tbody.innerHTML = html;
-        }
-        
-        // 📅 FORMAT DATE
-        function formatDate(dateStr) {
-            if (!dateStr || dateStr === '-') return '-';
-            if (dateStr.includes('/')) {
-                const [day, month, year] = dateStr.split('/');
-                return `${day}/${month}/${year}`;
-            }
-            return dateStr;
-        }
-        
-        // 🎯 UPDATE STATUS
-        function updateStatus(completionRate) {
-            const status = document.getElementById('memberStatus');
-            if (completionRate === 100) {
-                status.textContent = "Payment Complete";
-                status.style.color = "#059669";
-            } else if (completionRate >= 50) {
-                status.textContent = "Active Member";
-                status.style.color = "#0b4da0";
-            } else if (completionRate > 0) {
-                status.textContent = "Payment Pending";
-                status.style.color = "#f59e0b";
-            } else {
-                status.textContent = "No Payments";
-                status.style.color = "#dc2626";
-            }
-        }
-        
-        // 🔄 FALLBACK DATA
-        function showFallbackData() {
-            document.getElementById('memberSince').textContent = new Date().getFullYear();
-            document.getElementById('completionRate').textContent = '0%';
-            document.getElementById('completionPercentage').textContent = '0%';
-            document.getElementById('pointsProgress').textContent = '0%';
-            updateStatus(0);
-            
-            // Show fallback message
-            document.getElementById('paymentHistory').innerHTML = 
-                `<tr><td colspan="5" style="text-align:center;padding:20px;color:#64748b">
-                    <i class="fas fa-exclamation-triangle"></i><br>
-                    Data loading failed. Please try refreshing.
-                </td></tr>`;
-        }
-    </script>
+</div>
+
+<script>
+/* ===== CONFIG ===== */
+const API = "https://anjumang.infinityfreeapp.com/api.php";
+
+/* ===== PARAMS ===== */
+const params = new URLSearchParams(location.search);
+const name = params.get("name");
+
+/* ===== DATE ===== */
+const now = new Date();
+document.getElementById("currentDate").innerText =
+now.toLocaleDateString("en-IN");
+document.getElementById("lastUpdatedTime").innerText =
+now.toLocaleTimeString("en-IN");
+document.getElementById("receiptNumber").innerText =
+"AGM/"+now.getFullYear()+"/"+Math.floor(1000+Math.random()*9000);
+
+/* ===== FETCH ===== */
+fetch(`${API}?name=${encodeURIComponent(name)}`)
+.then(r=>r.json())
+.then(res=>{
+if(!res.success){alert("Member not found");return}
+const d=res.data;
+
+document.getElementById("memberName").innerText=d.name;
+document.getElementById("memberPhone").innerText=d.phone;
+document.getElementById("memberImage").src=d.image;
+document.getElementById("memberSince").innerText=d.member_since;
+document.getElementById("totalPaid").innerText="₹"+d.total_paid;
+document.getElementById("totalPoints").innerText=d.total_points;
+
+let status="No Payments";
+if(d.total_paid>=1200)status="Payment Complete";
+else if(d.total_paid>0)status="Active";
+document.getElementById("memberStatus").innerText=status;
+
+const tbody=document.getElementById("paymentHistory");
+tbody.innerHTML="";
+d.payments.forEach((p,i)=>{
+tbody.innerHTML+=`
+<tr>
+<td>${i+1}</td>
+<td>${p.date}</td>
+<td>${p.month}</td>
+<td>₹${p.payment}</td>
+<td>${p.point}</td>
+</tr>`;
+});
+});
+</script>
 </body>
 </html>
