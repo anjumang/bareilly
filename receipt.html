@@ -1,102 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Receipt - Anjuman Ghulaman-E-Mustafa</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* ===== DESIGN SAME AS BEFORE (NO CHANGE) ===== */
-        *{margin:0;padding:0;box-sizing:border-box}
-        body{font-family:'Segoe UI',system-ui;background:linear-gradient(135deg,#f8fafc,#e2e8f0);min-height:100vh;padding:20px}
-        .container{max-width:1000px;margin:auto;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.1);overflow:hidden}
-        .receipt-header{background:linear-gradient(135deg,#0b4da0,#083a7f);color:#fff;padding:25px 30px;border-bottom:5px solid #10b981}
-        .header-top{display:flex;justify-content:space-between;align-items:center}
-        .logo{width:70px;height:70px;border-radius:12px;background:rgba(255,255,255,.1);padding:5px}
-        .logo img{width:100%;height:100%;object-fit:contain}
-        .header-info{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:15px}
-        .profile-section{display:flex;gap:30px;padding:30px;border-bottom:1px solid #e2e8f0}
-        .profile-image{width:150px;height:150px;border-radius:50%;border:5px solid #e2e8f0}
-        .member-name{font-size:2rem;color:#0b4da0;font-weight:700}
-        .payment-table{width:100%;border-collapse:collapse}
-        .payment-table th,.payment-table td{padding:12px;border-bottom:1px solid #e2e8f0}
-        .summary-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;padding:30px}
-        .points-display{text-align:center;padding:40px}
-        .progress-bar{height:100%;background:linear-gradient(90deg,#10b981,#0b4da0)}
-        .error-message{display:none;background:#fee2e2;color:#dc2626;padding:15px;margin:20px}
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Member Receipt - Anjuman Ghulaman-E-Mustafa</title>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',system-ui;background:linear-gradient(135deg,#f8fafc,#e2e8f0);min-height:100vh;padding:20px}
+.container{max-width:1000px;margin:auto;background:#fff;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.1);overflow:hidden}
+
+.receipt-header{background:linear-gradient(135deg,#0b4da0,#083a7f);color:#fff;padding:25px 30px;border-bottom:5px solid #10b981}
+.header-top{display:flex;justify-content:space-between;align-items:center}
+.logo{width:70px;height:70px;border-radius:12px;background:rgba(255,255,255,.1);padding:5px}
+.logo img{width:100%;height:100%;object-fit:contain}
+.header-info{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-top:15px}
+
+.profile-section{display:flex;gap:30px;padding:30px;border-bottom:1px solid #e2e8f0}
+.profile-image{width:150px;height:150px;border-radius:50%;border:5px solid #e2e8f0;object-fit:cover}
+.member-name{font-size:2rem;color:#0b4da0;font-weight:700}
+
+.payment-table{width:100%;border-collapse:collapse}
+.payment-table th,.payment-table td{padding:12px;border-bottom:1px solid #e2e8f0}
+
+.summary-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:20px;padding:30px}
+
+.points-display{text-align:center;padding:40px}
+.progress-bar{height:100%;background:linear-gradient(90deg,#10b981,#0b4da0)}
+
+.error-message{display:none;background:#fee2e2;color:#dc2626;padding:15px;margin:20px;border-left:4px solid #dc2626}
+</style>
 </head>
 
 <body>
 <div class="container">
 
-    <!-- HEADER -->
-    <div class="receipt-header">
-        <div class="header-top">
-            <div class="logo">
-                <img src="https://anjumang.github.io/bareilly/img/logo.png">
-            </div>
-            <div>
-                <div id="lastUpdatedTime"></div>
-            </div>
-        </div>
-        <div class="header-info">
-            <div>Receipt: <span id="receiptNumber"></span></div>
-            <div>Date: <span id="currentDate"></span></div>
-            <div>Status: <span id="memberStatus">Loading</span></div>
-        </div>
+<!-- HEADER -->
+<div class="receipt-header">
+  <div class="header-top">
+    <div class="logo">
+      <img src="https://anjumang.github.io/bareilly/img/logo.png">
     </div>
+    <div id="lastUpdatedTime"></div>
+  </div>
 
-    <!-- ERROR -->
-    <div id="errorMessage" class="error-message">
-        <i class="fas fa-exclamation-triangle"></i>
-        <span id="errorText"></span>
-    </div>
+  <div class="header-info">
+    <div>Receipt: <span id="receiptNumber"></span></div>
+    <div>Date: <span id="currentDate"></span></div>
+    <div>Status: <span id="memberStatus">Loading</span></div>
+  </div>
+</div>
 
-    <!-- PROFILE -->
-    <div class="profile-section">
-        <img id="memberImage" class="profile-image" src="">
-        <div>
-            <div id="memberName" class="member-name"></div>
-            <div id="memberPhone"></div>
-            <div>Member Since: <span id="memberSince"></span></div>
-        </div>
-    </div>
+<!-- ERROR -->
+<div id="errorMessage" class="error-message">
+  <i class="fas fa-exclamation-triangle"></i>
+  <span id="errorText"></span>
+</div>
 
-    <!-- PAYMENT HISTORY -->
-    <table class="payment-table">
-        <thead>
-            <tr>
-                <th>#</th><th>Date</th><th>Month</th><th>Payment</th><th>Points</th>
-            </tr>
-        </thead>
-        <tbody id="paymentHistory"></tbody>
-    </table>
+<!-- PROFILE -->
+<div class="profile-section">
+  <img id="memberImage" class="profile-image" src="">
+  <div>
+    <div id="memberName" class="member-name"></div>
+    <div id="memberPhone"></div>
+    <div>Member Since: <span id="memberSince"></span></div>
+  </div>
+</div>
 
-    <!-- SUMMARY -->
-    <div class="summary-cards">
-        <div>Total Paid: ₹<span id="totalPaidAmount">0</span></div>
-        <div>Pending: ₹<span id="pendingAmount">0</span></div>
-        <div>Completion: <span id="completionRate">0%</span></div>
-        <div>Total Points: <span id="totalPoints">0</span></div>
-    </div>
+<!-- PAYMENT TABLE -->
+<table class="payment-table">
+<thead>
+<tr>
+<th>#</th><th>Date</th><th>Month</th><th>Payment</th><th>Points</th>
+</tr>
+</thead>
+<tbody id="paymentHistory"></tbody>
+</table>
 
-    <!-- POINTS -->
-    <div class="points-display">
-        <div id="displayPoints">0</div>
-        <div style="height:12px;background:#e2e8f0">
-            <div id="pointsProgressBar" class="progress-bar" style="width:0%"></div>
-        </div>
-        <div id="progressText"></div>
-    </div>
+<!-- SUMMARY -->
+<div class="summary-cards">
+  <div>Total Paid: ₹<span id="totalPaid">0</span></div>
+  <div>Pending: ₹<span id="pending">0</span></div>
+  <div>Completion: <span id="completion">0%</span></div>
+  <div>Total Points: <span id="totalPoints">0</span></div>
+</div>
+
+<!-- POINTS -->
+<div class="points-display">
+  <div id="displayPoints" style="font-size:48px;font-weight:700">0</div>
+  <div style="height:12px;background:#e2e8f0;margin-top:15px">
+    <div id="progressBar" class="progress-bar" style="width:0%"></div>
+  </div>
+  <div id="progressText"></div>
+</div>
 
 </div>
 
 <script>
-/* ================= UID BASED LOGIC ================= */
+/* ================= MEMBER ID BASED LOGIC ================= */
 
 const params = new URLSearchParams(window.location.search);
-const uid = params.get('uid');
+const memberId = params.get('memberId');
 
 const now = new Date();
 document.getElementById('currentDate').innerText = now.toLocaleDateString('en-IN');
@@ -105,792 +111,70 @@ document.getElementById('receiptNumber').innerText =
   'AGM/' + now.getFullYear() + '/' + Math.floor(1000 + Math.random()*9000);
 
 async function loadData(){
-    if(!uid){
-        showError("UID missing (popup sahi se open nahi hua)");
-        return;
-    }
+  if(!memberId){
+    showError("MemberID missing (popup sahi se open nahi hua)");
+    return;
+  }
 
-    try{
-        const res = await fetch(
-          'https://anjumang.infinityfreeapp.com/api.php?uid=' + uid
-        );
-        const json = await res.json();
+  try{
+    const res = await fetch(
+      'https://anjumang.infinityfreeapp.com/api.php?memberId=' + memberId
+    );
+    const json = await res.json();
 
-        if(!json.success) throw "Member not found";
+    if(!json.success) throw "Member not found";
 
-        const d = json.data;
+    const d = json.data;
 
-        document.getElementById('memberStatus').innerText = "Active";
-        document.getElementById('memberName').innerText = d.name;
-        document.getElementById('memberPhone').innerText = d.phone;
-        document.getElementById('memberSince').innerText = d.member_since;
-        document.getElementById('memberImage').src = d.image;
+    document.getElementById('memberStatus').innerText = "Active";
+    document.getElementById('memberName').innerText = d.name;
+    document.getElementById('memberPhone').innerText = d.phone || '';
+    document.getElementById('memberSince').innerText = d.member_since;
+    document.getElementById('memberImage').src = d.image;
 
-        let totalPaid = 0, totalPoints = 0;
-        const tbody = document.getElementById('paymentHistory');
-        tbody.innerHTML = '';
+    let totalPaid = 0, totalPoints = 0;
+    const tbody = document.getElementById('paymentHistory');
+    tbody.innerHTML = '';
 
-        d.payments.forEach((p,i)=>{
-            totalPaid += p.payment;
-            totalPoints += p.point;
-            tbody.innerHTML += `
-              <tr>
-                <td>${i+1}</td>
-                <td>${p.date}</td>
-                <td>${p.month}</td>
-                <td>₹${p.payment}</td>
-                <td>${p.point}</td>
-              </tr>`;
-        });
+    d.payments.forEach((p,i)=>{
+      totalPaid += Number(p.payment);
+      totalPoints += Number(p.point);
 
-        document.getElementById('totalPaidAmount').innerText = totalPaid;
-        document.getElementById('pendingAmount').innerText = 1200 - totalPaid;
-        document.getElementById('completionRate').innerText =
-          Math.round((totalPaid/1200)*100)+'%';
-        document.getElementById('totalPoints').innerText = totalPoints;
-        document.getElementById('displayPoints').innerText = totalPoints;
+      tbody.innerHTML += `
+      <tr>
+        <td>${i+1}</td>
+        <td>${p.date}</td>
+        <td>${p.month}</td>
+        <td>₹${p.payment}</td>
+        <td>${p.point}</td>
+      </tr>`;
+    });
 
-        const prog = Math.min(100,(totalPoints/500)*100);
-        document.getElementById('pointsProgressBar').style.width = prog+'%';
-        document.getElementById('progressText').innerText = prog.toFixed(1)+'% Complete';
+    const target = 1200;
+    const completion = Math.round((totalPaid/target)*100);
 
-    }catch(e){
-        showError("Data load nahi ho pa raha");
-    }
+    document.getElementById('totalPaid').innerText = totalPaid;
+    document.getElementById('pending').innerText = Math.max(0,target-totalPaid);
+    document.getElementById('completion').innerText = completion+'%';
+    document.getElementById('totalPoints').innerText = totalPoints;
+    document.getElementById('displayPoints').innerText = totalPoints;
+
+    const prog = Math.min(100,(totalPoints/500)*100);
+    document.getElementById('progressBar').style.width = prog+'%';
+    document.getElementById('progressText').innerText = prog.toFixed(1)+'% Complete';
+
+  }catch(e){
+    showError("Data load nahi ho pa raha");
+  }
 }
 
 function showError(msg){
-    document.getElementById('errorText').innerText = msg;
-    document.getElementById('errorMessage').style.display = 'block';
+  document.getElementById('errorText').innerText = msg;
+  document.getElementById('errorMessage').style.display = 'block';
 }
 
 loadData();
 </script>
-</body>
-</html>        .info-value {
-            font-weight: 600;
-            font-size: 1rem;
-        }
 
-        /* ================= PROFILE ================= */
-        .profile-section {
-            padding: 30px;
-            display: flex;
-            align-items: center;
-            gap: 30px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .profile-image {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 5px solid #e2e8f0;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-            flex-shrink: 0;
-        }
-
-        .profile-info {
-            flex: 1;
-        }
-
-        .member-name {
-            font-size: 2rem;
-            color: #0b4da0;
-            font-weight: 700;
-            margin-bottom: 8px;
-        }
-
-        .member-contact {
-            color: #64748b;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 1.1rem;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .info-card {
-            background: #f8fafc;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            border-left: 4px solid #0b4da0;
-            transition: transform 0.3s;
-        }
-
-        .info-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-        }
-
-        .info-label {
-            font-size: 0.8rem;
-            color: #64748b;
-            margin-bottom: 6px;
-            font-weight: 500;
-        }
-
-        .info-value {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: #1e293b;
-        }
-
-        /* ================= PAYMENT HISTORY ================= */
-        .history-section {
-            padding: 30px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .section-title {
-            color: #0b4da0;
-            font-size: 1.5rem;
-            margin-bottom: 25px;
-            padding-bottom: 12px;
-            border-bottom: 2px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .payment-table-container {
-            overflow-x: auto;
-            border-radius: 10px;
-            border: 1px solid #e2e8f0;
-            margin-bottom: 20px;
-        }
-
-        .payment-table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 600px;
-        }
-
-        .payment-table thead {
-            background: linear-gradient(135deg, #0b4da0 0%, #083a7f 100%);
-            color: white;
-        }
-
-        .payment-table th {
-            padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            font-size: 0.9rem;
-        }
-
-        .payment-table td {
-            padding: 12px 15px;
-            border-bottom: 1px solid #e2e8f0;
-            color: #1e293b;
-        }
-
-        .payment-table tbody tr:nth-child(even) {
-            background: #f8fafc;
-        }
-
-        .payment-table tbody tr:hover {
-            background: #f1f5f9;
-        }
-
-        /* ================= SUMMARY CARDS ================= */
-        .summary-cards {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-            padding: 30px;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .summary-card {
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-            padding: 25px 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
-            border: 1px solid #e2e8f0;
-        }
-
-        .summary-card h3 {
-            color: #0b4da0;
-            font-size: 1.3rem;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .summary-item {
-            display: flex;
-            justify-content: space-between;
-            padding: 12px 0;
-            border-bottom: 1px dashed #e2e8f0;
-        }
-
-        .summary-item:last-child {
-            border-bottom: none;
-        }
-
-        .summary-label {
-            color: #64748b;
-            font-weight: 500;
-        }
-
-        .summary-value {
-            color: #1e293b;
-            font-weight: 600;
-        }
-
-        .summary-value.highlight {
-            color: #059669;
-        }
-
-        /* ================= POINTS DISPLAY ================= */
-        .points-section {
-            padding: 30px;
-            text-align: center;
-            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
-        }
-
-        .points-display {
-            padding: 40px;
-            background: white;
-            border-radius: 15px;
-            margin-top: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-            border: 1px solid #e2e8f0;
-        }
-
-        .points-number {
-            font-size: 4rem;
-            font-weight: 800;
-            color: #0b4da0;
-            margin: 20px 0;
-            text-shadow: 0 5px 15px rgba(11, 77, 160, 0.2);
-        }
-
-        .progress-container {
-            height: 12px;
-            background: #e2e8f0;
-            border-radius: 6px;
-            margin: 30px 0;
-            overflow: hidden;
-        }
-
-        .progress-bar {
-            height: 100%;
-            background: linear-gradient(90deg, #10b981, #0b4da0);
-            border-radius: 6px;
-            transition: width 1s ease;
-        }
-
-        .progress-labels {
-            display: flex;
-            justify-content: space-between;
-            color: #64748b;
-            font-size: 0.9rem;
-            margin-top: 10px;
-        }
-
-        /* ================= ACTION BUTTONS ================= */
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 30px;
-            background: white;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        .btn {
-            padding: 14px 35px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 16px;
-            transition: all 0.3s;
-            min-width: 160px;
-            justify-content: center;
-        }
-
-        .btn-print {
-            background: linear-gradient(135deg, #0b4da0, #083a7f);
-            color: #fff;
-        }
-
-        .btn-close {
-            background: linear-gradient(135deg, #64748b, #475569);
-            color: #fff;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-        }
-
-        .btn:active {
-            transform: translateY(-1px);
-        }
-
-        /* ================= ERROR MESSAGE ================= */
-        .error-message {
-            background: #fee2e2;
-            color: #dc2626;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 30px;
-            border-left: 4px solid #dc2626;
-            display: none;
-        }
-
-        .error-message i {
-            margin-right: 10px;
-        }
-
-        /* ================= LOADING ================= */
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #64748b;
-        }
-
-        .loading i {
-            font-size: 2rem;
-            color: #0b4da0;
-            margin-bottom: 15px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* ================= RESPONSIVE ================= */
-        @media (max-width: 768px) {
-            .container {
-                border-radius: 10px;
-            }
-            
-            .profile-section {
-                flex-direction: column;
-                text-align: center;
-                gap: 20px;
-            }
-            
-            .info-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .summary-cards {
-                grid-template-columns: 1fr;
-                gap: 15px;
-                padding: 20px;
-            }
-            
-            .header-info {
-                grid-template-columns: 1fr;
-                gap: 10px;
-            }
-            
-            .action-buttons {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .btn {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .profile-section {
-                padding: 20px;
-            }
-            
-            .history-section, .points-section {
-                padding: 20px;
-            }
-            
-            .member-name {
-                font-size: 1.5rem;
-            }
-            
-            .points-number {
-                font-size: 3rem;
-            }
-            
-            .info-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media print {
-            body {
-                background: white;
-                padding: 0;
-            }
-            
-            .container {
-                box-shadow: none;
-                border-radius: 0;
-            }
-            
-            .action-buttons {
-                display: none;
-            }
-        }
-
-        /* ================= SUCCESS MESSAGE ================= */
-        .success-message {
-            background: #d1fae5;
-            color: #059669;
-            padding: 10px 15px;
-            border-radius: 10px;
-            margin: 10px 30px;
-            border-left: 4px solid #059669;
-            display: none;
-            font-size: 0.9rem;
-        }
-    </style>
-</head>
-
-<body>
-    <div class="container">
-        <!-- Header -->
-        <div class="receipt-header">
-            <div class="header-top">
-                <div class="logo-container">
-                    <div class="logo">
-                        <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="AGM Logo">
-                    </div>
-                    <div class="header-title">
-                        <h1>Anjuman Ghulamane Mustafa</h1>
-                        <p>Official Membership Receipt</p>
-                    </div>
-                </div>
-                <div style="text-align: right; color: rgba(255,255,255,0.9);">
-                    <div style="font-size: 0.9rem; margin-bottom: 5px;">Last Updated:</div>
-                    <div id="lastUpdatedTime"></div>
-                </div>
-            </div>
-            
-            <div class="header-info">
-                <div class="info-item">
-                    <div class="info-label">Receipt No:</div>
-                    <div class="info-value" id="receiptNumber">AGM/2025/0016</div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Date:</div>
-                    <div class="info-value" id="currentDate"></div>
-                </div>
-                <div class="info-item">
-                    <div class="info-label">Status:</div>
-                    <div class="info-value" id="memberStatus" style="color:#10b981">Loading...</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Success Message (for cache) -->
-        <div id="successMessage" class="success-message" style="display: none;">
-            <i class="fas fa-check-circle"></i>
-            <span id="successText">Loading cached data for faster access...</span>
-        </div>
-
-        <!-- Error Message -->
-        <div id="errorMessage" class="error-message" style="display: none;">
-            <i class="fas fa-exclamation-triangle"></i>
-            <span id="errorText">Error loading data. Please try again.</span>
-        </div>
-
-        <!-- Profile Section -->
-        <div class="profile-section">
-            <img id="memberImage" class="profile-image"
-                 src="https://via.placeholder.com/150/0b4da0/ffffff?text=AGM">
-            <div class="profile-info">
-                <div id="memberName" class="member-name">Loading...</div>
-                <div class="member-contact">
-                    <i class="fas fa-phone"></i>
-                    <span id="memberPhone">Loading...</span>
-                </div>
-                
-                <div class="info-grid">
-                    <div class="info-card">
-                        <div class="info-label">Member Since</div>
-                        <div id="memberSince" class="info-value">-</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">Total Payments</div>
-                        <div id="totalPaymentsCount" class="info-value">0</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">Completion</div>
-                        <div id="completionRate" class="info-value">0%</div>
-                    </div>
-                    <div class="info-card">
-                        <div class="info-label">Last Payment</div>
-                        <div id="lastPaymentDate" class="info-value">-</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Payment History -->
-        <div class="history-section">
-            <h3 class="section-title">
-                <i class="fas fa-history"></i>
-                Payment History
-            </h3>
-            <div class="payment-table-container">
-                <table class="payment-table">
-                    <thead>
-                        <tr>
-                            <th>Sr.</th>
-                            <th>Date</th>
-                            <th>Month</th>
-                            <th>Payment</th>
-                            <th>Points</th>
-                        </tr>
-                    </thead>
-                    <tbody id="paymentHistory">
-                        <tr>
-                            <td colspan="5" class="loading">
-                                <i class="fas fa-spinner"></i><br>
-                                Loading payment history...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Summary Cards -->
-        <div class="summary-cards">
-            <div class="summary-card">
-                <h3><i class="fas fa-chart-line"></i> Financial Summary</h3>
-                <div class="summary-item">
-                    <span class="summary-label">Total Paid Amount</span>
-                    <span id="totalPaidAmount" class="summary-value">₹0</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">Pending Amount</span>
-                    <span id="pendingAmount" class="summary-value">₹0</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">Target Amount</span>
-                    <span id="targetAmount" class="summary-value">₹1200</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">Payment Completion</span>
-                    <span id="completionPercentage" class="summary-value highlight">0%</span>
-                </div>
-            </div>
-
-            <div class="summary-card">
-                <h3><i class="fas fa-star"></i> Points Summary</h3>
-                <div class="summary-item">
-                    <span class="summary-label">Total Points</span>
-                    <span id="totalPoints" class="summary-value">0</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">Max Points</span>
-                    <span id="maxPoints" class="summary-value">500</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">Points Progress</span>
-                    <span id="pointsProgress" class="summary-value">0%</span>
-                </div>
-                <div class="summary-item">
-                    <span class="summary-label">Average Points/Payment</span>
-                    <span id="avgPoints" class="summary-value">0</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Points Display -->
-        <div class="points-section">
-            <h3 class="section-title">
-                <i class="fas fa-trophy"></i>
-                Achievement Overview
-            </h3>
-            <div class="points-display">
-                <i class="fas fa-award" style="font-size: 48px; color: #fbbf24;"></i>
-                <div id="displayPoints" class="points-number">0</div>
-                <div style="font-weight: 600; color: #0b4da0; margin-bottom: 15px;">Total Achievement Points</div>
-                
-                <div class="progress-container">
-                    <div id="pointsProgressBar" class="progress-bar" style="width: 0%;"></div>
-                </div>
-                
-                <div class="progress-labels">
-                    <span>0 Points</span>
-                    <span id="progressText">0% Complete</span>
-                    <span>500 Points</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Action Buttons -->
-        <div class="action-buttons">
-            <button class="btn btn-print" onclick="window.print()">
-                <i class="fas fa-print"></i> Print Receipt
-            </button>
-            <button class="btn btn-close" onclick="window.close()">
-                <i class="fas fa-times"></i> Close Window
-            </button>
-            <button class="btn btn-refresh" onclick="refreshData()" style="background: linear-gradient(135deg, #10b981, #059669);">
-                <i class="fas fa-sync-alt"></i> Refresh Data
-            </button>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer-note" style="text-align:center; margin-top:25px; padding-top:15px; border-top:1px solid #e2e8f0; color:#64748b; font-size:0.9rem;">
-            <i class="fas fa-shield-alt"></i> Official Receipt – Anjuman Ghulamane Mustafa • This is a computer generated receipt
-        </div>
-    </div>
-
-    <script>
-/* ================= BASIC SETUP ================= */
-const urlParams = new URLSearchParams(window.location.search);
-const memberName = urlParams.get('name') || '';
-const memberImage =
-  urlParams.get('image') ||
-  'https://via.placeholder.com/150/0b4da0/ffffff?text=AGM';
-
-const now = new Date();
-document.getElementById('currentDate').innerText = now.toLocaleDateString('en-IN');
-document.getElementById('lastUpdatedTime').innerText = now.toLocaleTimeString('en-IN');
-
-function generateReceiptNumber() {
-    return `AGM/${now.getFullYear()}/${Math.floor(1000 + Math.random() * 9000)}`;
-}
-document.getElementById('receiptNumber').innerText = generateReceiptNumber();
-
-/* ================= API FETCH ================= */
-async function fetchFromAPI() {
-    if (!memberName) {
-        throw new Error("Name missing");
-    }
-
-    const apiUrl =
-      'https://anjumang.infinityfreeapp.com/api.php?name=' +
-      encodeURIComponent(memberName);
-
-    const response = await fetch(apiUrl);
-    if (!response.ok) throw new Error("API Error");
-
-    return await response.json();
-}
-
-/* ================= LOAD DATA ================= */
-async function loadMemberData() {
-    try {
-        document.getElementById('memberStatus').innerText = "Loading...";
-        document.getElementById('memberStatus').style.color = "#f59e0b";
-
-        const res = await fetchFromAPI();
-
-        if (!res.success) throw new Error("Member not found");
-
-        const data = res.data;
-
-        /* ===== PROFILE ===== */
-        document.getElementById('memberName').innerText = data.name || '-';
-        document.getElementById('memberPhone').innerText = data.phone || 'Not Available';
-        document.getElementById('memberImage').src = data.image || memberImage;
-        document.getElementById('memberSince').innerText = data.member_since || '-';
-
-        /* ===== PAYMENTS ===== */
-        const tbody = document.getElementById('paymentHistory');
-        tbody.innerHTML = '';
-
-        let totalPaid = 0;
-        let totalPoints = 0;
-        let lastPayment = '-';
-
-        data.payments.forEach((p, i) => {
-            totalPaid += Number(p.payment || 0);
-            totalPoints += Number(p.point || 0);
-            lastPayment = p.date || lastPayment;
-
-            tbody.innerHTML += `
-            <tr>
-                <td>${i + 1}</td>
-                <td>${p.date}</td>
-                <td>${p.month}</td>
-                <td style="color:#059669;font-weight:600">₹${p.payment}</td>
-                <td>${p.point}</td>
-            </tr>`;
-        });
-
-        document.getElementById('totalPaymentsCount').innerText = data.payments.length;
-        document.getElementById('lastPaymentDate').innerText = data.last_payment || lastPayment;
-
-        /* ===== SUMMARY ===== */
-        const target = 1200;
-        const pending = Math.max(0, target - totalPaid);
-        const completion = Math.round((totalPaid / target) * 100);
-
-        document.getElementById('totalPaidAmount').innerText = '₹' + totalPaid;
-        document.getElementById('pendingAmount').innerText = '₹' + pending;
-        document.getElementById('completionPercentage').innerText = completion + '%';
-        document.getElementById('completionRate').innerText = completion + '%';
-
-        document.getElementById('totalPoints').innerText = totalPoints;
-        document.getElementById('displayPoints').innerText = totalPoints;
-
-        const progress = Math.min(100, (totalPoints / 500) * 100);
-        document.getElementById('pointsProgress').innerText = progress.toFixed(0) + '%';
-        document.getElementById('avgPoints').innerText =
-          data.payments.length ? Math.round(totalPoints / data.payments.length) : 0;
-
-        document.getElementById('pointsProgressBar').style.width = progress + '%';
-        document.getElementById('progressText').innerText =
-          progress.toFixed(1) + '% Complete';
-
-        /* ===== STATUS ===== */
-        const status = document.getElementById('memberStatus');
-        status.innerText = completion === 100 ? "Payment Complete" : "Active Member";
-        status.style.color = "#059669";
-
-    } catch (err) {
-        document.getElementById('memberStatus').innerText = "Error";
-        document.getElementById('memberStatus').style.color = "#dc2626";
-
-        document.getElementById('errorMessage').style.display = 'block';
-        document.getElementById('errorText').innerText =
-          "Data load nahi ho pa raha. Naam check karo.";
-    }
-}
-
-/* ================= REFRESH ================= */
-function refreshData() {
-    loadMemberData();
-}
-
-/* ================= INIT ================= */
-window.onload = function () {
-    if (!memberName) {
-        document.getElementById('errorMessage').style.display = 'block';
-        document.getElementById('errorText').innerText =
-          "URL me ?name= likhna zaroori hai";
-        return;
-    }
-    loadMemberData();
-};
-    </script>
 </body>
 </html>
