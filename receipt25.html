@@ -1,448 +1,193 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Member Receipt</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Anjuman Ghulaman-E-Mustafa</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+
     <style>
-        :root {
-            --green-1: #0f8a63;
-            --green-2: #0a6b4f;
-            --accent: #10b981;
-            --muted: #f3f7f9;
-            --blue: #0b4da0;
-            --card-bg: #ffffff;
-            --shadow: 0 6px 18px rgba(15, 23, 42, 0.08);
-            --radius: 12px;
-            font-family: "Segoe UI", Roboto, "Noto Sans", Arial, sans-serif;
-        }
-        
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-        
-        body {
-            background: linear-gradient(180deg, #eef6f4 0%, #f9fcfd 100%);
-            color: #1f2937;
-            padding: 20px;
-            min-height: 100vh;
-        }
-        
-        .container {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        
-        /* Header */
-        .header {
-            background: linear-gradient(90deg, var(--green-1), var(--green-2));
-            color: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
-        }
-        
-        .header .top {
-            display: flex;
-            gap: 16px;
-            align-items: center;
-            flex-wrap: wrap;
-        }
-        
-        .logo {
-            width: 64px;
-            height: 64px;
-            border-radius: 10px;
-            background: #073b2a;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-            border: 2px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .logo img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            border-radius: 6px;
-        }
-        
-        .title {
-            flex: 1;
-            min-width: 250px;
-        }
-        
-        .title h1 {
-            margin: 0;
-            font-size: 20px;
-        }
-        
-        .title p {
-            margin: 4px 0 0;
-            font-size: 13px;
-            opacity: 0.95;
-        }
-        
-        /* Profile Section */
-        .profile {
-            background: var(--card-bg);
-            border-radius: 10px;
-            padding: 20px;
-            display: flex;
-            gap: 20px;
-            align-items: center;
-            box-shadow: var(--shadow);
-            margin-top: 15px;
-        }
-        
-        .avatar {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            overflow: hidden;
-            background: #f2f5f6;
-            border: 4px solid var(--card-bg);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-        
-        .avatar img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        .info {
-            flex: 1;
-        }
-        
-        .info .row {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-            margin-bottom: 8px;
-        }
-        
-        .info .label {
-            min-width: 100px;
-            color: #374151;
-            font-weight: 700;
-            font-size: 15px;
-        }
-        
-        .info .val {
-            font-weight: 600;
-            color: #0b1220;
-            font-size: 16px;
-        }
-        
-        /* Table */
-        .section-title {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-weight: 700;
+        .member-link {
             color: #0b4da0;
-            margin: 20px 0 12px;
-            padding: 8px 0;
-            border-bottom: 2px solid #eef3f6;
+            cursor: pointer;
+            text-decoration: none;
+            font-weight: bold;
         }
-        
-        table.receipt {
-            width: 100%;
-            border-collapse: collapse;
-            background: var(--card-bg);
-            border-radius: 8px;
+        .member-link:hover {
+            color: #083a7f;
+            text-decoration: underline;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            inset: 0;
+            background: rgba(0,0,0,0.8);
+        }
+        .modal-content {
+            background: #fff;
+            margin: 2% auto;
+            width: 95%;
+            height: 90vh;
+            border-radius: 12px;
             overflow: hidden;
-            box-shadow: var(--shadow);
-            margin-bottom: 20px;
         }
-        
-        table.receipt thead th {
-            background: linear-gradient(180deg, #0b4da0, #083a7f);
+        .modal-iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        .close-modal {
+            position: absolute;
+            right: 25px;
+            top: 15px;
             color: #fff;
-            padding: 14px 12px;
-            text-align: left;
-            font-weight: 700;
-            font-size: 14px;
-        }
-        
-        table.receipt tbody td {
-            padding: 12px 10px;
-            border-bottom: 1px solid #eef3f6;
-            font-size: 14px;
-            color: #263238;
-        }
-        
-        table.receipt tbody tr:nth-child(even) {
-            background: #fbfeff;
-        }
-        
-        /* Summary Cards */
-        .summaries {
-            display: flex;
-            gap: 16px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        
-        .card {
-            background: var(--card-bg);
-            padding: 20px;
-            border-radius: 12px;
-            flex: 1;
-            min-width: 220px;
-            box-shadow: var(--shadow);
-            border-top: 4px solid var(--blue);
-        }
-        
-        .card h3 {
-            margin: 0 0 12px;
-            font-size: 17px;
-            color: #0b4da0;
-        }
-        
-        .summary-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            font-weight: 600;
-            border-bottom: 1px dashed #e5e7eb;
-        }
-        
-        /* Responsive */
-        @media (max-width: 768px) {
-            .profile {
-                flex-direction: column;
-                text-align: center;
-            }
-            
-            .info .row {
-                flex-direction: column;
-                gap: 4px;
-                align-items: center;
-            }
-            
-            .info .label {
-                min-width: auto;
-            }
-            
-            .avatar {
-                width: 100px;
-                height: 100px;
-            }
-            
-            .card {
-                min-width: 100%;
-            }
+            font-size: 35px;
+            cursor: pointer;
+            z-index: 10000;
+            background: rgba(0,0,0,0.5);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display:flex;
+            align-items:center;
+            justify-content:center;
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <div class="header">
-            <div class="top">
-                <div class="logo">
-                    <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="AGM Logo">
-                </div>
-                <div class="title">
-                    <h1>Anjuman Ghulamane Mustafa</h1>
-                    <p>Official Membership Receipt</p>
-                    <div id="lastUpdated" style="font-size:11px;opacity:0.9;margin-top:4px">
-                        Last updated: <span id="updateTime"></span>
-                    </div>
-                </div>
-            </div>
 
-            <div class="profile">
-                <div class="avatar">
-                    <img id="avatarImg" src="https://via.placeholder.com/120" alt="Member Photo">
-                </div>
-                <div class="info">
-                    <div class="row"><div class="label">Member:</div><div class="val" id="name">Loading...</div></div>
-                    <div class="row"><div class="label">Mobile:</div><div class="val" id="mobile">--</div></div>
-                    <div class="row"><div class="label">Date:</div><div class="val" id="date">--</div></div>
-                    <div class="row"><div class="label">Status:</div><div class="val" id="status">--</div></div>
-                </div>
-            </div>
+<body>
+
+<header class="header">
+    <div class="logo-search">
+        <div class="mob-btn"><img src="img/menu.png"></div>
+        <div class="logo">
+            <a href="index.html">
+                <img src="wp-content/uploads/2022/01/loo.png">
+            </a>
+        </div>
+    </div>
+</header>
+
+<div class="dis-info">
+    <div class="container-fluid">
+        <div class="d-flex align-items-center">
+            <h6 class="mb-0 mx-2">Disclaimer:-</h6>
+            <p>In the blessed month of Rabi' al-Awwal, your support can bring new light...</p>
+        </div>
+    </div>
+</div>
+
+<main class="inner-content">
+    <div class="container-fluid">
+        <div class="page-title">
+            <h1>Anjuman Ghulaman-E-Mustafa</h1>
+            <h2>Upcoming Members <strong>2025</strong></h2>
         </div>
 
-        <div class="section-title">Payment History</div>
+        <div class="middle-head">
+            <div class="roundBtn"></div>
+            <div class="round-status">Month:- <span>10</span> / 12</div>
+        </div>
 
-        <table class="receipt">
-            <thead>
-                <tr>
-                    <th>Sr.</th>
-                    <th>Name</th>
-                    <th>Date</th>
-                    <th>Month</th>
-                    <th>Payment</th>
-                    <th>Points</th>
-                </tr>
-            </thead>
-            <tbody id="tbody">
-                <!-- Data will be loaded here -->
-            </tbody>
-        </table>
-
-        <div class="summaries">
-            <div class="card">
-                <h3>Financial Summary</h3>
-                <div class="summary-row">
-                    <div>Total Paid:</div>
-                    <div id="sumPaid">₹0</div>
-                </div>
-                <div class="summary-row">
-                    <div>Pending Amount:</div>
-                    <div id="sumPending">₹0</div>
-                </div>
-                <div class="summary-row">
-                    <div>Target Amount:</div>
-                    <div id="sumTarget">₹1200</div>
-                </div>
-                <div class="summary-row">
-                    <div>Completion:</div>
-                    <div id="completion">0%</div>
-                </div>
-            </div>
-
-            <div class="card">
-                <h3>Points Summary</h3>
-                <div class="summary-row">
-                    <div>Total Points:</div>
-                    <div id="pointsTotal">0</div>
-                </div>
-                <div class="summary-row">
-                    <div>Max Points:</div>
-                    <div id="maxPoints">500</div>
-                </div>
+        <div class="box-wraper box-boarder">
+            <div class="container-fluid">
+                <div id="dynamic-data" class="row"></div>
             </div>
         </div>
     </div>
+</main>
 
-    <script>
-        // Get member name from URL parameter
-        const urlParams = new URLSearchParams(window.location.search);
-        const memberName = urlParams.get('member') || 'Member';
-        
-        // Google Sheets Configuration
-        const SPREADSHEET_ID = '1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw';
-        const API_KEY = 'AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU';
-        const PAYMENT_SHEET_NAME = 'Sheet53';
-        const MEMBER_SHEET_NAME = 'Sheet1';
-        
-        // Update member name on page
-        document.getElementById('name').textContent = decodeURIComponent(memberName);
-        
-        // Set current date
-        document.getElementById('date').textContent = new Date().toLocaleDateString('en-GB');
-        document.getElementById('updateTime').textContent = new Date().toLocaleTimeString();
-        
-        // Fetch and display member data
-        async function fetchMemberData() {
-            try {
-                // Fetch member info
-                const memberUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${MEMBER_SHEET_NAME}?key=${API_KEY}`;
-                const memberResponse = await fetch(memberUrl);
-                const memberData = await memberResponse.json();
-                
-                // Find the member in Sheet1
-                if (memberData.values) {
-                    const memberRow = memberData.values.find(row => 
-                        row[0] && row[0].toString().trim() === decodeURIComponent(memberName)
-                    );
-                    
-                    if (memberRow) {
-                        // Update member info
-                        document.getElementById('mobile').textContent = memberRow[1] || 'N/A';
-                        if (memberRow[3]) {
-                            document.getElementById('avatarImg').src = memberRow[3];
-                        }
-                    }
-                }
-                
-                // Fetch payment data
-                const paymentUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SPREADSHEET_ID}/values/${PAYMENT_SHEET_NAME}?key=${API_KEY}`;
-                const paymentResponse = await fetch(paymentUrl);
-                const paymentData = await paymentResponse.json();
-                
-                // Process payment data
-                if (paymentData.values && paymentData.values.length > 0) {
-                    const headers = paymentData.values[0];
-                    const rows = paymentData.values.slice(1);
-                    
-                    // Find column indices
-                    const nameIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('name'));
-                    const dateIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('date'));
-                    const monthIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('month'));
-                    const paymentIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('payment'));
-                    const pointsIndex = headers.findIndex(h => h && h.toString().toLowerCase().includes('point'));
-                    
-                    // Filter and display data for the specific member
-                    const tbody = document.getElementById('tbody');
-                    tbody.innerHTML = '';
-                    
-                    let totalPaid = 0;
-                    let totalPoints = 0;
-                    let rowCount = 1;
-                    
-                    rows.forEach(row => {
-                        if (row[nameIndex] && row[nameIndex].toString().trim() === decodeURIComponent(memberName)) {
-                            const tr = document.createElement('tr');
-                            const payment = parseFloat(row[paymentIndex]) || 0;
-                            const points = parseInt(row[pointsIndex]) || 0;
-                            
-                            tr.innerHTML = `
-                                <td>${rowCount++}</td>
-                                <td>${row[nameIndex]}</td>
-                                <td>${row[dateIndex] || ''}</td>
-                                <td>${row[monthIndex] || ''}</td>
-                                <td>${payment > 0 ? '₹' + payment : '-'}</td>
-                                <td>${points || 0}</td>
-                            `;
-                            
-                            tbody.appendChild(tr);
-                            totalPaid += payment;
-                            totalPoints += points;
-                        }
-                    });
-                    
-                    // Update summary
-                    const targetAmount = 1200;
-                    const pending = Math.max(0, targetAmount - totalPaid);
-                    const completion = Math.round((totalPaid / targetAmount) * 100);
-                    
-                    document.getElementById('sumPaid').textContent = '₹' + totalPaid;
-                    document.getElementById('sumPending').textContent = pending === 0 ? '₹0' : '₹' + pending;
-                    document.getElementById('completion').textContent = completion + '%';
-                    document.getElementById('pointsTotal').textContent = totalPoints;
-                    
-                    // Update status
-                    const statusElement = document.getElementById('status');
-                    if (completion === 100) {
-                        statusElement.textContent = "Payment Complete";
-                        statusElement.style.color = "#059669";
-                    } else if (completion >= 50) {
-                        statusElement.textContent = "Active Member";
-                        statusElement.style.color = "#0b4da0";
-                    } else {
-                        statusElement.textContent = "Payment Pending";
-                        statusElement.style.color = "#dc2626";
-                    }
-                }
-                
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                document.getElementById('tbody').innerHTML = 
-                    '<tr><td colspan="6" style="text-align:center;padding:20px;color:#dc2626">Error loading payment data</td></tr>';
-            }
-        }
-        
-        // Load data when page loads
-        window.onload = fetchMemberData;
-    </script>
+<!-- Modal -->
+<div id="receiptModal" class="modal">
+    <span class="close-modal">&times;</span>
+    <div class="modal-content">
+        <iframe id="receiptFrame" class="modal-iframe"></iframe>
+    </div>
+</div>
+
+<footer class="footer">
+    <div class="foot-info">
+        <div class="container-fluid">
+            <h6>अंजुमने गुलामाने मुस्तफा</h6>
+        </div>
+    </div>
+</footer>
+
+<script>
+/* ================= CONFIG ================= */
+const sheetId = "1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw";
+const apiKey = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
+const range = "Sheet1!A2:H"; // MemberID included
+
+const modal = document.getElementById("receiptModal");
+const receiptFrame = document.getElementById("receiptFrame");
+
+/* ================= MODAL ================= */
+function openReceiptModal(memberId) {
+    receiptFrame.src = `receipt.html?memberId=${encodeURIComponent(memberId)}`;
+    modal.style.display = "block";
+    document.body.style.overflow = "hidden";
+}
+document.querySelector(".close-modal").onclick = () => {
+    modal.style.display = "none";
+    receiptFrame.src = "about:blank";
+    document.body.style.overflow = "auto";
+};
+
+/* ================= LOAD DATA ================= */
+function loadData() {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+    fetch(url)
+        .then(res => res.json())
+        .then(res => renderData(res.values || []));
+}
+
+function renderData(data) {
+    const box = document.getElementById("dynamic-data");
+    box.innerHTML = "";
+
+    data.sort((a,b)=>(parseInt(b[2])||0)-(parseInt(a[2])||0));
+
+    data.forEach((row, i) => {
+        const name = row[0];
+        const phone = row[1];
+        const points = row[2];
+        const image = row[3];
+        const memberId = row[7]; // ✅ MemberID
+
+        const div = document.createElement("div");
+        div.className = "col-md-4 col-12 mb-4";
+        div.innerHTML = `
+        <div class="cand-box">
+            <figure>
+                <img src="${image || 'img/default-avatar.png'}"
+                     style="width:100px;height:100px;border-radius:50%;object-fit:cover">
+            </figure>
+            <div class="cand-info">
+                <div class="status member">
+                    <div>Rank #${i+1}</div>
+                    <div>Total Points: (${points || 0})</div>
+                </div>
+                <div class="nme-prty">
+                    <h5>
+                        <a class="member-link"
+                           onclick="openReceiptModal('${memberId}')">${name}</a>
+                    </h5>
+                    <h6>${phone || "N/A"}</h6>
+                </div>
+            </div>
+        </div>`;
+        box.appendChild(div);
+    });
+}
+
+window.onload = loadData;
+</script>
+
 </body>
 </html>
