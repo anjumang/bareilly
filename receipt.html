@@ -173,82 +173,15 @@ body{
 </div>
 
 <script>
-/* ================= UID BASED RECEIPT ================= */
+const uid = new URLSearchParams(location.search).get("uid");
+if(!uid){ document.body.innerHTML="UID missing"; }
 
-const params = new URLSearchParams(window.location.search);
-const uid = params.get("uid");
-
-const now = new Date();
-document.getElementById("currentDate").innerText = now.toLocaleDateString("en-IN");
-document.getElementById("lastUpdatedTime").innerText = now.toLocaleTimeString("en-IN");
-document.getElementById("receiptNumber").innerText =
-  "AGM/" + now.getFullYear() + "/" + Math.floor(1000 + Math.random()*9000);
-
-async function loadData(){
-  if(!uid){
-    showError("UID missing");
-    return;
-  }
-
-  try{
-    const res = await fetch(
-      "//anjumang.infinityfreeapp.com/api.php?uid=" + encodeURIComponent(uid)
-    );
-    const json = await res.json();
-
-    if(!json.success) throw "Member not found";
-
-    const d = json.data;
-
-    document.getElementById("memberStatus").innerText = "Active";
-    document.getElementById("memberName").innerText   = d.name;
-    document.getElementById("memberPhone").innerText  = d.phone || "N/A";
-    document.getElementById("memberSince").innerText  = d.member_since;
-    document.getElementById("memberImage").src        = d.image;
-
-    let totalPaid = 0;
-    let totalPoints = 0;
-    const tbody = document.getElementById("paymentHistory");
-    tbody.innerHTML = "";
-
-    d.payments.forEach((p,i)=>{
-      totalPaid   += Number(p.payment || 0);
-      totalPoints += Number(p.point || 0);
-
-      tbody.innerHTML += `
-        <tr>
-          <td>${i+1}</td>
-          <td>${p.date}</td>
-          <td>${p.month}</td>
-          <td>₹${p.payment}</td>
-          <td>${p.point}</td>
-        </tr>`;
-    });
-
-    const target = 1200;
-    const completion = Math.round((totalPaid/target)*100);
-
-    document.getElementById("totalPaid").innerText     = totalPaid;
-    document.getElementById("pending").innerText       = Math.max(0,target-totalPaid);
-    document.getElementById("completion").innerText    = completion + "%";
-    document.getElementById("totalPoints").innerText   = totalPoints;
-    document.getElementById("displayPoints").innerText = totalPoints;
-
-    const prog = Math.min(100,(totalPoints/500)*100);
-    document.getElementById("progressBar").style.width = prog + "%";
-    document.getElementById("progressText").innerText  = prog.toFixed(1) + "% Complete";
-
-  }catch(e){
-    showError("Data load nahi ho pa raha");
-  }
-}
-
-function showError(msg){
-  document.getElementById("errorText").innerText = msg;
-  document.getElementById("errorMessage").style.display = "block";
-}
-
-loadData();
+fetch("//anjumang.infinityfreeapp.com/api.php?uid="+uid)
+.then(r=>r.json())
+.then(j=>{
+  if(!j.success){ alert("No data"); return; }
+  document.getElementById("memberName").innerText=j.data.name;
+});
 </script>
 
 </body>
