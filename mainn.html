@@ -70,28 +70,109 @@
 </div>
 
 <script>
+/* ================= GOOGLE SHEET CONFIG ================= */
+const sheetId = "1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw";
+const apiKey  = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
+
+/*
+Sheet1 structure (IMPORTANT):
+A = Name
+B = Phone
+C = Points
+D = Image
+H = UID   ✅
+*/
+const range   = "Sheet1!A2:H";
+
+/* ================= MODAL ================= */
+const modal = document.getElementById("receiptModal");
+const receiptFrame = document.getElementById("receiptFrame");
+
 function openReceiptModal(uid){
-  document.getElementById("receiptFrame").src =
-    "https://anjumang.github.io/bareilly/receipt.html?uid=" + encodeURIComponent(uid);
-  document.getElementById("receiptModal").style.display="block";
+    receiptFrame.src =
+      "https://anjumang.github.io/bareilly/receipt.html?uid="
+      + encodeURIComponent(uid);
+
+    modal.style.display = "block";
+    document.body.style.overflow = "hidden";
 }
 
-const sheetId="1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw";
-const apiKey="AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
-const range="Sheet1!A2:H";
+function closeModal(){
+    modal.style.display = "none";
+    receiptFrame.src = "";
+    document.body.style.overflow = "auto";
+}
 
-fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`)
-.then(r=>r.json())
-.then(d=>{
-  const box=document.getElementById("dynamic-data");
-  d.values.forEach((row,i)=>{
-    if(!row[7]) return;
-    box.innerHTML+=`
-      <div class="col-md-4">
-        <a onclick="openReceiptModal('${row[7]}')">${row[0]}</a>
-      </div>`;
-  });
-});
+/* ================= LOAD DATA ================= */
+async function loadData(){
+    const url =
+      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+
+    const box = document.getElementById("dynamic-data");
+    box.innerHTML = "<p class='text-center'>Loading...</p>";
+
+    try{
+        const res  = await fetch(url);
+        const json = await res.json();
+        const data = json.values || [];
+
+        box.innerHTML = "";
+
+        if(data.length === 0){
+            box.innerHTML = "<p class='text-center'>No data found</p>";
+            return;
+        }
+
+        // Sort by points (DESC)
+        data.sort((a,b)=> (Number(b[2]||0) - Number(a[2]||0)));
+
+        data.forEach((row,i)=>{
+
+            const name   = row[0] || "N/A";
+            const phone  = row[1] || "N/A";
+            const points = row[2] || 0;
+            const image  = row[3] || "img/default-avatar.png";
+            const uid    = row[7]; // ✅ UID (H column)
+
+            if(!uid) return;
+
+            const div = document.createElement("div");
+            div.className = "col-md-4 col-12 mb-4";
+
+            div.innerHTML = `
+            <div class="cand-box">
+                <figure>
+                    <img src="${image}"
+                         style="width:100px;height:100px;border-radius:50%;object-fit:cover">
+                </figure>
+
+                <div class="cand-info">
+                    <div class="status member">
+                        <div>Rank #${i+1}</div>
+                        <div>Total Points: (${points})</div>
+                    </div>
+
+                    <div class="nme-prty">
+                        <h5>
+                            <a class="member-link"
+                               onclick="openReceiptModal('${uid}')">
+                               ${name}
+                            </a>
+                        </h5>
+                        <h6>${phone}</h6>
+                    </div>
+                </div>
+            </div>`;
+            box.appendChild(div);
+        });
+
+    }catch(e){
+        console.error(e);
+        box.innerHTML = "<p class='text-center'>Error loading data</p>";
+    }
+}
+
+window.onload = loadData;
 </script>
 
 </body>
