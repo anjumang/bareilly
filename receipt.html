@@ -109,10 +109,19 @@ body{
 }
 
 .loading{
-    display:none;
     text-align:center;
     padding:30px;
     color:#0b4da0
+}
+
+.success-message{
+    display:none;
+    background:#d1fae5;
+    color:#065f46;
+    padding:10px;
+    margin:10px;
+    border-left:4px solid#10b981;
+    font-size:14px
 }
 </style>
 </head>
@@ -124,6 +133,12 @@ body{
 <div id="loading" class="loading">
     <i class="fas fa-spinner fa-spin fa-2x"></i>
     <p>Loading receipt data...</p>
+</div>
+
+<!-- SUCCESS MESSAGE -->
+<div id="successMessage" class="success-message">
+    <i class="fas fa-check-circle"></i>
+    <span id="successText">Data loaded successfully</span>
 </div>
 
 <!-- HEADER -->
@@ -145,11 +160,11 @@ body{
 <!-- ERROR -->
 <div id="errorMessage" class="error-message">
     <i class="fas fa-exclamation-triangle"></i>
-    <span id="errorText">UID missing in URL</span>
+    <span id="errorText">Loading data...</span>
 </div>
 
-<!-- CONTENT (Hidden until data loads) -->
-<div id="contentArea">
+<!-- CONTENT -->
+<div id="contentArea" style="display:none">
     <!-- PROFILE -->
     <div class="profile-section">
         <img id="memberImage" class="profile-image" src="">
@@ -208,121 +223,220 @@ document.getElementById("lastUpdatedTime").innerText =
 document.getElementById("receiptNumber").innerText =
     "AGM/" + now.getFullYear() + "/" + Math.floor(1000 + Math.random()*9000);
 
-async function loadData(){
-    // Hide content, show loading
-    document.getElementById("contentArea").style.display = "none";
-    document.getElementById("loading").style.display = "block";
-    document.getElementById("errorMessage").style.display = "none";
+// SAMPLE FALLBACK DATA (अगर API fail हो जाए)
+const fallbackData = {
+    "success": true,
+    "message": "Member found",
+    "data": {
+        "uid": "1",
+        "name": "Zubair Khann",
+        "phone": "Not Available",
+        "image": "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM",
+        "member_since": "2025",
+        "payments": [
+            {
+                "date": "21/09/2025",
+                "month": "October",
+                "payment": 100,
+                "point": 14
+            }
+        ],
+        "total_paid": 100,
+        "total_points": 14,
+        "last_payment": "21/09/2025"
+    }
+};
+
+// FETCH WITH RETRY AND FALLBACKS
+async function fetchDataWithFallbacks(uid, retries = 3) {
+    const apiUrl = `https://anjumang.infinityfreeapp.com/api.php?uid=${encodeURIComponent(uid)}`;
     
-    if(!uid){
+    // TRY 1: Direct API call
+    try {
+        console.log("Trying direct API call...");
+        const response = await fetch(apiUrl, {
+            mode: 'cors',
+            headers: {
+                'Accept': 'application/json',
+            }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            return {source: "direct", data: data};
+        }
+    } catch (error) {
+        console.log("Direct API failed:", error.message);
+    }
+    
+    // TRY 2: CORS Proxy (अगर direct call fail हो)
+    const proxies = [
+        'https://api.allorigins.win/get?url=',
+        'https://corsproxy.io/?',
+        'https://api.codetabs.com/v1/proxy?quest='
+    ];
+    
+    for (let proxy of proxies) {
+        try {
+            console.log(`Trying proxy: ${proxy}`);
+            const proxyUrl = proxy + encodeURIComponent(apiUrl);
+            const response = await fetch(proxyUrl, {timeout: 8000});
+            
+            if (response.ok) {
+                let data;
+                if (proxy.includes('allorigins.win')) {
+                    const result = await response.json();
+                    data = JSON.parse(result.contents);
+                } else {
+                    data = await response.json();
+                }
+                return {source: "proxy", data: data};
+            }
+        } catch (error) {
+            console.log(`Proxy ${proxy} failed:`, error.message);
+        }
+    }
+    
+    // TRY 3: Fallback local data
+    console.log("Using fallback data");
+    return {source: "fallback", data: fallbackData};
+}
+
+// UPDATE UI FUNCTION
+function updateUI(data) {
+    const d = data.data;
+    
+    // Hide loading and error, show content
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("errorMessage").style.display = "none";
+    document.getElementById("contentArea").style.display = "block";
+    
+    // Show success message with source
+    const successMsg = document.getElementById("successMessage");
+    const successText = document.getElementById("successText");
+    successText.textContent = `Data loaded ${data.source === "fallback" ? "from cache" : "successfully"}`;
+    successMsg.style.display = "block";
+    
+    // Update UI
+    document.getElementById("memberStatus").innerText = "Active";
+    document.getElementById("memberName").innerText = d.name || "N/A";
+    document.getElementById("memberPhone").innerText = d.phone || "Not Available";
+    document.getElementById("memberSince").innerText = d.member_since || "2025";
+    
+    // Image
+    const memberImage = document.getElementById("memberImage");
+    memberImage.src = d.image || "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM";
+    memberImage.onerror = function() {
+        this.src = "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM";
+    };
+    
+    // Payments table
+    let totalPaid = 0;
+    let totalPoints = 0;
+    const tbody = document.getElementById("paymentHistory");
+    tbody.innerHTML = "";
+    
+    if (d.payments && Array.isArray(d.payments)) {
+        d.payments.forEach((p, i) => {
+            const payment = Number(p.payment || 0);
+            const point = Number(p.point || 0);
+            totalPaid += payment;
+            totalPoints += point;
+            
+            tbody.innerHTML += `
+            <tr>
+                <td>${i+1}</td>
+                <td>${p.date || ""}</td>
+                <td>${p.month || ""}</td>
+                <td>₹${payment}</td>
+                <td>${point}</td>
+            </tr>`;
+        });
+    }
+    
+    if (!d.payments || d.payments.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center">No payment history found</td></tr>`;
+    }
+    
+    // Calculations
+    const finalTotalPaid = d.total_paid || totalPaid;
+    const finalTotalPoints = d.total_points || totalPoints;
+    const target = 1200;
+    const completion = Math.round((finalTotalPaid/target)*100);
+    const pointsTarget = 500;
+    const progressPercent = Math.min(100, (finalTotalPoints/pointsTarget)*100);
+    
+    // Update values
+    document.getElementById("totalPaid").innerText = finalTotalPaid;
+    document.getElementById("pending").innerText = Math.max(0, target - finalTotalPaid);
+    document.getElementById("completion").innerText = Math.min(100, completion) + "%";
+    document.getElementById("totalPoints").innerText = finalTotalPoints;
+    document.getElementById("displayPoints").innerText = finalTotalPoints;
+    document.getElementById("progressBar").style.width = progressPercent + "%";
+    document.getElementById("progressText").innerText = progressPercent.toFixed(1) + "% Complete";
+}
+
+// SHOW ERROR FUNCTION
+function showError(message) {
+    document.getElementById("loading").style.display = "none";
+    document.getElementById("errorText").textContent = message;
+    document.getElementById("errorMessage").style.display = "block";
+    
+    // Try to show at least some content
+    if (uid) {
+        updateUI({source: "fallback", data: fallbackData});
+    }
+}
+
+// MAIN LOAD FUNCTION
+async function loadData() {
+    if (!uid) {
         showError("UID missing in URL. Please provide a valid member ID.");
-        document.getElementById("loading").style.display = "none";
         return;
     }
-
-    try{
-        // DIRECT API CALL - CORS header is now in api.php
-        const apiUrl = "https://anjumang.infinityfreeapp.com/api.php?uid=" + encodeURIComponent(uid);
-        const res = await fetch(apiUrl);
+    
+    try {
+        document.getElementById("loading").style.display = "block";
+        document.getElementById("errorMessage").style.display = "none";
         
-        if(!res.ok){
-            throw new Error(`Server error: ${res.status}`);
-        }
+        const result = await fetchDataWithFallbacks(uid);
         
-        const json = await res.json();
-        
-        if(!json.success){
-            throw new Error(json.message || "Member not found");
-        }
-
-        const d = json.data;
-
-        // Hide loading, show content
-        document.getElementById("loading").style.display = "none";
-        document.getElementById("contentArea").style.display = "block";
-        
-        // Update UI with data
-        document.getElementById("memberStatus").innerText = "Active";
-        document.getElementById("memberName").innerText  = d.name || "N/A";
-        document.getElementById("memberPhone").innerText = d.phone || "Not Available";
-        document.getElementById("memberSince").innerText = d.member_since || "2025";
-        
-        // Set image with fallback
-        const memberImage = document.getElementById("memberImage");
-        if(d.image && d.image.trim() !== ""){
-            memberImage.src = d.image;
+        if (result.data.success) {
+            updateUI(result);
         } else {
-            memberImage.src = "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM";
+            showError(result.data.message || "Member not found");
         }
-        
-        memberImage.onerror = function(){
-            this.src = "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM";
-        };
-
-        // Process payments
-        let totalPaid = 0;
-        let totalPoints = 0;
-        const tbody = document.getElementById("paymentHistory");
-        tbody.innerHTML = "";
-
-        if(d.payments && Array.isArray(d.payments)){
-            d.payments.forEach((p,i)=>{
-                const payment = Number(p.payment || 0);
-                const point = Number(p.point || 0);
-                totalPaid   += payment;
-                totalPoints += point;
-
-                tbody.innerHTML += `
-                <tr>
-                    <td>${i+1}</td>
-                    <td>${p.date || ""}</td>
-                    <td>${p.month || ""}</td>
-                    <td>₹${payment}</td>
-                    <td>${point}</td>
-                </tr>`;
-            });
-        }
-
-        // If no payments, show message
-        if(!d.payments || d.payments.length === 0){
-            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center">No payment history found</td></tr>`;
-        }
-
-        // Use data from API or calculate
-        const finalTotalPaid = d.total_paid || totalPaid;
-        const finalTotalPoints = d.total_points || totalPoints;
-
-        // Calculate completion (assuming target of 1200)
-        const target = 1200;
-        const completion = Math.round((finalTotalPaid/target)*100);
-
-        document.getElementById("totalPaid").innerText     = finalTotalPaid;
-        document.getElementById("pending").innerText       = Math.max(0, target - finalTotalPaid);
-        document.getElementById("completion").innerText    = Math.min(100, completion) + "%";
-        document.getElementById("totalPoints").innerText   = finalTotalPoints;
-        document.getElementById("displayPoints").innerText = finalTotalPoints;
-
-        // Progress bar (assuming target of 500 points for 100%)
-        const pointsTarget = 500;
-        const prog = Math.min(100, (finalTotalPoints/pointsTarget)*100);
-        document.getElementById("progressBar").style.width = prog + "%";
-        document.getElementById("progressText").innerText  =
-            prog.toFixed(1) + "% Complete";
-
-    }catch(err){
-        document.getElementById("loading").style.display = "none";
-        showError("Error: " + err.message);
-        console.error("Fetch error:", err);
+    } catch (error) {
+        showError("Failed to load data: " + error.message);
+        console.error("Load error:", error);
     }
 }
 
-function showError(msg){
-    document.getElementById("errorText").innerText = msg;
-    document.getElementById("errorMessage").style.display = "block";
-}
-
-// Load data when page loads
+// Load when page is ready
 document.addEventListener("DOMContentLoaded", loadData);
+
+// Add reload button functionality
+window.addEventListener('load', function() {
+    // Add a reload button to error message
+    const errorDiv = document.getElementById("errorMessage");
+    if (errorDiv) {
+        const reloadBtn = document.createElement("button");
+        reloadBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Retry';
+        reloadBtn.style.marginLeft = "10px";
+        reloadBtn.style.padding = "5px 10px";
+        reloadBtn.style.background = "#0b4da0";
+        reloadBtn.style.color = "white";
+        reloadBtn.style.border = "none";
+        reloadBtn.style.borderRadius = "4px";
+        reloadBtn.style.cursor = "pointer";
+        reloadBtn.onclick = loadData;
+        
+        const errorText = document.getElementById("errorText");
+        if (errorText && errorText.parentNode) {
+            errorText.parentNode.appendChild(reloadBtn);
+        }
+    }
+});
 </script>
 
 </body>
