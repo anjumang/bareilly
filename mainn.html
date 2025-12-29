@@ -52,12 +52,22 @@
     cursor:pointer;
     z-index:10000;
 }
+
+.cand-box {
+    background: #fff;
+    border-radius: 10px;
+    padding: 15px;
+    margin: 10px 0;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    text-align: center;
+}
 </style>
 </head>
 
 <body>
 
 <div class="container-fluid">
+    <h2 class="text-center my-4" style="color:#0b4da0">Anjuman Ghulaman-E-Mustafa Members</h2>
     <div class="row" id="dynamic-data"></div>
 </div>
 
@@ -73,17 +83,15 @@
 /* ================= GOOGLE SHEET CONFIG ================= */
 const sheetId = "1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw";
 const apiKey  = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
-const range   = "Sheet1!A2:H";
+const range   = "Sheet1!A2:H"; // A=Name, B=Phone, C=Points, D=Image, H=UID
 
 /* ================= MODAL ================= */
 const modal = document.getElementById("receiptModal");
 const receiptFrame = document.getElementById("receiptFrame");
 
-function openReceiptModal(uid){
-    receiptFrame.src =
-      "https://anjumang.github.io/bareilly/receipt.html?uid="
-      + encodeURIComponent(uid);
-
+function openReceiptModal(uid, name){
+    console.log("Opening receipt for UID:", uid, "Name:", name);
+    receiptFrame.src = "https://anjumang.github.io/bareilly/receipt.html?uid=" + encodeURIComponent(uid);
     modal.style.display = "block";
     document.body.style.overflow = "hidden";
 }
@@ -101,76 +109,113 @@ window.onclick = function(event){
     }
 }
 
-/* ================= LOAD DATA ================= */
+/* ================= LOAD DATA FROM GOOGLE SHEETS ================= */
 async function loadData(){
-    const url =
-      `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
-
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+    
     const box = document.getElementById("dynamic-data");
-    box.innerHTML = "<p class='text-center'>Loading...</p>";
+    box.innerHTML = `
+        <div class="col-12 text-center">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Loading members data...</p>
+        </div>`;
 
     try{
         const res  = await fetch(url);
+        if(!res.ok) throw new Error(`Google Sheets error: ${res.status}`);
+        
         const json = await res.json();
         const data = json.values || [];
+
+        console.log("Total members loaded:", data.length);
 
         box.innerHTML = "";
 
         if(data.length === 0){
-            box.innerHTML = "<p class='text-center'>No data found</p>";
+            box.innerHTML = "<p class='text-center'>No members found</p>";
             return;
         }
 
-        // Sort by points (DESC)
-        data.sort((a,b)=> (Number(b[2]||0) - Number(a[2]||0)));
+        // Filter out invalid rows and sort by points DESC
+        const validMembers = data.filter(row => row[7] && row[0]); // UID and Name must exist
+        validMembers.sort((a,b) => {
+            const pointsA = Number(a[2] || 0);
+            const pointsB = Number(b[2] || 0);
+            return pointsB - pointsA;
+        });
 
-        data.forEach((row,i)=>{
-
+        validMembers.forEach((row,i)=>{
             const name   = row[0] || "N/A";
             const phone  = row[1] || "N/A";
             const points = row[2] || 0;
-            const image  = row[3] || "img/default-avatar.png";
-            const uid    = row[7]; // ✅ UID (H column)
+            const image  = row[3] || "https://via.placeholder.com/100/0b4da0/ffffff?text=AGM";
+            const uid    = row[7]; // UID from H column
 
-            if(!uid) return;
+            // Skip if no UID
+            if(!uid || uid.trim() === "") return;
 
             const div = document.createElement("div");
-            div.className = "col-md-4 col-12 mb-4";
+            div.className = "col-md-4 col-lg-3 col-12 mb-4";
+            
+            // Determine rank color
+            let rankColor = "#6c757d"; // Default grey
+            if(i === 0) rankColor = "#ffd700"; // Gold for 1st
+            else if(i === 1) rankColor = "#c0c0c0"; // Silver for 2nd
+            else if(i === 2) rankColor = "#cd7f32"; // Bronze for 3rd
 
             div.innerHTML = `
             <div class="cand-box">
-                <figure>
+                <figure class="mb-3">
                     <img src="${image}"
                          style="width:100px;height:100px;border-radius:50%;object-fit:cover"
-                         alt="${name}">
+                         alt="${name}"
+                         onerror="this.src='https://via.placeholder.com/100/0b4da0/ffffff?text=AGM'">
                 </figure>
 
                 <div class="cand-info">
-                    <div class="status member">
-                        <div>Rank #${i+1}</div>
-                        <div>Total Points: (${points})</div>
+                    <div class="status member mb-2">
+                        <div style="color:${rankColor}; font-weight:bold">Rank #${i+1}</div>
+                        <div>Points: <strong>${points}</strong></div>
                     </div>
 
                     <div class="nme-prty">
                         <h5>
                             <a class="member-link"
-                               onclick="openReceiptModal('${uid}')">
+                               onclick="openReceiptModal('${uid}', '${name.replace(/'/g, "\\'")}')">
                                ${name}
                             </a>
                         </h5>
-                        <h6>${phone}</h6>
+                        <h6 class="text-muted">${phone}</h6>
+                        <small class="text-muted">ID: ${uid}</small>
                     </div>
                 </div>
             </div>`;
+            
             box.appendChild(div);
         });
 
+        // Update total count
+        const totalDiv = document.createElement("div");
+        totalDiv.className = "col-12 text-center mt-4";
+        totalDiv.innerHTML = `<p>Total Members: <strong>${validMembers.length}</strong></p>`;
+        box.appendChild(totalDiv);
+
     }catch(e){
-        console.error(e);
-        box.innerHTML = "<p class='text-center'>Error loading data</p>";
+        console.error("Error loading data:", e);
+        box.innerHTML = `
+            <div class="col-12 text-center">
+                <div class="alert alert-danger">
+                    <h5>Error Loading Data</h5>
+                    <p>${e.message}</p>
+                    <button onclick="loadData()" class="btn btn-primary mt-2">Retry</button>
+                </div>
+            </div>`;
     }
 }
 
+// Load data on page load
 window.onload = loadData;
 </script>
 
