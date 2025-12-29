@@ -6,97 +6,182 @@
 <title>Member Receipt - Anjuman Ghulaman-E-Mustafa</title>
 
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{
     font-family:'Segoe UI',system-ui;
-    background:linear-gradient(135deg,#f8fafc,#e2e8f0);
+    background:#f8f9fa;
     min-height:100vh;
-    padding:20px
+    padding:15px
 }
 .container{
     max-width:1000px;
     margin:auto;
     background:#fff;
-    border-radius:20px;
-    box-shadow:0 20px 60px rgba(0,0,0,.1);
-    overflow:hidden
+    border-radius:15px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.1);
+    overflow:hidden;
+    border:1px solid #dee2e6
 }
 
 .receipt-header{
     background:linear-gradient(135deg,#0b4da0,#083a7f);
     color:#fff;
-    padding:25px 30px;
-    border-bottom:5px solid #10b981
+    padding:20px 25px;
+    border-bottom:4px solid #10b981
 }
 .header-top{
     display:flex;
     justify-content:space-between;
-    align-items:center
+    align-items:center;
+    flex-wrap:wrap
 }
 .logo{
-    width:70px;
-    height:70px;
-    border-radius:12px;
+    width:60px;
+    height:60px;
+    border-radius:10px;
     background:rgba(255,255,255,.1);
-    padding:5px
+    padding:3px;
+    display:flex;
+    align-items:center;
+    justify-content:center
 }
 .logo img{
-    width:100%;
-    height:100%;
+    max-width:100%;
+    max-height:100%;
     object-fit:contain
+}
+.time-display{
+    font-size:14px;
+    opacity:0.9
 }
 .header-info{
     display:grid;
-    grid-template-columns:repeat(3,1fr);
+    grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
     gap:15px;
-    margin-top:15px
+    margin-top:15px;
+    font-size:14px
+}
+.header-info div{
+    padding:5px;
+    background:rgba(255,255,255,0.1);
+    border-radius:5px;
 }
 
 .profile-section{
     display:flex;
-    gap:30px;
-    padding:30px;
-    border-bottom:1px solid #e2e8f0
+    flex-wrap:wrap;
+    gap:25px;
+    padding:25px;
+    border-bottom:1px solid #e2e8f0;
+    align-items:center
 }
 .profile-image{
-    width:150px;
-    height:150px;
+    width:120px;
+    height:120px;
     border-radius:50%;
-    border:5px solid #e2e8f0;
-    object-fit:cover
+    border:4px solid #0b4da0;
+    object-fit:cover;
+    background:#f8f9fa
+}
+.profile-details{
+    flex:1;
+    min-width:250px
 }
 .member-name{
-    font-size:2rem;
+    font-size:1.8rem;
     color:#0b4da0;
-    font-weight:700
+    font-weight:700;
+    margin-bottom:5px
+}
+.member-meta{
+    color:#6c757d;
+    font-size:15px
 }
 
+.table-container{
+    overflow-x:auto;
+    margin:0 15px;
+}
 .payment-table{
     width:100%;
-    border-collapse:collapse
+    border-collapse:collapse;
+    margin:20px 0;
+    font-size:14px
 }
-.payment-table th,
+.payment-table thead{
+    background:#f8f9fa
+}
+.payment-table th{
+    padding:12px 10px;
+    text-align:left;
+    border-bottom:2px solid #dee2e6;
+    color:#495057;
+    font-weight:600
+}
 .payment-table td{
-    padding:12px;
-    border-bottom:1px solid #e2e8f0
+    padding:10px;
+    border-bottom:1px solid #e9ecef
+}
+.payment-table tr:hover{
+    background-color:#f8f9fa
 }
 
 .summary-cards{
     display:grid;
-    grid-template-columns:repeat(2,1fr);
-    gap:20px;
-    padding:30px
+    grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
+    gap:15px;
+    padding:20px;
+    margin:15px;
+    background:#f8f9fa;
+    border-radius:10px
+}
+.summary-card{
+    background:#fff;
+    padding:15px;
+    border-radius:8px;
+    text-align:center;
+    border:1px solid #dee2e6
+}
+.summary-card h6{
+    color:#6c757d;
+    font-size:14px;
+    margin-bottom:8px
+}
+.summary-card .value{
+    font-size:24px;
+    font-weight:700;
+    color:#0b4da0
 }
 
 .points-display{
     text-align:center;
-    padding:40px
+    padding:30px 20px;
+    background:linear-gradient(135deg,#f8fafc,#e2e8f0);
+    margin:20px;
+    border-radius:10px
+}
+.points-value{
+    font-size:48px;
+    font-weight:700;
+    color:#0b4da0;
+    margin-bottom:15px
+}
+.progress-container{
+    height:12px;
+    background:#e2e8f0;
+    border-radius:6px;
+    margin:15px auto;
+    max-width:500px;
+    overflow:hidden
 }
 .progress-bar{
     height:100%;
-    background:linear-gradient(90deg,#10b981,#0b4da0)
+    background:linear-gradient(90deg,#10b981,#0b4da0);
+    border-radius:6px;
+    transition:width 1s ease-in-out
 }
 
 .error-message{
@@ -105,23 +190,14 @@ body{
     color:#dc2626;
     padding:15px;
     margin:20px;
+    border-radius:8px;
     border-left:4px solid #dc2626
 }
 
 .loading{
     text-align:center;
-    padding:30px;
+    padding:50px 20px;
     color:#0b4da0
-}
-
-.success-message{
-    display:none;
-    background:#d1fae5;
-    color:#065f46;
-    padding:10px;
-    margin:10px;
-    border-left:4px solid#10b981;
-    font-size:14px
 }
 </style>
 </head>
@@ -131,79 +207,101 @@ body{
 
 <!-- LOADING -->
 <div id="loading" class="loading">
-    <i class="fas fa-spinner fa-spin fa-2x"></i>
-    <p>Loading receipt data...</p>
-</div>
-
-<!-- SUCCESS MESSAGE -->
-<div id="successMessage" class="success-message">
-    <i class="fas fa-check-circle"></i>
-    <span id="successText">Data loaded successfully</span>
+    <div class="spinner-border text-primary" style="width:3rem;height:3rem" role="status">
+        <span class="visually-hidden">Loading...</span>
+    </div>
+    <h5 class="mt-3">Loading receipt data...</h5>
+    <p id="loadingDetails">Please wait</p>
 </div>
 
 <!-- HEADER -->
 <div class="receipt-header">
     <div class="header-top">
         <div class="logo">
-            <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="AGM">
+            <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="AGM Logo">
         </div>
-        <div id="lastUpdatedTime"></div>
+        <div class="time-display" id="lastUpdatedTime"></div>
     </div>
 
     <div class="header-info">
         <div>Receipt: <span id="receiptNumber"></span></div>
         <div>Date: <span id="currentDate"></span></div>
         <div>Status: <span id="memberStatus">Loading</span></div>
+        <div>Member ID: <span id="memberId">-</span></div>
     </div>
 </div>
 
 <!-- ERROR -->
 <div id="errorMessage" class="error-message">
-    <i class="fas fa-exclamation-triangle"></i>
+    <i class="fas fa-exclamation-triangle me-2"></i>
     <span id="errorText">Loading data...</span>
+    <button id="retryBtn" class="btn btn-sm btn-danger ms-3" style="display:none">
+        <i class="fas fa-redo me-1"></i> Retry
+    </button>
 </div>
 
 <!-- CONTENT -->
 <div id="contentArea" style="display:none">
     <!-- PROFILE -->
     <div class="profile-section">
-        <img id="memberImage" class="profile-image" src="">
-        <div>
+        <img id="memberImage" class="profile-image" src="" alt="Member Photo">
+        <div class="profile-details">
             <div id="memberName" class="member-name"></div>
-            <div id="memberPhone"></div>
-            <div>Member Since: <span id="memberSince"></span></div>
+            <div id="memberPhone" class="member-meta mb-2"></div>
+            <div class="member-meta">Member Since: <span id="memberSince"></span></div>
+            <div class="member-meta">Last Payment: <span id="lastPaymentDate"></span></div>
         </div>
     </div>
 
-    <!-- PAYMENT TABLE -->
-    <table class="payment-table">
-    <thead>
-    <tr>
-        <th>#</th>
-        <th>Date</th>
-        <th>Month</th>
-        <th>Payment</th>
-        <th>Points</th>
-    </tr>
-    </thead>
-    <tbody id="paymentHistory"></tbody>
-    </table>
+    <!-- PAYMENT HISTORY -->
+    <div class="table-container">
+        <h5 class="px-3 pt-3">Payment History</h5>
+        <table class="payment-table">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Date</th>
+            <th>Month</th>
+            <th>Payment (₹)</th>
+            <th>Points</th>
+        </tr>
+        </thead>
+        <tbody id="paymentHistory"></tbody>
+        </table>
+    </div>
 
     <!-- SUMMARY -->
     <div class="summary-cards">
-        <div>Total Paid: ₹<span id="totalPaid">0</span></div>
-        <div>Pending: ₹<span id="pending">0</span></div>
-        <div>Completion: <span id="completion">0%</span></div>
-        <div>Total Points: <span id="totalPoints">0</span></div>
+        <div class="summary-card">
+            <h6>Total Paid</h6>
+            <div class="value">₹<span id="totalPaid">0</span></div>
+        </div>
+        <div class="summary-card">
+            <h6>Pending</h6>
+            <div class="value">₹<span id="pending">0</span></div>
+        </div>
+        <div class="summary-card">
+            <h6>Completion</h6>
+            <div class="value"><span id="completion">0%</span></div>
+        </div>
+        <div class="summary-card">
+            <h6>Total Points</h6>
+            <div class="value"><span id="totalPoints">0</span></div>
+        </div>
     </div>
 
-    <!-- POINTS -->
+    <!-- POINTS DISPLAY -->
     <div class="points-display">
-        <div id="displayPoints" style="font-size:48px;font-weight:700">0</div>
-        <div style="height:12px;background:#e2e8f0;margin-top:15px">
+        <div class="points-value" id="displayPoints">0</div>
+        <div class="progress-container">
             <div id="progressBar" class="progress-bar" style="width:0%"></div>
         </div>
-        <div id="progressText"></div>
+        <div id="progressText" class="mt-2"></div>
+    </div>
+    
+    <!-- FOOTER -->
+    <div class="text-center text-muted py-3 border-top">
+        <small>Generated on <span id="printDate"></span> | Anjuman Ghulaman-E-Mustafa © 2025</small>
     </div>
 </div>
 
@@ -211,25 +309,37 @@ body{
 
 <script>
 /* ================= UID BASED RECEIPT ================= */
-
 const params = new URLSearchParams(window.location.search);
 const uid = params.get("uid");
+console.log("Receipt page loaded with UID:", uid);
 
+// Update time and date
 const now = new Date();
-document.getElementById("currentDate").innerText =
-    now.toLocaleDateString("en-IN");
-document.getElementById("lastUpdatedTime").innerText =
-    now.toLocaleTimeString("en-IN");
-document.getElementById("receiptNumber").innerText =
-    "AGM/" + now.getFullYear() + "/" + Math.floor(1000 + Math.random()*9000);
+document.getElementById("currentDate").innerText = now.toLocaleDateString("en-IN");
+document.getElementById("lastUpdatedTime").innerText = now.toLocaleTimeString("en-IN");
+document.getElementById("printDate").innerText = now.toLocaleDateString('en-IN', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+});
 
-// SAMPLE FALLBACK DATA (अगर API fail हो जाए)
+// Generate receipt number
+const receiptNum = "AGM/" + now.getFullYear() + "/" + Math.floor(10000 + Math.random()*90000);
+document.getElementById("receiptNumber").innerText = receiptNum;
+
+if(uid) {
+    document.getElementById("memberId").innerText = uid;
+    document.getElementById("loadingDetails").innerText = `Fetching data for member ID: ${uid}`;
+}
+
+// SAMPLE FALLBACK DATA (if API fails)
 const fallbackData = {
     "success": true,
     "message": "Member found",
     "data": {
-        "uid": "1",
-        "name": "Zubair Khann",
+        "uid": uid || "1",
+        "name": "Sample Member",
         "phone": "Not Available",
         "image": "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM",
         "member_since": "2025",
@@ -247,142 +357,168 @@ const fallbackData = {
     }
 };
 
-// FETCH WITH RETRY AND FALLBACKS
-async function fetchDataWithFallbacks(uid, retries = 3) {
+// FETCH DATA FROM API
+async function fetchMemberData(uid) {
     const apiUrl = `https://anjumang.infinityfreeapp.com/api.php?uid=${encodeURIComponent(uid)}`;
+    console.log("Fetching from:", apiUrl);
     
-    // TRY 1: Direct API call
+    // Try direct fetch first
     try {
-        console.log("Trying direct API call...");
         const response = await fetch(apiUrl, {
+            method: 'GET',
             mode: 'cors',
             headers: {
                 'Accept': 'application/json',
+                'Content-Type': 'application/json'
             }
         });
         
         if (response.ok) {
             const data = await response.json();
-            return {source: "direct", data: data};
+            console.log("API Response:", data);
+            return {source: "api", data: data};
+        } else {
+            throw new Error(`HTTP ${response.status}`);
         }
     } catch (error) {
-        console.log("Direct API failed:", error.message);
-    }
-    
-    // TRY 2: CORS Proxy (अगर direct call fail हो)
-    const proxies = [
-        'https://api.allorigins.win/get?url=',
-        'https://corsproxy.io/?',
-        'https://api.codetabs.com/v1/proxy?quest='
-    ];
-    
-    for (let proxy of proxies) {
+        console.error("Direct API fetch failed:", error);
+        
+        // Try with CORS proxy
         try {
-            console.log(`Trying proxy: ${proxy}`);
-            const proxyUrl = proxy + encodeURIComponent(apiUrl);
-            const response = await fetch(proxyUrl, {timeout: 8000});
+            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
+            const response = await fetch(proxyUrl);
             
             if (response.ok) {
-                let data;
-                if (proxy.includes('allorigins.win')) {
-                    const result = await response.json();
-                    data = JSON.parse(result.contents);
-                } else {
-                    data = await response.json();
-                }
+                const result = await response.json();
+                const data = JSON.parse(result.contents);
                 return {source: "proxy", data: data};
             }
-        } catch (error) {
-            console.log(`Proxy ${proxy} failed:`, error.message);
+        } catch (proxyError) {
+            console.error("Proxy also failed:", proxyError);
         }
+        
+        // Return fallback data
+        return {source: "fallback", data: fallbackData};
     }
-    
-    // TRY 3: Fallback local data
-    console.log("Using fallback data");
-    return {source: "fallback", data: fallbackData};
 }
 
-// UPDATE UI FUNCTION
+// UPDATE UI WITH DATA
 function updateUI(data) {
-    const d = data.data;
+    const result = data.data;
+    
+    if (!result.success) {
+        showError(result.message || "Member not found in database");
+        return;
+    }
+    
+    const member = result.data;
     
     // Hide loading and error, show content
     document.getElementById("loading").style.display = "none";
     document.getElementById("errorMessage").style.display = "none";
     document.getElementById("contentArea").style.display = "block";
     
-    // Show success message with source
-    const successMsg = document.getElementById("successMessage");
-    const successText = document.getElementById("successText");
-    successText.textContent = `Data loaded ${data.source === "fallback" ? "from cache" : "successfully"}`;
-    successMsg.style.display = "block";
-    
-    // Update UI
+    // Update member info
     document.getElementById("memberStatus").innerText = "Active";
-    document.getElementById("memberName").innerText = d.name || "N/A";
-    document.getElementById("memberPhone").innerText = d.phone || "Not Available";
-    document.getElementById("memberSince").innerText = d.member_since || "2025";
+    document.getElementById("memberName").innerText = member.name || "N/A";
+    document.getElementById("memberPhone").innerText = member.phone || "Not Available";
+    document.getElementById("memberSince").innerText = member.member_since || "2025";
+    document.getElementById("lastPaymentDate").innerText = member.last_payment || "No payments yet";
     
-    // Image
+    // Set member image
     const memberImage = document.getElementById("memberImage");
-    memberImage.src = d.image || "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM";
+    if (member.image && member.image.startsWith('http')) {
+        memberImage.src = member.image;
+    } else {
+        memberImage.src = "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM";
+    }
     memberImage.onerror = function() {
         this.src = "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM";
     };
     
-    // Payments table
-    let totalPaid = 0;
-    let totalPoints = 0;
+    // Update payments table
     const tbody = document.getElementById("paymentHistory");
     tbody.innerHTML = "";
     
-    if (d.payments && Array.isArray(d.payments)) {
-        d.payments.forEach((p, i) => {
-            const payment = Number(p.payment || 0);
-            const point = Number(p.point || 0);
-            totalPaid += payment;
-            totalPoints += point;
+    let totalPaid = 0;
+    let totalPoints = 0;
+    
+    if (member.payments && Array.isArray(member.payments) && member.payments.length > 0) {
+        member.payments.forEach((payment, index) => {
+            const paymentAmount = Number(payment.payment || 0);
+            const points = Number(payment.point || 0);
             
-            tbody.innerHTML += `
-            <tr>
-                <td>${i+1}</td>
-                <td>${p.date || ""}</td>
-                <td>${p.month || ""}</td>
-                <td>₹${payment}</td>
-                <td>${point}</td>
-            </tr>`;
+            totalPaid += paymentAmount;
+            totalPoints += points;
+            
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${index + 1}</td>
+                <td>${payment.date || "-"}</td>
+                <td>${payment.month || "-"}</td>
+                <td><strong>₹${paymentAmount}</strong></td>
+                <td><span class="badge bg-primary">${points}</span></td>
+            `;
+            tbody.appendChild(row);
         });
+    } else {
+        // No payments
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="5" class="text-center py-4 text-muted">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No payment records found
+                </td>
+            </tr>`;
+        
+        // Use totals from API if available
+        totalPaid = Number(member.total_paid || 0);
+        totalPoints = Number(member.total_points || 0);
     }
     
-    if (!d.payments || d.payments.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="5" style="text-align:center">No payment history found</td></tr>`;
-    }
+    // Update summary
+    const finalTotalPaid = member.total_paid || totalPaid;
+    const finalTotalPoints = member.total_points || totalPoints;
     
-    // Calculations
-    const finalTotalPaid = d.total_paid || totalPaid;
-    const finalTotalPoints = d.total_points || totalPoints;
-    const target = 1200;
-    const completion = Math.round((finalTotalPaid/target)*100);
-    const pointsTarget = 500;
-    const progressPercent = Math.min(100, (finalTotalPoints/pointsTarget)*100);
-    
-    // Update values
     document.getElementById("totalPaid").innerText = finalTotalPaid;
-    document.getElementById("pending").innerText = Math.max(0, target - finalTotalPaid);
-    document.getElementById("completion").innerText = Math.min(100, completion) + "%";
     document.getElementById("totalPoints").innerText = finalTotalPoints;
     document.getElementById("displayPoints").innerText = finalTotalPoints;
-    document.getElementById("progressBar").style.width = progressPercent + "%";
-    document.getElementById("progressText").innerText = progressPercent.toFixed(1) + "% Complete";
+    
+    // Calculate pending (assuming target of ₹1200)
+    const targetAmount = 1200;
+    const pendingAmount = Math.max(0, targetAmount - finalTotalPaid);
+    const completionPercent = Math.min(100, Math.round((finalTotalPaid / targetAmount) * 100));
+    
+    document.getElementById("pending").innerText = pendingAmount;
+    document.getElementById("completion").innerText = `${completionPercent}%`;
+    
+    // Progress bar (points based, target 500 points)
+    const pointsTarget = 500;
+    const pointsProgress = Math.min(100, (finalTotalPoints / pointsTarget) * 100);
+    const progressBar = document.getElementById("progressBar");
+    
+    // Animate progress bar
+    setTimeout(() => {
+        progressBar.style.width = `${pointsProgress}%`;
+    }, 100);
+    
+    document.getElementById("progressText").innerText = 
+        `${pointsProgress.toFixed(1)}% of points target achieved`;
+    
+    console.log("UI updated successfully");
 }
 
-// SHOW ERROR FUNCTION
+// SHOW ERROR
 function showError(message) {
     document.getElementById("loading").style.display = "none";
-    document.getElementById("errorText").textContent = message;
+    document.getElementById("errorText").innerText = message;
     document.getElementById("errorMessage").style.display = "block";
     
-    // Try to show at least some content
+    const retryBtn = document.getElementById("retryBtn");
+    retryBtn.style.display = "inline-block";
+    retryBtn.onclick = loadData;
+    
+    // Still show some content with fallback data
     if (uid) {
         updateUI({source: "fallback", data: fallbackData});
     }
@@ -391,50 +527,33 @@ function showError(message) {
 // MAIN LOAD FUNCTION
 async function loadData() {
     if (!uid) {
-        showError("UID missing in URL. Please provide a valid member ID.");
+        showError("Member ID (UID) is missing in the URL. Please check the link.");
         return;
     }
     
     try {
         document.getElementById("loading").style.display = "block";
         document.getElementById("errorMessage").style.display = "none";
+        document.getElementById("contentArea").style.display = "none";
         
-        const result = await fetchDataWithFallbacks(uid);
+        const result = await fetchMemberData(uid);
+        console.log("Data loaded from:", result.source);
         
-        if (result.data.success) {
-            updateUI(result);
-        } else {
-            showError(result.data.message || "Member not found");
-        }
+        updateUI(result);
     } catch (error) {
+        console.error("Error in loadData:", error);
         showError("Failed to load data: " + error.message);
-        console.error("Load error:", error);
     }
 }
 
-// Load when page is ready
+// Load data when page is ready
 document.addEventListener("DOMContentLoaded", loadData);
 
-// Add reload button functionality
-window.addEventListener('load', function() {
-    // Add a reload button to error message
-    const errorDiv = document.getElementById("errorMessage");
-    if (errorDiv) {
-        const reloadBtn = document.createElement("button");
-        reloadBtn.innerHTML = '<i class="fas fa-sync-alt"></i> Retry';
-        reloadBtn.style.marginLeft = "10px";
-        reloadBtn.style.padding = "5px 10px";
-        reloadBtn.style.background = "#0b4da0";
-        reloadBtn.style.color = "white";
-        reloadBtn.style.border = "none";
-        reloadBtn.style.borderRadius = "4px";
-        reloadBtn.style.cursor = "pointer";
-        reloadBtn.onclick = loadData;
-        
-        const errorText = document.getElementById("errorText");
-        if (errorText && errorText.parentNode) {
-            errorText.parentNode.appendChild(reloadBtn);
-        }
+// Add print functionality
+window.addEventListener('keydown', function(e) {
+    if (e.ctrlKey && e.key === 'p') {
+        e.preventDefault();
+        window.print();
     }
 });
 </script>
