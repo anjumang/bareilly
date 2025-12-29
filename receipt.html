@@ -132,7 +132,7 @@ body{
 <!-- ERROR -->
 <div id="errorMessage" class="error-message">
     <i class="fas fa-exclamation-triangle"></i>
-    <span id="errorText"></span>
+    <span id="errorText">UID missing in URL</span>
 </div>
 
 <!-- PROFILE -->
@@ -192,6 +192,28 @@ document.getElementById("lastUpdatedTime").innerText =
 document.getElementById("receiptNumber").innerText =
     "AGM/" + now.getFullYear() + "/" + Math.floor(1000 + Math.random()*9000);
 
+// CORS Proxy Function - Public proxy to bypass CORS
+async function fetchWithProxy(url){
+    // Try multiple proxies if one fails
+    const proxies = [
+        'https://corsproxy.io/?',
+        'https://api.allorigins.win/raw?url=',
+        'https://api.codetabs.com/v1/proxy?quest='
+    ];
+    
+    for(let proxy of proxies){
+        try{
+            const proxyUrl = proxy + encodeURIComponent(url);
+            const response = await fetch(proxyUrl, {timeout: 5000});
+            if(response.ok) return response;
+        }catch(e){
+            console.log(`Proxy failed: ${proxy}`, e);
+            continue;
+        }
+    }
+    throw new Error("All proxies failed");
+}
+
 async function loadData(){
     if(!uid){
         showError("UID missing in URL");
@@ -199,58 +221,79 @@ async function loadData(){
     }
 
     try{
-        // protocol-relative to avoid mixed content
-        const res = await fetch(
-            "//anjumang.infinityfreeapp.com/api.php?uid=" + encodeURIComponent(uid)
-        );
-
+        const apiUrl = "https://anjumang.infinityfreeapp.com/api.php?uid=" + encodeURIComponent(uid);
+        const res = await fetchWithProxy(apiUrl);
+        
+        if(!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        
         const json = await res.json();
         if(!json.success) throw "Member not found";
 
         const d = json.data;
 
+        // Hide error message
+        document.getElementById("errorMessage").style.display = "none";
+        
+        // Update UI with data
         document.getElementById("memberStatus").innerText = "Active";
         document.getElementById("memberName").innerText  = d.name;
-        document.getElementById("memberPhone").innerText = d.phone || "N/A";
-        document.getElementById("memberSince").innerText = d.member_since;
-        document.getElementById("memberImage").src       = d.image;
+        document.getElementById("memberPhone").innerText = d.phone || "Not Available";
+        document.getElementById("memberSince").innerText = d.member_since || "2025";
+        
+        // Set image with fallback
+        const memberImage = document.getElementById("memberImage");
+        memberImage.src = d.image || "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM";
+        memberImage.onerror = function(){
+            this.src = "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM";
+        };
 
+        // Process payments
         let totalPaid = 0;
         let totalPoints = 0;
         const tbody = document.getElementById("paymentHistory");
         tbody.innerHTML = "";
 
         (d.payments || []).forEach((p,i)=>{
-            totalPaid   += Number(p.payment || 0);
-            totalPoints += Number(p.point || 0);
+            const payment = Number(p.payment || 0);
+            const point = Number(p.point || 0);
+            totalPaid   += payment;
+            totalPoints += point;
 
             tbody.innerHTML += `
             <tr>
                 <td>${i+1}</td>
-                <td>${p.date}</td>
-                <td>${p.month}</td>
-                <td>₹${p.payment}</td>
-                <td>${p.point}</td>
+                <td>${p.date || ""}</td>
+                <td>${p.month || ""}</td>
+                <td>₹${payment}</td>
+                <td>${point}</td>
             </tr>`;
         });
 
+        // If no payments, show message
+        if((d.payments || []).length === 0){
+            tbody.innerHTML = `<tr><td colspan="5" style="text-align:center">No payment history found</td></tr>`;
+        }
+
+        // Calculate completion (assuming target of 1200)
         const target = 1200;
         const completion = Math.round((totalPaid/target)*100);
 
         document.getElementById("totalPaid").innerText     = totalPaid;
-        document.getElementById("pending").innerText       = Math.max(0,target-totalPaid);
-        document.getElementById("completion").innerText    = completion + "%";
+        document.getElementById("pending").innerText       = Math.max(0, target - totalPaid);
+        document.getElementById("completion").innerText    = Math.min(100, completion) + "%";
         document.getElementById("totalPoints").innerText   = totalPoints;
         document.getElementById("displayPoints").innerText = totalPoints;
 
-        const prog = Math.min(100,(totalPoints/500)*100);
+        // Progress bar (assuming target of 500 points for 100%)
+        const pointsTarget = 500;
+        const prog = Math.min(100, (totalPoints/pointsTarget)*100);
         document.getElementById("progressBar").style.width = prog + "%";
         document.getElementById("progressText").innerText  =
             prog.toFixed(1) + "% Complete";
 
     }catch(err){
-        showError("Data load nahi ho pa raha");
-        console.error(err);
+        showError("Data load nahi ho pa raha. Please check internet connection.");
+        console.error("Fetch error:", err);
     }
 }
 
@@ -259,7 +302,14 @@ function showError(msg){
     document.getElementById("errorMessage").style.display = "block";
 }
 
+// Load data when page loads
 loadData();
+
+// Add fetch timeout if needed
+if(!window.fetch){
+    // Polyfill for older browsers if needed
+    console.log("Fetch not supported");
+}
 </script>
 
 </body>
