@@ -73,15 +73,6 @@
 /* ================= GOOGLE SHEET CONFIG ================= */
 const sheetId = "1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw";
 const apiKey  = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
-
-/*
-Sheet1 structure (IMPORTANT):
-A = Name
-B = Phone
-C = Points
-D = Image
-H = UID   ✅
-*/
 const range   = "Sheet1!A2:H";
 
 /* ================= MODAL ================= */
@@ -101,6 +92,13 @@ function closeModal(){
     modal.style.display = "none";
     receiptFrame.src = "";
     document.body.style.overflow = "auto";
+}
+
+// Close modal when clicking outside
+window.onclick = function(event){
+    if(event.target == modal){
+        closeModal();
+    }
 }
 
 /* ================= LOAD DATA ================= */
@@ -143,7 +141,8 @@ async function loadData(){
             <div class="cand-box">
                 <figure>
                     <img src="${image}"
-                         style="width:100px;height:100px;border-radius:50%;object-fit:cover">
+                         style="width:100px;height:100px;border-radius:50%;object-fit:cover"
+                         alt="${name}">
                 </figure>
 
                 <div class="cand-info">
