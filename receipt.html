@@ -9,7 +9,6 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
-/* Same CSS as before */
 *{margin:0;padding:0;box-sizing:border-box}
 body{font-family:'Segoe UI',system-ui;background:#f8f9fa;min-height:100vh;padding:15px}
 .container{max-width:1000px;margin:auto;background:#fff;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,0.1);overflow:hidden;border:1px solid #dee2e6}
@@ -141,14 +140,14 @@ body{font-family:'Segoe UI',system-ui;background:#f8f9fa;min-height:100vh;paddin
         
         <!-- FOOTER -->
         <div class="text-center text-muted py-3 border-top">
-            <small>Generated on <span id="printDate"></span> | Anjuman Ghulaman-E-Mustafa © 2025</small>
+            <small>Generated on <span id="printDate"></span> | Anjuman Ghulaman-E-Mustafa © 2026</small> <!-- ✅ Year updated to 2026 -->
         </div>
     </div>
 </div>
 
 <script>
 // ================= CONFIGURATION =================
-const GOOGLE_SHEET_ID = "1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw";
+const GOOGLE_SHEET_ID = "1bpj9luw9CALMxGlrsWQ41ZpR5aZtQZvta7iA20me594"; // ✅ NEW SHEET ID 2026
 const GOOGLE_API_KEY = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
 
 // ================= GET UID FROM URL =================
@@ -215,7 +214,7 @@ async function findMemberData(uid) {
             phone: member[1] || "Not Available",
             points: parseInt(member[2]) || 0,
             image: member[3] || "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM",
-            member_since: "2025"
+            member_since: "2026" // ✅ Updated year to 2026
         };
         
         console.log("Found member:", memberInfo.name);
@@ -408,5 +407,6 @@ window.addEventListener('keydown', function(e) {
     }
 });
 </script>
+
 </body>
 </html>
