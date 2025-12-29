@@ -9,306 +9,149 @@
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
 <style>
+/* Same CSS as before */
 *{margin:0;padding:0;box-sizing:border-box}
-body{
-    font-family:'Segoe UI',system-ui;
-    background:#f8f9fa;
-    min-height:100vh;
-    padding:15px
-}
-.container{
-    max-width:1000px;
-    margin:auto;
-    background:#fff;
-    border-radius:15px;
-    box-shadow:0 10px 30px rgba(0,0,0,0.1);
-    overflow:hidden;
-    border:1px solid #dee2e6
-}
-
-.receipt-header{
-    background:linear-gradient(135deg,#0b4da0,#083a7f);
-    color:#fff;
-    padding:20px 25px;
-    border-bottom:4px solid #10b981
-}
-.header-top{
-    display:flex;
-    justify-content:space-between;
-    align-items:center;
-    flex-wrap:wrap
-}
-.logo{
-    width:60px;
-    height:60px;
-    border-radius:10px;
-    background:rgba(255,255,255,.1);
-    padding:3px;
-    display:flex;
-    align-items:center;
-    justify-content:center
-}
-.logo img{
-    max-width:100%;
-    max-height:100%;
-    object-fit:contain
-}
-.time-display{
-    font-size:14px;
-    opacity:0.9
-}
-.header-info{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));
-    gap:15px;
-    margin-top:15px;
-    font-size:14px
-}
-.header-info div{
-    padding:5px;
-    background:rgba(255,255,255,0.1);
-    border-radius:5px;
-}
-
-.profile-section{
-    display:flex;
-    flex-wrap:wrap;
-    gap:25px;
-    padding:25px;
-    border-bottom:1px solid #e2e8f0;
-    align-items:center
-}
-.profile-image{
-    width:120px;
-    height:120px;
-    border-radius:50%;
-    border:4px solid #0b4da0;
-    object-fit:cover;
-    background:#f8f9fa
-}
-.profile-details{
-    flex:1;
-    min-width:250px
-}
-.member-name{
-    font-size:1.8rem;
-    color:#0b4da0;
-    font-weight:700;
-    margin-bottom:5px
-}
-.member-meta{
-    color:#6c757d;
-    font-size:15px
-}
-
-.table-container{
-    overflow-x:auto;
-    margin:0 15px;
-}
-.payment-table{
-    width:100%;
-    border-collapse:collapse;
-    margin:20px 0;
-    font-size:14px
-}
-.payment-table thead{
-    background:#f8f9fa
-}
-.payment-table th{
-    padding:12px 10px;
-    text-align:left;
-    border-bottom:2px solid #dee2e6;
-    color:#495057;
-    font-weight:600
-}
-.payment-table td{
-    padding:10px;
-    border-bottom:1px solid #e9ecef
-}
-.payment-table tr:hover{
-    background-color:#f8f9fa
-}
-
-.summary-cards{
-    display:grid;
-    grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));
-    gap:15px;
-    padding:20px;
-    margin:15px;
-    background:#f8f9fa;
-    border-radius:10px
-}
-.summary-card{
-    background:#fff;
-    padding:15px;
-    border-radius:8px;
-    text-align:center;
-    border:1px solid #dee2e6
-}
-.summary-card h6{
-    color:#6c757d;
-    font-size:14px;
-    margin-bottom:8px
-}
-.summary-card .value{
-    font-size:24px;
-    font-weight:700;
-    color:#0b4da0
-}
-
-.points-display{
-    text-align:center;
-    padding:30px 20px;
-    background:linear-gradient(135deg,#f8fafc,#e2e8f0);
-    margin:20px;
-    border-radius:10px
-}
-.points-value{
-    font-size:48px;
-    font-weight:700;
-    color:#0b4da0;
-    margin-bottom:15px
-}
-.progress-container{
-    height:12px;
-    background:#e2e8f0;
-    border-radius:6px;
-    margin:15px auto;
-    max-width:500px;
-    overflow:hidden
-}
-.progress-bar{
-    height:100%;
-    background:linear-gradient(90deg,#10b981,#0b4da0);
-    border-radius:6px;
-    transition:width 1s ease-in-out
-}
-
-.error-message{
-    display:none;
-    background:#fee2e2;
-    color:#dc2626;
-    padding:15px;
-    margin:20px;
-    border-radius:8px;
-    border-left:4px solid #dc2626
-}
-
-.loading{
-    text-align:center;
-    padding:50px 20px;
-    color:#0b4da0
-}
+body{font-family:'Segoe UI',system-ui;background:#f8f9fa;min-height:100vh;padding:15px}
+.container{max-width:1000px;margin:auto;background:#fff;border-radius:15px;box-shadow:0 10px 30px rgba(0,0,0,0.1);overflow:hidden;border:1px solid #dee2e6}
+.receipt-header{background:linear-gradient(135deg,#0b4da0,#083a7f);color:#fff;padding:20px 25px;border-bottom:4px solid #10b981}
+.header-top{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap}
+.logo{width:60px;height:60px;border-radius:10px;background:rgba(255,255,255,.1);padding:3px;display:flex;align-items:center;justify-content:center}
+.logo img{max-width:100%;max-height:100%;object-fit:contain}
+.time-display{font-size:14px;opacity:0.9}
+.header-info{display:grid;grid-template-columns:repeat(auto-fit, minmax(150px, 1fr));gap:15px;margin-top:15px;font-size:14px}
+.header-info div{padding:5px;background:rgba(255,255,255,0.1);border-radius:5px}
+.profile-section{display:flex;flex-wrap:wrap;gap:25px;padding:25px;border-bottom:1px solid #e2e8f0;align-items:center}
+.profile-image{width:120px;height:120px;border-radius:50%;border:4px solid #0b4da0;object-fit:cover;background:#f8f9fa}
+.profile-details{flex:1;min-width:250px}
+.member-name{font-size:1.8rem;color:#0b4da0;font-weight:700;margin-bottom:5px}
+.member-meta{color:#6c757d;font-size:15px}
+.table-container{overflow-x:auto;margin:0 15px}
+.payment-table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
+.payment-table thead{background:#f8f9fa}
+.payment-table th{padding:12px 10px;text-align:left;border-bottom:2px solid #dee2e6;color:#495057;font-weight:600}
+.payment-table td{padding:10px;border-bottom:1px solid #e9ecef}
+.payment-table tr:hover{background-color:#f8f9fa}
+.summary-cards{display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:15px;padding:20px;margin:15px;background:#f8f9fa;border-radius:10px}
+.summary-card{background:#fff;padding:15px;border-radius:8px;text-align:center;border:1px solid #dee2e6}
+.summary-card h6{color:#6c757d;font-size:14px;margin-bottom:8px}
+.summary-card .value{font-size:24px;font-weight:700;color:#0b4da0}
+.points-display{text-align:center;padding:30px 20px;background:linear-gradient(135deg,#f8fafc,#e2e8f0);margin:20px;border-radius:10px}
+.points-value{font-size:48px;font-weight:700;color:#0b4da0;margin-bottom:15px}
+.progress-container{height:12px;background:#e2e8f0;border-radius:6px;margin:15px auto;max-width:500px;overflow:hidden}
+.progress-bar{height:100%;background:linear-gradient(90deg,#10b981,#0b4da0);border-radius:6px;transition:width 1s ease-in-out}
+.error-message{display:none;background:#fee2e2;color:#dc2626;padding:15px;margin:20px;border-radius:8px;border-left:4px solid #dc2626}
+.loading{text-align:center;padding:50px 20px;color:#0b4da0}
 </style>
 </head>
 
 <body>
 <div class="container">
-
-<!-- LOADING -->
-<div id="loading" class="loading">
-    <div class="spinner-border text-primary" style="width:3rem;height:3rem" role="status">
-        <span class="visually-hidden">Loading...</span>
-    </div>
-    <h5 class="mt-3">Loading receipt data...</h5>
-    <p id="loadingDetails">Please wait</p>
-</div>
-
-<!-- HEADER -->
-<div class="receipt-header">
-    <div class="header-top">
-        <div class="logo">
-            <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="AGM Logo">
+    <!-- LOADING -->
+    <div id="loading" class="loading">
+        <div class="spinner-border text-primary" style="width:3rem;height:3rem" role="status">
+            <span class="visually-hidden">Loading...</span>
         </div>
-        <div class="time-display" id="lastUpdatedTime"></div>
+        <h5 class="mt-3">Loading receipt data...</h5>
+        <p id="loadingDetails">Please wait</p>
     </div>
 
-    <div class="header-info">
-        <div>Receipt: <span id="receiptNumber"></span></div>
-        <div>Date: <span id="currentDate"></span></div>
-        <div>Status: <span id="memberStatus">Loading</span></div>
-        <div>Member ID: <span id="memberId">-</span></div>
-    </div>
-</div>
-
-<!-- ERROR -->
-<div id="errorMessage" class="error-message">
-    <i class="fas fa-exclamation-triangle me-2"></i>
-    <span id="errorText">Loading data...</span>
-    <button id="retryBtn" class="btn btn-sm btn-danger ms-3" style="display:none">
-        <i class="fas fa-redo me-1"></i> Retry
-    </button>
-</div>
-
-<!-- CONTENT -->
-<div id="contentArea" style="display:none">
-    <!-- PROFILE -->
-    <div class="profile-section">
-        <img id="memberImage" class="profile-image" src="" alt="Member Photo">
-        <div class="profile-details">
-            <div id="memberName" class="member-name"></div>
-            <div id="memberPhone" class="member-meta mb-2"></div>
-            <div class="member-meta">Member Since: <span id="memberSince"></span></div>
-            <div class="member-meta">Last Payment: <span id="lastPaymentDate"></span></div>
+    <!-- HEADER -->
+    <div class="receipt-header">
+        <div class="header-top">
+            <div class="logo">
+                <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="AGM Logo">
+            </div>
+            <div class="time-display" id="lastUpdatedTime"></div>
+        </div>
+        <div class="header-info">
+            <div>Receipt: <span id="receiptNumber"></span></div>
+            <div>Date: <span id="currentDate"></span></div>
+            <div>Status: <span id="memberStatus">Loading</span></div>
+            <div>Member ID: <span id="memberId">-</span></div>
         </div>
     </div>
 
-    <!-- PAYMENT HISTORY -->
-    <div class="table-container">
-        <h5 class="px-3 pt-3">Payment History</h5>
-        <table class="payment-table">
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Date</th>
-            <th>Month</th>
-            <th>Payment (₹)</th>
-            <th>Points</th>
-        </tr>
-        </thead>
-        <tbody id="paymentHistory"></tbody>
-        </table>
+    <!-- ERROR -->
+    <div id="errorMessage" class="error-message">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <span id="errorText">Loading data...</span>
+        <button id="retryBtn" class="btn btn-sm btn-danger ms-3" style="display:none">
+            <i class="fas fa-redo me-1"></i> Retry
+        </button>
     </div>
 
-    <!-- SUMMARY -->
-    <div class="summary-cards">
-        <div class="summary-card">
-            <h6>Total Paid</h6>
-            <div class="value">₹<span id="totalPaid">0</span></div>
+    <!-- CONTENT -->
+    <div id="contentArea" style="display:none">
+        <!-- PROFILE -->
+        <div class="profile-section">
+            <img id="memberImage" class="profile-image" src="" alt="Member Photo">
+            <div class="profile-details">
+                <div id="memberName" class="member-name"></div>
+                <div id="memberPhone" class="member-meta mb-2"></div>
+                <div class="member-meta">Member Since: <span id="memberSince"></span></div>
+                <div class="member-meta">Last Payment: <span id="lastPaymentDate"></span></div>
+            </div>
         </div>
-        <div class="summary-card">
-            <h6>Pending</h6>
-            <div class="value">₹<span id="pending">0</span></div>
-        </div>
-        <div class="summary-card">
-            <h6>Completion</h6>
-            <div class="value"><span id="completion">0%</span></div>
-        </div>
-        <div class="summary-card">
-            <h6>Total Points</h6>
-            <div class="value"><span id="totalPoints">0</span></div>
-        </div>
-    </div>
 
-    <!-- POINTS DISPLAY -->
-    <div class="points-display">
-        <div class="points-value" id="displayPoints">0</div>
-        <div class="progress-container">
-            <div id="progressBar" class="progress-bar" style="width:0%"></div>
+        <!-- PAYMENT HISTORY -->
+        <div class="table-container">
+            <h5 class="px-3 pt-3">Payment History</h5>
+            <table class="payment-table">
+            <thead>
+            <tr>
+                <th>#</th>
+                <th>Date</th>
+                <th>Month</th>
+                <th>Payment (₹)</th>
+                <th>Points</th>
+            </tr>
+            </thead>
+            <tbody id="paymentHistory"></tbody>
+            </table>
         </div>
-        <div id="progressText" class="mt-2"></div>
-    </div>
-    
-    <!-- FOOTER -->
-    <div class="text-center text-muted py-3 border-top">
-        <small>Generated on <span id="printDate"></span> | Anjuman Ghulaman-E-Mustafa © 2025</small>
-    </div>
-</div>
 
+        <!-- SUMMARY -->
+        <div class="summary-cards">
+            <div class="summary-card">
+                <h6>Total Paid</h6>
+                <div class="value">₹<span id="totalPaid">0</span></div>
+            </div>
+            <div class="summary-card">
+                <h6>Pending</h6>
+                <div class="value">₹<span id="pending">0</span></div>
+            </div>
+            <div class="summary-card">
+                <h6>Completion</h6>
+                <div class="value"><span id="completion">0%</span></div>
+            </div>
+            <div class="summary-card">
+                <h6>Total Points</h6>
+                <div class="value"><span id="totalPoints">0</span></div>
+            </div>
+        </div>
+
+        <!-- POINTS DISPLAY -->
+        <div class="points-display">
+            <div class="points-value" id="displayPoints">0</div>
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar" style="width:0%"></div>
+            </div>
+            <div id="progressText" class="mt-2"></div>
+        </div>
+        
+        <!-- FOOTER -->
+        <div class="text-center text-muted py-3 border-top">
+            <small>Generated on <span id="printDate"></span> | Anjuman Ghulaman-E-Mustafa © 2025</small>
+        </div>
+    </div>
 </div>
 
 <script>
-/* ================= UID BASED RECEIPT ================= */
+// ================= CONFIGURATION =================
+const GOOGLE_SHEET_ID = "1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw";
+const GOOGLE_API_KEY = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
+
+// ================= GET UID FROM URL =================
 const params = new URLSearchParams(window.location.search);
 const uid = params.get("uid");
 console.log("Receipt page loaded with UID:", uid);
@@ -333,86 +176,106 @@ if(uid) {
     document.getElementById("loadingDetails").innerText = `Fetching data for member ID: ${uid}`;
 }
 
-// SAMPLE FALLBACK DATA (if API fails)
-const fallbackData = {
-    "success": true,
-    "message": "Member found",
-    "data": {
-        "uid": uid || "1",
-        "name": "Sample Member",
-        "phone": "Not Available",
-        "image": "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM",
-        "member_since": "2025",
-        "payments": [
-            {
-                "date": "21/09/2025",
-                "month": "October",
-                "payment": 100,
-                "point": 14
-            }
-        ],
-        "total_paid": 100,
-        "total_points": 14,
-        "last_payment": "21/09/2025"
-    }
-};
-
-// FETCH DATA FROM API
-async function fetchMemberData(uid) {
-    const apiUrl = `https://anjumang.infinityfreeapp.com/api.php?uid=${encodeURIComponent(uid)}`;
-    console.log("Fetching from:", apiUrl);
+// ================= DIRECT GOOGLE SHEETS FETCH =================
+async function fetchFromGoogleSheet(range) {
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${GOOGLE_SHEET_ID}/values/${range}?key=${GOOGLE_API_KEY}`;
     
-    // Try direct fetch first
     try {
-        const response = await fetch(apiUrl, {
-            method: 'GET',
-            mode: 'cors',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            }
-        });
+        const response = await fetch(url);
+        if (!response.ok) throw new Error(`Google Sheets error: ${response.status}`);
         
-        if (response.ok) {
-            const data = await response.json();
-            console.log("API Response:", data);
-            return {source: "api", data: data};
-        } else {
-            throw new Error(`HTTP ${response.status}`);
-        }
+        const data = await response.json();
+        return data.values || [];
     } catch (error) {
-        console.error("Direct API fetch failed:", error);
-        
-        // Try with CORS proxy
-        try {
-            const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(apiUrl)}`;
-            const response = await fetch(proxyUrl);
-            
-            if (response.ok) {
-                const result = await response.json();
-                const data = JSON.parse(result.contents);
-                return {source: "proxy", data: data};
-            }
-        } catch (proxyError) {
-            console.error("Proxy also failed:", proxyError);
-        }
-        
-        // Return fallback data
-        return {source: "fallback", data: fallbackData};
+        console.error("Error fetching from Google Sheets:", error);
+        throw error;
     }
 }
 
-// UPDATE UI WITH DATA
-function updateUI(data) {
-    const result = data.data;
-    
-    if (!result.success) {
-        showError(result.message || "Member not found in database");
-        return;
+// ================= FIND MEMBER DATA =================
+async function findMemberData(uid) {
+    try {
+        // Fetch all members from Sheet1
+        console.log("Fetching members from Sheet1...");
+        const membersData = await fetchFromGoogleSheet("Sheet1!A2:H");
+        
+        // Find member by UID (column H, index 7)
+        const member = membersData.find(row => 
+            row[7] && row[7].toString().trim() === uid.toString().trim()
+        );
+        
+        if (!member) {
+            throw new Error(`Member with UID ${uid} not found in Sheet1`);
+        }
+        
+        // Extract member info
+        const memberInfo = {
+            uid: uid,
+            name: member[0] || "N/A",
+            phone: member[1] || "Not Available",
+            points: parseInt(member[2]) || 0,
+            image: member[3] || "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM",
+            member_since: "2025"
+        };
+        
+        console.log("Found member:", memberInfo.name);
+        return memberInfo;
+        
+    } catch (error) {
+        console.error("Error finding member:", error);
+        throw error;
     }
-    
-    const member = result.data;
-    
+}
+
+// ================= FETCH PAYMENT HISTORY =================
+async function fetchPaymentHistory(uid) {
+    try {
+        console.log("Fetching payments from Sheet53...");
+        const paymentsData = await fetchFromGoogleSheet("Sheet53!A2:H");
+        
+        // Filter payments for this UID (column H, index 7)
+        const memberPayments = paymentsData.filter(row => 
+            row[7] && row[7].toString().trim() === uid.toString().trim()
+        );
+        
+        console.log(`Found ${memberPayments.length} payments for UID ${uid}`);
+        
+        // Format payments
+        const payments = memberPayments.map(row => ({
+            date: row[1] || "",
+            month: row[2] || "",
+            payment: parseInt(row[3]) || 0,
+            point: parseInt(row[6]) || 0
+        }));
+        
+        // Calculate totals
+        const totals = payments.reduce((acc, payment) => {
+            acc.totalPaid += payment.payment;
+            acc.totalPoints += payment.point;
+            return acc;
+        }, { totalPaid: 0, totalPoints: 0 });
+        
+        return {
+            payments: payments,
+            totalPaid: totals.totalPaid,
+            totalPoints: totals.totalPoints,
+            lastPayment: payments.length > 0 ? payments[payments.length - 1].date : "-"
+        };
+        
+    } catch (error) {
+        console.error("Error fetching payments:", error);
+        // Return empty if error
+        return {
+            payments: [],
+            totalPaid: 0,
+            totalPoints: 0,
+            lastPayment: "-"
+        };
+    }
+}
+
+// ================= UPDATE UI =================
+function updateUI(memberInfo, paymentData) {
     // Hide loading and error, show content
     document.getElementById("loading").style.display = "none";
     document.getElementById("errorMessage").style.display = "none";
@@ -420,15 +283,15 @@ function updateUI(data) {
     
     // Update member info
     document.getElementById("memberStatus").innerText = "Active";
-    document.getElementById("memberName").innerText = member.name || "N/A";
-    document.getElementById("memberPhone").innerText = member.phone || "Not Available";
-    document.getElementById("memberSince").innerText = member.member_since || "2025";
-    document.getElementById("lastPaymentDate").innerText = member.last_payment || "No payments yet";
+    document.getElementById("memberName").innerText = memberInfo.name;
+    document.getElementById("memberPhone").innerText = memberInfo.phone;
+    document.getElementById("memberSince").innerText = memberInfo.member_since;
+    document.getElementById("lastPaymentDate").innerText = paymentData.lastPayment;
     
     // Set member image
     const memberImage = document.getElementById("memberImage");
-    if (member.image && member.image.startsWith('http')) {
-        memberImage.src = member.image;
+    if (memberInfo.image && memberInfo.image.startsWith('http')) {
+        memberImage.src = memberInfo.image;
     } else {
         memberImage.src = "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM";
     }
@@ -440,45 +303,31 @@ function updateUI(data) {
     const tbody = document.getElementById("paymentHistory");
     tbody.innerHTML = "";
     
-    let totalPaid = 0;
-    let totalPoints = 0;
-    
-    if (member.payments && Array.isArray(member.payments) && member.payments.length > 0) {
-        member.payments.forEach((payment, index) => {
-            const paymentAmount = Number(payment.payment || 0);
-            const points = Number(payment.point || 0);
-            
-            totalPaid += paymentAmount;
-            totalPoints += points;
-            
+    if (paymentData.payments.length > 0) {
+        paymentData.payments.forEach((payment, index) => {
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td>${index + 1}</td>
-                <td>${payment.date || "-"}</td>
-                <td>${payment.month || "-"}</td>
-                <td><strong>₹${paymentAmount}</strong></td>
-                <td><span class="badge bg-primary">${points}</span></td>
+                <td>${payment.date}</td>
+                <td>${payment.month}</td>
+                <td><strong>₹${payment.payment}</strong></td>
+                <td><span class="badge bg-primary">${payment.point}</span></td>
             `;
             tbody.appendChild(row);
         });
     } else {
-        // No payments
         tbody.innerHTML = `
             <tr>
                 <td colspan="5" class="text-center py-4 text-muted">
                     <i class="fas fa-info-circle me-2"></i>
-                    No payment records found
+                    No payment records found in Sheet53
                 </td>
             </tr>`;
-        
-        // Use totals from API if available
-        totalPaid = Number(member.total_paid || 0);
-        totalPoints = Number(member.total_points || 0);
     }
     
     // Update summary
-    const finalTotalPaid = member.total_paid || totalPaid;
-    const finalTotalPoints = member.total_points || totalPoints;
+    const finalTotalPaid = paymentData.totalPaid;
+    const finalTotalPoints = paymentData.totalPoints || memberInfo.points;
     
     document.getElementById("totalPaid").innerText = finalTotalPaid;
     document.getElementById("totalPoints").innerText = finalTotalPoints;
@@ -505,10 +354,10 @@ function updateUI(data) {
     document.getElementById("progressText").innerText = 
         `${pointsProgress.toFixed(1)}% of points target achieved`;
     
-    console.log("UI updated successfully");
+    console.log("UI updated successfully with real data!");
 }
 
-// SHOW ERROR
+// ================= SHOW ERROR =================
 function showError(message) {
     document.getElementById("loading").style.display = "none";
     document.getElementById("errorText").innerText = message;
@@ -517,14 +366,9 @@ function showError(message) {
     const retryBtn = document.getElementById("retryBtn");
     retryBtn.style.display = "inline-block";
     retryBtn.onclick = loadData;
-    
-    // Still show some content with fallback data
-    if (uid) {
-        updateUI({source: "fallback", data: fallbackData});
-    }
 }
 
-// MAIN LOAD FUNCTION
+// ================= MAIN LOAD FUNCTION =================
 async function loadData() {
     if (!uid) {
         showError("Member ID (UID) is missing in the URL. Please check the link.");
@@ -536,17 +380,24 @@ async function loadData() {
         document.getElementById("errorMessage").style.display = "none";
         document.getElementById("contentArea").style.display = "none";
         
-        const result = await fetchMemberData(uid);
-        console.log("Data loaded from:", result.source);
+        console.log("Starting data load for UID:", uid);
         
-        updateUI(result);
+        // Fetch member data directly from Google Sheets
+        const memberInfo = await findMemberData(uid);
+        
+        // Fetch payment data directly from Google Sheets
+        const paymentData = await fetchPaymentHistory(uid);
+        
+        // Update UI with real data
+        updateUI(memberInfo, paymentData);
+        
     } catch (error) {
         console.error("Error in loadData:", error);
         showError("Failed to load data: " + error.message);
     }
 }
 
-// Load data when page is ready
+// ================= INITIALIZE =================
 document.addEventListener("DOMContentLoaded", loadData);
 
 // Add print functionality
@@ -557,6 +408,5 @@ window.addEventListener('keydown', function(e) {
     }
 });
 </script>
-
 </body>
 </html>
