@@ -79,10 +79,10 @@ const range   = "Sheet1!A2:H";
 const modal = document.getElementById("receiptModal");
 const receiptFrame = document.getElementById("receiptFrame");
 
-function openReceiptModal(memberId){
+function openReceiptModal(uid){
     receiptFrame.src =
-      "https://anjumang.github.io/bareilly/receipt.html?memberId="
-      + encodeURIComponent(memberId);
+      "https://anjumang.github.io/bareilly/receipt.html?uid="
+      + encodeURIComponent(uid);
 
     modal.style.display = "block";
     document.body.style.overflow = "hidden";
@@ -111,13 +111,13 @@ async function loadData(){
 
         data.forEach((row,i)=>{
 
-            const name     = row[0] || "";
-            const phone    = row[1] || "N/A";
-            const points   = row[2] || 0;
-            const image    = row[3] || "img/default-avatar.png";
-            const memberId = row[7]; // ✅ H column
+            const name   = row[0] || "";
+            const phone  = row[1] || "N/A";
+            const points = row[2] || 0;
+            const image  = row[3] || "img/default-avatar.png";
+            const uid    = row[7]; // ✅ UID from column H
 
-            if(!memberId) return;
+            if(!uid) return;
 
             const div = document.createElement("div");
             div.className = "col-md-4 col-12 mb-4";
@@ -138,7 +138,7 @@ async function loadData(){
                     <div class="nme-prty">
                         <h5>
                             <a class="member-link"
-                               onclick="openReceiptModal('${memberId}')">
+                               onclick="openReceiptModal('${uid}')">
                                ${name}
                             </a>
                         </h5>
