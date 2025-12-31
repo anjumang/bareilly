@@ -10,20 +10,21 @@
     <!-- Force Desktop Mode -->
     <script>
         if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            // Mobile device - force desktop viewport
-            const viewport = document.querySelector('meta[name="viewport"]');
-            viewport.setAttribute('content', 'width=1200, initial-scale=0.5, maximum-scale=1.0, user-scalable=yes');
+            document.querySelector('meta[name="viewport"]').setAttribute('content', 'width=1200');
         }
     </script>
 
     <style>
         /* Force Desktop Mode */
-        @media (max-width: 1200px) {
-            body {
-                zoom: 0.8;
-                -moz-transform: scale(0.8);
-                -moz-transform-origin: 0 0;
-            }
+        body {
+            min-width: 1000px;
+            overflow-x: auto;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        
+        .container {
+            width: 1000px;
+            margin: 20px auto;
         }
         
         * {
@@ -34,19 +35,13 @@
 
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
             color: #1e293b;
             line-height: 1.6;
             min-height: 100vh;
             padding: 20px;
-            /* Force desktop scrolling */
-            overflow-x: auto;
-            min-width: 1000px;
         }
 
         .container {
-            width: 1000px;
-            margin: 0 auto;
             background: white;
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.1);
@@ -146,7 +141,7 @@
             height: 150px;
             border-radius: 50%;
             object-fit: cover;
-            border: 5px solid #0b4da0;
+            border: 5px solid #e2e8f0;
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
             flex-shrink: 0;
         }
@@ -184,12 +179,6 @@
             border-radius: 12px;
             text-align: center;
             border-left: 4px solid #0b4da0;
-            transition: transform 0.3s;
-        }
-
-        .info-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
 
         .info-label {
@@ -335,7 +324,6 @@
             font-weight: 800;
             color: #0b4da0;
             margin: 20px 0;
-            text-shadow: 0 5px 15px rgba(11, 77, 160, 0.2);
         }
 
         .progress-container {
@@ -401,11 +389,7 @@
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
 
-        .btn:active {
-            transform: translateY(-1px);
-        }
-
-        /* ================= ERROR & LOADING ================= */
+        /* ================= LOADING & ERROR ================= */
         #loading {
             display: flex;
             flex-direction: column;
@@ -440,25 +424,11 @@
             display: none;
         }
 
-        .error-message i {
-            margin-right: 10px;
-        }
-
-        #errorMessage {
-            display: none;
-        }
-
         #contentArea {
             display: none;
         }
 
-        /* ================= RESPONSIVE (Desktop Only) ================= */
-        @media (max-width: 1200px) {
-            .container {
-                zoom: 0.85;
-            }
-        }
-
+        /* ================= PRINT STYLES ================= */
         @media print {
             body {
                 background: white;
@@ -472,6 +442,13 @@
             
             .action-buttons {
                 display: none;
+            }
+        }
+
+        /* ================= MOBILE ADJUSTMENT ================= */
+        @media (max-width: 768px) {
+            body {
+                zoom: 0.7;
             }
         }
     </style>
@@ -684,7 +661,7 @@
 
     <script>
         // ================= CONFIGURATION =================
-        const GOOGLE_SHEET_ID = "1bpj9luw9CALMxGlrsWQ41ZpR5aZtQZvta7iA20me594"; // ✅ NEW SHEET ID 2026
+        const GOOGLE_SHEET_ID = "1bpj9luw9CALMxGlrsWQ41ZpR5aZtQZvta7iA20me594";
         const GOOGLE_API_KEY = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
 
         // ================= GET UID FROM URL =================
@@ -818,7 +795,25 @@
             document.getElementById("contentArea").style.display = "block";
             
             // Update member info
-            document.getElementById("memberStatus").innerText = "Active";
+            const completionPercent = paymentData.totalPaid > 0 ? 
+                Math.min(100, Math.round((paymentData.totalPaid / 1200) * 100)) : 0;
+            
+            // Update member status based on completion
+            const statusElement = document.getElementById("memberStatus");
+            if (completionPercent === 100) {
+                statusElement.innerText = "Payment Complete";
+                statusElement.style.color = "#059669";
+            } else if (completionPercent >= 50) {
+                statusElement.innerText = "Active Member";
+                statusElement.style.color = "#0b4da0";
+            } else if (completionPercent > 0) {
+                statusElement.innerText = "Payment Pending";
+                statusElement.style.color = "#f59e0b";
+            } else {
+                statusElement.innerText = "No Payments";
+                statusElement.style.color = "#dc2626";
+            }
+            
             document.getElementById("memberName").innerText = memberInfo.name;
             document.getElementById("memberPhone").innerText = memberInfo.phone;
             document.getElementById("memberSince").innerText = memberInfo.member_since;
@@ -846,8 +841,10 @@
                         <td>${index + 1}</td>
                         <td>${payment.date}</td>
                         <td>${payment.month}</td>
-                        <td style="font-weight: 600; color: #059669">₹${payment.payment}</td>
-                        <td style="font-weight: 600; color: #0b4da0">${payment.point}</td>
+                        <td style="font-weight: 600; color: ${payment.payment > 0 ? '#059669' : '#64748b'}">
+                            ${payment.payment > 0 ? '₹' + payment.payment : '-'}
+                        </td>
+                        <td style="font-weight: 600; color: #0b4da0">${payment.point || 0}</td>
                     `;
                     tbody.appendChild(row);
                 });
@@ -857,9 +854,9 @@
             } else {
                 tbody.innerHTML = `
                     <tr>
-                        <td colspan="5" class="text-center py-4 text-muted">
-                            <i class="fas fa-info-circle me-2"></i>
-                            No payment records found
+                        <td colspan="5" style="text-align: center; padding: 30px; color: #64748b;">
+                            <i class="fas fa-info-circle"></i><br>
+                            No detailed payment records found for this member
                         </td>
                     </tr>`;
                 document.getElementById("totalPaymentsCount").innerText = "0";
@@ -870,45 +867,32 @@
             const finalTotalPoints = paymentData.totalPoints || memberInfo.points;
             const targetAmount = 1200;
             const pendingAmount = Math.max(0, targetAmount - finalTotalPaid);
-            const completionPercent = Math.min(100, Math.round((finalTotalPaid / targetAmount) * 100));
             
             // Update financial summary
-            document.getElementById("totalPaidAmount").innerText = `₹${finalTotalPaid}`;
-            document.getElementById("pendingAmount").innerText = `₹${pendingAmount}`;
-            document.getElementById("completionPercentage").innerText = `${completionPercent}%`;
-            document.getElementById("completionRate").innerText = `${completionPercent}%`;
+            document.getElementById("totalPaidAmount").innerText = '₹' + finalTotalPaid;
+            document.getElementById("pendingAmount").innerText = '₹' + pendingAmount;
+            document.getElementById("completionPercentage").innerText = completionPercent + '%';
+            document.getElementById("completionRate").innerText = completionPercent + '%';
             
             // Calculate points summary
             const maxPoints = 500;
-            const pointsPercent = Math.min(100, Math.round((finalTotalPoints / maxPoints) * 100));
+            const pointsPercent = Math.min(100, (finalTotalPoints / maxPoints) * 100);
             const avgPoints = paymentData.payments.length > 0 ? 
                 Math.round(finalTotalPoints / paymentData.payments.length) : 0;
             
             // Update points summary
             document.getElementById("totalPoints").innerText = finalTotalPoints;
-            document.getElementById("pointsProgress").innerText = `${pointsPercent}%`;
+            document.getElementById("pointsProgress").innerText = pointsPercent.toFixed(1) + '%';
             document.getElementById("avgPoints").innerText = avgPoints;
             document.getElementById("displayPoints").innerText = finalTotalPoints;
             
             // Update progress bar
             const progressBar = document.getElementById("pointsProgressBar");
             setTimeout(() => {
-                progressBar.style.width = `${pointsPercent}%`;
+                progressBar.style.width = pointsPercent + '%';
             }, 100);
             
-            document.getElementById("progressText").innerText = `${pointsPercent.toFixed(1)}% Complete`;
-            
-            // Update member status color based on completion
-            const statusElement = document.getElementById("memberStatus");
-            if (completionPercent === 100) {
-                statusElement.style.color = "#059669";
-            } else if (completionPercent >= 50) {
-                statusElement.style.color = "#0b4da0";
-            } else if (completionPercent > 0) {
-                statusElement.style.color = "#f59e0b";
-            } else {
-                statusElement.style.color = "#dc2626";
-            }
+            document.getElementById("progressText").innerText = pointsPercent.toFixed(1) + '% Complete';
             
             console.log("UI updated successfully with real data!");
         }
@@ -964,14 +948,10 @@
             }
         });
 
-        // Ensure desktop mode on mobile
-        window.onload = function() {
-            // Force desktop zoom on mobile
-            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                document.body.style.zoom = "80%";
-                document.body.style.transformOrigin = "0 0";
-            }
-        };
+        // Force desktop mode on mobile
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            document.body.style.zoom = "80%";
+        }
     </script>
 </body>
 </html>
