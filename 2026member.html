@@ -336,7 +336,10 @@
             <div class="middle-head">
                 <div class="round-status">
                     <i class="fas fa-calendar-alt"></i>
-                    <span>Month: <strong>10</strong> / 12</span>
+                    
+                  <span>Month: <strong id="monthCounter">10</strong> / 12</span>
+                    
+                    
                 </div>
                 <div class="switch-list">
                     <ul>
@@ -381,185 +384,157 @@
 
     <!-- JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
-        // Global variables to store data
-        let membersData = [];
-        
-        // Google Sheets Configuration
-        const sheetId = "1vZjFjqXWbzKjul-Jg0SkEZZMOekmNDTKDw-NWROhBcw";
-        const apiKey = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
-        const range = "Sheet1!A2:D";
-        
-        // DOM Elements
-        const loadingSpinner = document.getElementById('loadingSpinner');
-        
-        // Show/Hide Loading
-        function showLoading() {
-            loadingSpinner.style.display = 'flex';
+/* ================= GOOGLE SHEET CONFIG ================= */
+const sheetId = "1bpj9luw9CALMxGlrsWQ41ZpR5aZtQZvta7iA20me594"; // 2026 sheet
+const apiKey  = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
+const range   = "Sheet1!A2:H"; 
+// A=Name, B=Phone, C=Points, D=Image, H=UID
+
+/* ================= DOM ================= */
+const container = document.getElementById("dynamic-data");
+const loadingSpinner = document.getElementById("loadingSpinner");
+
+/* ================= LOADING ================= */
+function showLoading(){
+    loadingSpinner.style.display = "flex";
+}
+function hideLoading(){
+    loadingSpinner.style.display = "none";
+}
+
+/* ================= RECEIPT (MODAL STYLE - SAME AS WORKING FILE) ================= */
+function openReceipt(uid){
+    showLoading();
+    const url = "https://anjumang.github.io/bareilly/receipt.html?uid=" + encodeURIComponent(uid);
+    const w = 1100;
+    const h = 750;
+    const left = (screen.width - w) / 2;
+    const top = (screen.height - h) / 2;
+
+    const win = window.open(
+        url,
+        "ReceiptPopup",
+        `width=${w},height=${h},top=${top},left=${left},scrollbars=yes,resizable=yes`
+    );
+
+    if(win) win.focus();
+    setTimeout(hideLoading, 500);
+}
+
+/* ================= FETCH DATA ================= */
+async function fetchData(){
+    showLoading();
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+
+    try{
+        const res = await fetch(url);
+        if(!res.ok) throw new Error("Google Sheets Error");
+
+        const json = await res.json();
+        const data = json.values || [];
+
+        container.innerHTML = "";
+
+        if(data.length === 0){
+            container.innerHTML = `<div class="col-12 text-center py-5">No members found</div>`;
+            hideLoading();
+            return;
         }
-        
-        function hideLoading() {
-            loadingSpinner.style.display = 'none';
-        }
-        
-        // Function to open receipt in popup window
-        function openReceipt(memberName, memberImage, memberPhone, memberPoints) {
-            showLoading();
-            
-            // Encode parameters for URL
-            const encodedName = encodeURIComponent(memberName);
-            const encodedPhone = encodeURIComponent(memberPhone);
-            const encodedPoints = encodeURIComponent(memberPoints);
-            const encodedImage = encodeURIComponent(memberImage);
-            
-            // Create popup URL with parameters
-            const popupUrl = `receipt.html?name=${encodedName}&phone=${encodedPhone}&points=${encodedPoints}&image=${encodedImage}`;
-            
-            // Calculate popup position (center of screen)
-            const width = 1100;
-            const height = 750;
-            const left = (window.screen.width - width) / 2;
-            const top = (window.screen.height - height) / 2;
-            
-            // Open popup window
-            const popupWindow = window.open(
-                popupUrl,
-                'ReceiptPopup',
-                `width=${width},height=${height},top=${top},left=${left},scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no,status=no`
-            );
-            
-            // Focus on the popup
-            if (popupWindow) {
-                popupWindow.focus();
-            }
-            
-            // Hide loading after 500ms (gives time for popup to open)
-            setTimeout(hideLoading, 500);
-        }
-        
-        // Function to fetch data from Google Sheets
-        async function fetchData() {
-            try {
-                const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
-                const response = await fetch(url);
-                const data = await response.json();
-                
-                if (data.values && data.values.length > 0) {
-                    // Process data
-                    membersData = data.values.map(row => {
-                        const name = row[0] || 'Unknown Member';
-                        const initial = name.charAt(0).toUpperCase();
-                        // Clean and validate image URL
-                        let imageUrl = (row[3] || '').trim();
-                        if (!imageUrl || imageUrl === '') {
-                            imageUrl = `https://via.placeholder.com/400x250/0b4da0/ffffff?text=${initial}`;
-                        }
-                        
-                        return {
-                            name: name,
-                            phone: row[1] || 'N/A',
-                            points: parseInt(row[2]) || 0,
-                            image: imageUrl
-                        };
-                    });
-                    
-                    // Sort by points
-                    membersData.sort((a, b) => b.points - a.points);
-                    
-                    // Render members
-                    renderMembers();
-                } else {
-                    showError("No data found in Google Sheets");
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                showError("Failed to load data. Please check your internet connection.");
-            }
-        }
-        
-        // Function to render members with professional design
-        function renderMembers() {
-            const container = document.getElementById('dynamic-data');
-            
-            if (membersData.length === 0) {
-                container.innerHTML = '<div class="col-12 text-center py-5"><p>No members found</p></div>';
-                return;
-            }
-            
-            let html = '';
-            
-            membersData.forEach((member, index) => {
-                const rank = index + 1;
-                
-                html += `
-                    <div class="col-lg-4 col-md-6 col-12">
-                        <div class="member-card">
-                            <div class="image-container">
-                                <img src="${member.image}" alt="${member.name}" class="member-image"
-                                     onerror="this.onerror=null; this.src='https://via.placeholder.com/400x250/0b4da0/ffffff?text=${member.name.charAt(0)}'">
-                                <div class="profile-img">
-                                    <img src="${member.image}" alt="${member.name}"
-                                         onerror="this.onerror=null; this.src='https://via.placeholder.com/120/0b4da0/ffffff?text=${member.name.charAt(0)}'">
-                                </div>
-                                <div class="rank-badge">
-                                    <i class="fas fa-crown"></i> Rank #${rank}
-                                </div>
-                            </div>
-                            <div class="member-info">
-                                <div class="member-name">${member.name}</div>
-                                <div class="member-phone">
-                                    <i class="fas fa-phone-alt"></i> ${member.phone}
-                                </div>
-                                <div class="points-badge">
-                                    <i class="fas fa-star"></i> ${member.points} Points
-                                </div>
-                                <button class="action-btn" onclick="openReceipt('${member.name.replace(/'/g, "\\'")}', '${member.image}', '${member.phone}', ${member.points})">
-                                    <i class="fas fa-receipt"></i> View Receipt
-                                </button>
-                            </div>
+
+        // valid rows (Name + UID required)
+        const members = data
+            .filter(r => r[0] && r[7])
+            .map(r => ({
+                name: r[0],
+                phone: r[1] || "N/A",
+                points: Number(r[2] || 0),
+                image: r[3] || `https://via.placeholder.com/400x250/0b4da0/ffffff?text=${r[0].charAt(0)}`,
+                uid: r[7]
+            }))
+            .sort((a,b) => b.points - a.points);
+
+        members.forEach((m, i) => {
+            const rank = i + 1;
+
+            container.innerHTML += `
+            <div class="col-lg-4 col-md-6 col-12">
+                <div class="member-card">
+                    <div class="image-container">
+                        <img src="${m.image}" class="member-image"
+                             onerror="this.src='https://via.placeholder.com/400x250/0b4da0/ffffff?text=${m.name.charAt(0)}'">
+
+                        <div class="profile-img">
+                            <img src="${m.image}"
+                                 onerror="this.src='https://via.placeholder.com/120/0b4da0/ffffff?text=${m.name.charAt(0)}'">
+                        </div>
+
+                        <div class="rank-badge">
+                            <i class="fas fa-crown"></i> Rank #${rank}
                         </div>
                     </div>
-                `;
-            });
-            
-            container.innerHTML = html;
-        }
-        
-        // Function to show error
-        function showError(message) {
-            const container = document.getElementById('dynamic-data');
-            container.innerHTML = `
-                <div class="col-12 text-center py-5">
-                    <div class="alert alert-danger">
-                        <i class="fas fa-exclamation-triangle fa-2x mb-3"></i>
-                        <h4>Error Loading Data</h4>
-                        <p>${message}</p>
-                        <button class="btn btn-primary mt-3" onclick="fetchData()">
-                            <i class="fas fa-redo me-2"></i>Try Again
+
+                    <div class="member-info">
+                        <div class="member-name">${m.name}</div>
+                        <div class="member-phone">
+                            <i class="fas fa-phone-alt"></i> ${m.phone}
+                        </div>
+                        <div class="points-badge">
+                            <i class="fas fa-star"></i> ${m.points} Points
+                        </div>
+
+                        <button class="action-btn" onclick="openReceipt('${m.uid}')">
+                            <i class="fas fa-receipt"></i> View Receipt
                         </button>
                     </div>
                 </div>
-            `;
-        }
-        
-        // Cache data for 30 seconds
-        let lastFetchTime = 0;
-        const cacheDuration = 30000; // 30 seconds
-        
-        // Auto-refresh every 30 seconds if data is stale
-        setInterval(() => {
-            const now = Date.now();
-            if (now - lastFetchTime > cacheDuration) {
-                fetchData();
-            }
-        }, 10000); // Check every 10 seconds
-        
-        // Initial load when page loads
-        document.addEventListener('DOMContentLoaded', () => {
-            lastFetchTime = Date.now();
-            fetchData();
+            </div>`;
         });
-    </script>
+
+        hideLoading();
+
+    }catch(e){
+        console.error(e);
+        container.innerHTML = `
+        <div class="col-12 text-center py-5">
+            <div class="alert alert-danger">
+                <h4>Error loading data</h4>
+                <button class="btn btn-primary mt-2" onclick="fetchData()">Retry</button>
+            </div>
+        </div>`;
+        hideLoading();
+    }
+}
+
+/* ================= INIT ================= */
+
+</script>
+    
+    <script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    // ===== AUTO MONTH (Oct = 1, Sep = 12) =====
+    const now = new Date();
+    const currentMonth = now.getMonth(); // Jan=0 ... Dec=11
+
+    // Project starts from October (index 9)
+    let projectMonth = currentMonth - 9 + 1;
+    if (projectMonth <= 0) projectMonth += 12;
+
+    const monthEl = document.getElementById("monthCounter");
+    if (monthEl) {
+        monthEl.textContent = projectMonth;
+    }
+
+    // ===== EXISTING DATA LOAD =====
+    if (typeof fetchData === "function") {
+        fetchData();
+    }
+});
+</script>
+
+
+
 </body>
 </html>
