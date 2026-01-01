@@ -1,222 +1,260 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Anjuman Ghulaman-E-Mustafa</title>
 
-<link href="css/bootstrap.min.css" rel="stylesheet">
-<link href="css/custom.css" rel="stylesheet">
+<!-- ================= CORE CSS (ONLY REQUIRED) ================= -->
+<link rel="stylesheet" href="https://anjumang.github.io/khan/wp-content/themes/oceanwp/assets/css/style.min.css">
+<link rel="stylesheet" href="https://anjumang.github.io/khan/wp-content/themes/oceanwp/assets/fonts/fontawesome/css/all.min.css">
 
+<!-- ================= BOOTSTRAP ================= -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<!-- ================= CUSTOM UI CSS (FROM 2ND CODE – UNCHANGED) ================= -->
 <style>
-.member-link{
-    color:#0b4da0;
-    cursor:pointer;
-    font-weight:600;
-    text-decoration:none;
+:root{
+--primary:#0b4da0;
+--secondary:#0f8a63;
+--accent:#10b981;
+--dark:#1e293b;
+--light:#f8fafc;
 }
-.member-link:hover{ text-decoration:underline }
-
-.modal{
-    display:none;
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,.8);
-    z-index:9999;
+body{
+background:linear-gradient(135deg,#f8fafc,#e2e8f0);
+font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
+min-height:100vh;
 }
-.modal-content{
-    width:95%;
-    height:90vh;
-    margin:2% auto;
-    background:#fff;
-    border-radius:12px;
-    overflow:hidden;
+.page-title{
+margin:30px 0;
+padding:25px;
+background:#fff;
+border-radius:16px;
+box-shadow:0 6px 20px rgba(0,0,0,.08);
+border-left:5px solid var(--secondary);
+text-align:center;
 }
-.modal iframe{
-    width:100%;
-    height:100%;
-    border:none;
+.middle-head{
+background:#fff;
+padding:20px;
+border-radius:12px;
+margin-bottom:30px;
+box-shadow:0 4px 12px rgba(0,0,0,.06);
+display:flex;
+gap:20px;
+flex-wrap:wrap;
+align-items:center;
 }
-.close-modal{
-    position:absolute;
-    right:20px;
-    top:15px;
-    width:40px;
-    height:40px;
-    border-radius:50%;
-    background:rgba(0,0,0,.6);
-    color:#fff;
-    font-size:28px;
-    text-align:center;
-    line-height:40px;
-    cursor:pointer;
-    z-index:10000;
+.round-status{
+background:var(--accent);
+color:#fff;
+padding:8px 20px;
+border-radius:50px;
+font-weight:600;
 }
-
-.cand-box {
-    background: #fff;
-    border-radius: 10px;
-    padding: 15px;
-    margin: 10px 0;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    text-align: center;
+.switch-list ul{
+list-style:none;
+padding:0;
+margin:0;
+display:flex;
+gap:15px;
+}
+.switch-list li{
+background:var(--primary);
+color:#fff;
+padding:10px 20px;
+border-radius:8px;
+cursor:pointer;
+transition:.3s;
+}
+.switch-list li:hover{background:#083a7f}
+.member-card{
+background:#fff;
+border-radius:16px;
+overflow:hidden;
+border:1px solid #e2e8f0;
+box-shadow:0 8px 25px rgba(0,0,0,.1);
+transition:.35s;
+height:100%;
+}
+.member-card:hover{
+transform:translateY(-6px);
+box-shadow:0 20px 40px rgba(0,0,0,.12);
+}
+.image-container{
+position:relative;
+height:215px;
+background:#f1f5f9;
+}
+.member-image{
+width:100%;
+height:100%;
+object-fit:cover;
+}
+.profile-img{
+position:absolute;
+bottom:-38px;
+left:50%;
+transform:translateX(-50%);
+width:105px;
+height:105px;
+padding:4px;
+border-radius:50%;
+background:linear-gradient(135deg,#22c55e,#3b82f6,#a855f7);
+z-index:3;
+}
+.profile-img img{
+width:100%;
+height:100%;
+border-radius:50%;
+object-fit:cover;
+background:#fff;
+}
+.rank-badge{
+position:absolute;
+top:14px;
+left:14px;
+background:linear-gradient(135deg,var(--primary),#083a7f);
+color:#fff;
+padding:7px 16px;
+border-radius:20px;
+font-size:.85rem;
+font-weight:600;
+}
+.member-info{
+padding:58px 20px 25px;
+text-align:center;
+}
+.member-name{
+font-size:1.35rem;
+font-weight:700;
+color:var(--dark);
+}
+.points-badge{
+background:linear-gradient(135deg,#22c55e,#16a34a);
+color:#fff;
+padding:6px 18px;
+border-radius:20px;
+font-weight:600;
+display:inline-flex;
+gap:6px;
+margin-top:10px;
+}
+.action-btn{
+margin-top:18px;
+width:100%;
+background:linear-gradient(135deg,#2563eb,#1e40af);
+border:none;
+color:#fff;
+padding:11px;
+border-radius:8px;
+font-weight:600;
+}
+.footer{
+background:var(--dark);
+color:#fff;
+padding:30px 0;
+margin-top:50px;
 }
 </style>
 </head>
 
 <body>
 
-<div class="container-fluid">
-    <h2 class="text-center my-4" style="color:#0b4da0">Anjuman Ghulaman-E-Mustafa Members</h2>
-    <div class="row" id="dynamic-data"></div>
+<!-- ================= HEADER (UNCHANGED – SAME WORDPRESS HEADER) ================= -->
+<header id="site-header">
+<a href="index.html">
+<img src="https://anjumang.github.io/khan/wp-content/uploads/2022/02/logo-blank.png" style="height:80px;margin:10px">
+</a>
+</header>
+
+<!-- ================= MAIN CONTENT (FROM 2ND CODE – LOGIC SAME) ================= -->
+<main class="inner-content py-4">
+<div class="container">
+
+<div class="page-title">
+<h1>Anjuman Ghulaman-E-Mustafa</h1>
+<h2>Upcoming Members <span class="text-primary">2025</span></h2>
 </div>
 
-<!-- RECEIPT POPUP -->
-<div id="receiptModal" class="modal">
-    <span class="close-modal" onclick="closeModal()">×</span>
-    <div class="modal-content">
-        <iframe id="receiptFrame"></iframe>
-    </div>
+<div class="middle-head">
+<div class="round-status">
+<i class="fas fa-calendar-alt"></i>
+Month: <strong id="monthCounter">1</strong> / 12
 </div>
+<div class="switch-list">
+<ul>
+<li onclick="location.href='index.html'">
+<i class="fas fa-home"></i> Home
+</li>
+</ul>
+</div>
+</div>
+
+<div id="dynamic-data" class="row g-4"></div>
+
+</div>
+</main>
+
+<!-- ================= FOOTER (UNCHANGED) ================= -->
+<footer class="footer">
+<div class="container">
+<div class="row">
+<div class="col-md-6">
+<h6>© Copyright</h6>
+<p>अंजुमने गुलामाने मुस्तफा</p>
+</div>
+<div class="col-md-6 text-end">
+<i class="fas fa-heart text-danger"></i> Serving the community
+</div>
+</div>
+</div>
+</footer>
+
+<!-- ================= JS ================= -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
-/* ================= GOOGLE SHEET CONFIG ================= */
-const sheetId = "1bpj9luw9CALMxGlrsWQ41ZpR5aZtQZvta7iA20me594"; // ✅ NEW SHEET ID 2026
-const apiKey  = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
-const range   = "Sheet1!A2:H"; // A=Name, B=Phone, C=Points, D=Image, H=UID
+const sheetId="1bpj9luw9CALMxGlrsWQ41ZpR5aZtQZvta7iA20me594";
+const apiKey="AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
+const range="Sheet1!A2:H";
+const container=document.getElementById("dynamic-data");
 
-/* ================= MODAL ================= */
-const modal = document.getElementById("receiptModal");
-const receiptFrame = document.getElementById("receiptFrame");
-
-function openReceiptModal(uid, name){
-    console.log("Opening receipt for UID:", uid, "Name:", name);
-    receiptFrame.src = "https://anjumang.github.io/bareilly/receipt.html?uid=" + encodeURIComponent(uid);
-    modal.style.display = "block";
-    document.body.style.overflow = "hidden";
+async function fetchData(){
+const url=`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+const res=await fetch(url);
+const json=await res.json();
+const data=json.values||[];
+container.innerHTML="";
+data.filter(r=>r[0]&&r[7]).forEach((r,i)=>{
+container.innerHTML+=`
+<div class="col-lg-4 col-md-6">
+<div class="member-card">
+<div class="image-container">
+<img src="${r[3]||''}" class="member-image">
+<div class="profile-img"><img src="${r[3]||''}"></div>
+<div class="rank-badge">Rank #${i+1}</div>
+</div>
+<div class="member-info">
+<div class="member-name">${r[0]}</div>
+<div class="points-badge"><i class="fas fa-star"></i> ${r[2]||0} Points</div>
+<button class="action-btn" onclick="openReceipt('${r[7]}')">View Receipt</button>
+</div>
+</div>
+</div>`;
+});
 }
 
-function closeModal(){
-    modal.style.display = "none";
-    receiptFrame.src = "";
-    document.body.style.overflow = "auto";
+function openReceipt(uid){
+window.open(`receipt.html?uid=${uid}`,"receipt","width=1100,height=750");
 }
 
-// Close modal when clicking outside
-window.onclick = function(event){
-    if(event.target == modal){
-        closeModal();
-    }
-}
-
-/* ================= LOAD DATA FROM GOOGLE SHEETS ================= */
-async function loadData(){
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
-    
-    const box = document.getElementById("dynamic-data");
-    box.innerHTML = `
-        <div class="col-12 text-center">
-            <div class="spinner-border text-primary" role="status">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-            <p class="mt-2">Loading members data...</p>
-        </div>`;
-
-    try{
-        const res  = await fetch(url);
-        if(!res.ok) throw new Error(`Google Sheets error: ${res.status}`);
-        
-        const json = await res.json();
-        const data = json.values || [];
-
-        console.log("Total members loaded:", data.length);
-
-        box.innerHTML = "";
-
-        if(data.length === 0){
-            box.innerHTML = "<p class='text-center'>No members found</p>";
-            return;
-        }
-
-        // Filter out invalid rows and sort by points DESC
-        const validMembers = data.filter(row => row[7] && row[0]); // UID and Name must exist
-        validMembers.sort((a,b) => {
-            const pointsA = Number(a[2] || 0);
-            const pointsB = Number(b[2] || 0);
-            return pointsB - pointsA;
-        });
-
-        validMembers.forEach((row,i)=>{
-            const name   = row[0] || "N/A";
-            const phone  = row[1] || "N/A";
-            const points = row[2] || 0;
-            const image  = row[3] || "https://via.placeholder.com/100/0b4da0/ffffff?text=AGM";
-            const uid    = row[7]; // UID from H column
-
-            // Skip if no UID
-            if(!uid || uid.trim() === "") return;
-
-            const div = document.createElement("div");
-            div.className = "col-md-4 col-lg-3 col-12 mb-4";
-            
-            // Determine rank color
-            let rankColor = "#6c757d"; // Default grey
-            if(i === 0) rankColor = "#ffd700"; // Gold for 1st
-            else if(i === 1) rankColor = "#c0c0c0"; // Silver for 2nd
-            else if(i === 2) rankColor = "#cd7f32"; // Bronze for 3rd
-
-            div.innerHTML = `
-            <div class="cand-box">
-                <figure class="mb-3">
-                    <img src="${image}"
-                         style="width:100px;height:100px;border-radius:50%;object-fit:cover"
-                         alt="${name}"
-                         onerror="this.src='https://via.placeholder.com/100/0b4da0/ffffff?text=AGM'">
-                </figure>
-
-                <div class="cand-info">
-                    <div class="status member mb-2">
-                        <div style="color:${rankColor}; font-weight:bold">Rank #${i+1}</div>
-                        <div>Points: <strong>${points}</strong></div>
-                    </div>
-
-                    <div class="nme-prty">
-                        <h5>
-                            <a class="member-link"
-                               onclick="openReceiptModal('${uid}', '${name.replace(/'/g, "\\'")}')">
-                               ${name}
-                            </a>
-                        </h5>
-                        <h6 class="text-muted">${phone}</h6>
-                        <small class="text-muted">ID: ${uid}</small>
-                    </div>
-                </div>
-            </div>`;
-            
-            box.appendChild(div);
-        });
-
-        // Update total count
-        const totalDiv = document.createElement("div");
-        totalDiv.className = "col-12 text-center mt-4";
-        totalDiv.innerHTML = `<p>Total Members: <strong>${validMembers.length}</strong></p>`;
-        box.appendChild(totalDiv);
-
-    }catch(e){
-        console.error("Error loading data:", e);
-        box.innerHTML = `
-            <div class="col-12 text-center">
-                <div class="alert alert-danger">
-                    <h5>Error Loading Data</h5>
-                    <p>${e.message}</p>
-                    <button onclick="loadData()" class="btn btn-primary mt-2">Retry</button>
-                </div>
-            </div>`;
-    }
-}
-
-// Load data on page load
-window.onload = loadData;
+document.addEventListener("DOMContentLoaded",()=>{
+const m=new Date().getMonth();
+document.getElementById("monthCounter").textContent=((m-9+12)%12)+1;
+fetchData();
+});
 </script>
 
 </body>
