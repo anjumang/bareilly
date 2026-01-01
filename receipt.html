@@ -529,7 +529,7 @@
                 </div>
                 <div class="info-item">
                     <div class="info-label">Date:</div>
-                    <div class="info-value" id="receiptDate">-</div>
+                    <div class="info-value" id="currentDate">-</div>
                 </div>
                 <div class="info-item">
                     <div class="info-label">Status:</div>
@@ -703,6 +703,21 @@
     const uid = params.get("uid");
     console.log("Receipt page loaded with UID:", uid);
 
+    // Update time and date
+    const now = new Date();
+    document.getElementById("currentDate").innerText = now.toLocaleDateString("en-IN");
+    document.getElementById("lastUpdatedTime").innerText = now.toLocaleTimeString("en-IN");
+    document.getElementById("printDate").innerText = now.toLocaleDateString('en-IN', {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+    });
+
+    // Generate receipt number
+    const receiptNum = "AGM/" + now.getFullYear() + "/" + Math.floor(10000 + Math.random()*90000);
+    document.getElementById("receiptNumber").innerText = receiptNum;
+
     // Mobile detection
     function detectDevice() {
         const screenWidth = window.innerWidth;
@@ -772,8 +787,7 @@
                 phone: member[1] || "Not Available",
                 points: parseInt(member[2]) || 0,
                 image: member[3] || "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM",
-                member_since: "2026",
-                receipt_date: member[4] || null // Column E में रसीद की तारीख
+                member_since: "2026"
             };
             
             console.log("Found member:", memberInfo.name);
@@ -840,51 +854,6 @@
         document.getElementById("fetchErrorMessage").style.display = "none";
         document.getElementById("contentArea").style.display = "block";
         
-        // Set current date and time
-        const now = new Date();
-        document.getElementById("lastUpdatedTime").innerText = now.toLocaleTimeString("en-IN", {
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-        });
-        
-        // Set receipt date (use member's receipt date if available, otherwise use current date)
-        let receiptDateToShow;
-        if (memberInfo.receipt_date) {
-            // Format the date from Google Sheets
-            try {
-                const dateObj = new Date(memberInfo.receipt_date);
-                if (!isNaN(dateObj)) {
-                    receiptDateToShow = dateObj.toLocaleDateString("en-IN", {
-                        day: 'numeric',
-                        month: 'numeric',
-                        year: 'numeric'
-                    });
-                } else {
-                    receiptDateToShow = now.toLocaleDateString("en-IN");
-                }
-            } catch (e) {
-                receiptDateToShow = now.toLocaleDateString("en-IN");
-            }
-        } else {
-            receiptDateToShow = now.toLocaleDateString("en-IN");
-        }
-        
-        document.getElementById("receiptDate").innerText = receiptDateToShow;
-        
-        // Set print date in footer
-        document.getElementById("printDate").innerText = now.toLocaleDateString('en-IN', {
-            weekday: 'long',
-            year: 'numeric',
-            month: 'long',
-            day: 'numeric'
-        });
-        
-        // Generate receipt number
-        const receiptNum = "AGM/" + now.getFullYear() + "/" + Math.floor(10000 + Math.random()*90000);
-        document.getElementById("receiptNumber").innerText = receiptNum;
-        
         // Update member info
         const completionPercent = paymentData.totalPaid > 0 ? 
             Math.min(100, Math.round((paymentData.totalPaid / 1200) * 100)) : 0;
@@ -916,10 +885,10 @@
         if (memberInfo.image && memberInfo.image.startsWith('http')) {
             memberImage.src = memberInfo.image;
         } else {
-            memberImage.src = "https://via.placeholder.com/150/0b4da0/ffffff?text=" + encodeURIComponent(memberInfo.name.charAt(0));
+            memberImage.src = "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM";
         }
         memberImage.onerror = function() {
-            this.src = "https://via.placeholder.com/150/0b4da0/ffffff?text=" + encodeURIComponent(memberInfo.name.charAt(0));
+            this.src = "https://via.placeholder.com/150/0b4da0/ffffff?text=AGM";
         };
         
         // Update payments table
@@ -962,7 +931,7 @@
         
         // Update financial summary
         document.getElementById("totalPaidAmount").innerText = '₹' + finalTotalPaid;
-        document.getElementById("pendingAmount").innerText = pendingAmount === 0 ? '₹0' : '₹' + pendingAmount;
+        document.getElementById("pendingAmount").innerText = '₹' + pendingAmount;
         document.getElementById("completionPercentage").innerText = completionPercent + '%';
         document.getElementById("completionRate").innerText = completionPercent + '%';
         
@@ -988,7 +957,6 @@
         document.getElementById("progressText").innerText = pointsPercent.toFixed(1) + '% Complete';
         
         console.log("UI updated successfully with real data!");
-        console.log("Receipt Date:", receiptDateToShow);
     }
 
     // ================= SHOW ERROR =================
