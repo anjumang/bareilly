@@ -505,7 +505,26 @@ async function fetchData(){
 }
 
 /* ================= INIT ================= */
-document.addEventListener("DOMContentLoaded", fetchData);
+document.addEventListener("DOMContentLoaded", () => {
+
+    // ===== MONTH AUTO LOGIC (Oct = 1) =====
+    const now = new Date();
+    const currentMonth = now.getMonth(); // Jan=0 ... Dec=11
+
+    // Project starts from October (month index 9)
+    let projectMonth = currentMonth - 9 + 1;
+    if (projectMonth <= 0) projectMonth += 12;
+
+    const monthEl = document.getElementById("monthCounter");
+    if (monthEl) {
+        monthEl.textContent = projectMonth;
+    }
+
+    // ===== LOAD MEMBERS DATA =====
+    fetchData();
+});
+
+        
 </script>
     
 
