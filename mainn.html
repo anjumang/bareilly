@@ -5,212 +5,259 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Anjuman Ghulaman-E-Mustafa</title>
 
-<!-- ================= CORE CSS (ONLY REQUIRED) ================= -->
-<link rel="stylesheet" href="https://anjumang.github.io/khan/wp-content/themes/oceanwp/assets/css/style.min.css">
-<link rel="stylesheet" href="https://anjumang.github.io/khan/wp-content/themes/oceanwp/assets/fonts/fontawesome/css/all.min.css">
-
-<!-- ================= BOOTSTRAP ================= -->
+<!-- Bootstrap + Icons -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
 
-<!-- ================= CUSTOM UI CSS (FROM 2ND CODE – UNCHANGED) ================= -->
 <style>
 :root{
---primary:#0b4da0;
---secondary:#0f8a63;
---accent:#10b981;
---dark:#1e293b;
---light:#f8fafc;
+--green:#39d52d;
+--dark:#000;
+--light:#f5f5f5;
 }
+
+/* ===== BODY ===== */
 body{
-background:linear-gradient(135deg,#f8fafc,#e2e8f0);
-font-family:'Segoe UI',system-ui,-apple-system,sans-serif;
-min-height:100vh;
+margin:0;
+font-family:Segoe UI,system-ui;
+background:#f2f2f2;
 }
+
+/* ===== HEADER ===== */
+.header{
+background:rgba(0,0,0,.8);
+backdrop-filter:blur(8px);
+position:sticky;
+top:0;
+z-index:999;
+}
+.header img{height:55px}
+.nav-link{
+color:#fff !important;
+margin:0 8px;
+}
+.nav-link.active,
+.nav-link:hover{
+color:var(--green)!important;
+border-bottom:2px solid var(--green);
+}
+
+/* ===== MAIN ===== */
 .page-title{
-margin:30px 0;
-padding:25px;
 background:#fff;
-border-radius:16px;
-box-shadow:0 6px 20px rgba(0,0,0,.08);
-border-left:5px solid var(--secondary);
+margin:25px auto;
+padding:20px;
+border-radius:10px;
 text-align:center;
 }
 .middle-head{
 background:#fff;
-padding:20px;
-border-radius:12px;
-margin-bottom:30px;
-box-shadow:0 4px 12px rgba(0,0,0,.06);
-display:flex;
-gap:20px;
-flex-wrap:wrap;
-align-items:center;
+padding:15px;
+border-radius:8px;
+margin-bottom:25px;
 }
 .round-status{
-background:var(--accent);
+background:var(--green);
 color:#fff;
-padding:8px 20px;
-border-radius:50px;
-font-weight:600;
+padding:6px 18px;
+border-radius:20px;
+display:inline-block;
 }
-.switch-list ul{
-list-style:none;
-padding:0;
-margin:0;
-display:flex;
-gap:15px;
-}
-.switch-list li{
-background:var(--primary);
-color:#fff;
-padding:10px 20px;
-border-radius:8px;
-cursor:pointer;
-transition:.3s;
-}
-.switch-list li:hover{background:#083a7f}
+
+/* ===== MEMBER CARD ===== */
 .member-card{
 background:#fff;
-border-radius:16px;
+border-radius:12px;
 overflow:hidden;
-border:1px solid #e2e8f0;
-box-shadow:0 8px 25px rgba(0,0,0,.1);
-transition:.35s;
+box-shadow:0 8px 20px rgba(0,0,0,.1);
 height:100%;
-}
-.member-card:hover{
-transform:translateY(-6px);
-box-shadow:0 20px 40px rgba(0,0,0,.12);
 }
 .image-container{
 position:relative;
-height:215px;
-background:#f1f5f9;
+height:210px;
 }
 .member-image{
 width:100%;
 height:100%;
 object-fit:cover;
 }
+.rank-badge{
+position:absolute;
+top:10px;
+left:10px;
+background:#000;
+color:#fff;
+padding:5px 12px;
+border-radius:15px;
+font-size:13px;
+}
 .profile-img{
 position:absolute;
-bottom:-38px;
+bottom:-35px;
 left:50%;
 transform:translateX(-50%);
-width:105px;
-height:105px;
-padding:4px;
+width:90px;
+height:90px;
 border-radius:50%;
-background:linear-gradient(135deg,#22c55e,#3b82f6,#a855f7);
-z-index:3;
+background:#fff;
+padding:3px;
 }
 .profile-img img{
 width:100%;
 height:100%;
 border-radius:50%;
 object-fit:cover;
-background:#fff;
-}
-.rank-badge{
-position:absolute;
-top:14px;
-left:14px;
-background:linear-gradient(135deg,var(--primary),#083a7f);
-color:#fff;
-padding:7px 16px;
-border-radius:20px;
-font-size:.85rem;
-font-weight:600;
 }
 .member-info{
-padding:58px 20px 25px;
+padding:50px 15px 20px;
 text-align:center;
 }
-.member-name{
-font-size:1.35rem;
-font-weight:700;
-color:var(--dark);
-}
-.points-badge{
-background:linear-gradient(135deg,#22c55e,#16a34a);
+.points{
+background:#27ae60;
 color:#fff;
-padding:6px 18px;
+padding:5px 14px;
 border-radius:20px;
-font-weight:600;
-display:inline-flex;
-gap:6px;
-margin-top:10px;
+display:inline-block;
 }
 .action-btn{
-margin-top:18px;
-width:100%;
-background:linear-gradient(135deg,#2563eb,#1e40af);
+margin-top:12px;
+background:#0b4da0;
+color:#fff;
 border:none;
-color:#fff;
-padding:11px;
-border-radius:8px;
-font-weight:600;
+width:100%;
+padding:8px;
+border-radius:6px;
 }
-.footer{
-background:var(--dark);
+
+/* ===== ENQUIRY BAR (FOOTER TOP) ===== */
+.enquiry-bar{
+background:#fff;
+padding:18px 0;
+border-top:1px solid #e5e5e5;
+}
+.enquiry-bar h5{
+margin:0;
+font-weight:700;
+}
+.enquiry-bar p{
+margin:0;
+color:#555;
+}
+.enquiry-bar a{
+background:var(--green);
 color:#fff;
-padding:30px 0;
-margin-top:50px;
+padding:10px 22px;
+font-weight:700;
+border-radius:4px;
+text-decoration:none;
+}
+
+/* ===== FOOTER ===== */
+.footer{
+background:#000;
+color:#fff;
+padding:40px 0;
+}
+.footer a{
+color:#ccc;
+text-decoration:none;
+display:block;
+margin-bottom:6px;
+}
+.footer-bottom{
+background:#111;
+text-align:center;
+padding:10px;
+font-size:14px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= HEADER (UNCHANGED – SAME WORDPRESS HEADER) ================= -->
-<header id="site-header">
-<a href="index.html">
-<img src="https://anjumang.github.io/khan/wp-content/uploads/2022/02/logo-blank.png" style="height:80px;margin:10px">
+<!-- ================= HEADER ================= -->
+<div class="header">
+<nav class="navbar navbar-expand-lg navbar-dark container">
+<a class="navbar-brand" href="#">
+<img src="https://anjumang.github.io/khan/wp-content/uploads/2022/02/logo-blank.png">
 </a>
-</header>
+<button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+<span class="navbar-toggler-icon"></span>
+</button>
+<div class="collapse navbar-collapse" id="menu">
+<ul class="navbar-nav ms-auto">
+<li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+<li class="nav-item"><a class="nav-link" href="member.html">Member</a></li>
+<li class="nav-item"><a class="nav-link" href="fieldwork.html">Field Work</a></li>
+<li class="nav-item"><a class="nav-link" href="gallery.html">Gallery</a></li>
+<li class="nav-item"><a class="nav-link" href="video.html">Video</a></li>
+<li class="nav-item"><a class="nav-link" href="other.html">Other</a></li>
+<li class="nav-item"><a class="nav-link" href="join.html">Join Us</a></li>
+<li class="nav-item"><a class="nav-link" href="login.html"><i class="fa fa-user"></i></a></li>
+</ul>
+</div>
+</nav>
+</div>
 
-<!-- ================= MAIN CONTENT (FROM 2ND CODE – LOGIC SAME) ================= -->
-<main class="inner-content py-4">
-<div class="container">
-
+<!-- ================= MAIN ================= -->
+<div class="container py-4">
 <div class="page-title">
-<h1>Anjuman Ghulaman-E-Mustafa</h1>
-<h2>Upcoming Members <span class="text-primary">2025</span></h2>
+<h2>Anjuman Ghulaman-E-Mustafa</h2>
 </div>
 
 <div class="middle-head">
 <div class="round-status">
-<i class="fas fa-calendar-alt"></i>
 Month: <strong id="monthCounter">1</strong> / 12
-</div>
-<div class="switch-list">
-<ul>
-<li onclick="location.href='index.html'">
-<i class="fas fa-home"></i> Home
-</li>
-</ul>
 </div>
 </div>
 
 <div id="dynamic-data" class="row g-4"></div>
-
 </div>
-</main>
 
-<!-- ================= FOOTER (UNCHANGED) ================= -->
-<footer class="footer">
+<!-- ================= ENQUIRY BAR (CORRECT POSITION) ================= -->
+<div class="enquiry-bar">
+<div class="container d-flex justify-content-between align-items-center flex-wrap">
+<div>
+<h5>For Any Further Enquiry</h5>
+<p>If you have any questions, connect with us directly.</p>
+</div>
+<a href="join.html">Contact Us</a>
+</div>
+</div>
+
+<!-- ================= FOOTER ================= -->
+<div class="footer">
 <div class="container">
 <div class="row">
-<div class="col-md-6">
-<h6>© Copyright</h6>
-<p>अंजुमने गुलामाने मुस्तफा</p>
+
+<div class="col-md-3">
+<img src="https://anjumang.github.io/khan/wp-content/uploads/2022/02/logo-blank.png" width="120">
 </div>
-<div class="col-md-6 text-end">
-<i class="fas fa-heart text-danger"></i> Serving the community
+
+<div class="col-md-3">
+<h5>Quick Links</h5>
+<a href="#">Home</a>
+<a href="join.html">Join Us</a>
+</div>
+
+<div class="col-md-3">
+<h5>Visitor</h5>
+<img src="https://hitwebcounter.com/counter/counter.php?page=9213680&style=0039&nbdigits=5&type=page">
+</div>
+
+<div class="col-md-3">
+<h5>How to Find Us</h5>
+<p>Vill. & Post Padarathpur,<br>Bareilly, UP – 243123</p>
+<p>📞 7906704691</p>
+</div>
+
 </div>
 </div>
 </div>
-</footer>
+
+<div class="footer-bottom">
+Copyright © अंजुमने गुलामाने मुस्तफा
+</div>
 
 <!-- ================= JS ================= -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
@@ -219,26 +266,25 @@ Month: <strong id="monthCounter">1</strong> / 12
 const sheetId="1bpj9luw9CALMxGlrsWQ41ZpR5aZtQZvta7iA20me594";
 const apiKey="AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
 const range="Sheet1!A2:H";
-const container=document.getElementById("dynamic-data");
+const box=document.getElementById("dynamic-data");
 
-async function fetchData(){
+async function loadData(){
 const url=`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
 const res=await fetch(url);
 const json=await res.json();
-const data=json.values||[];
-container.innerHTML="";
-data.filter(r=>r[0]&&r[7]).forEach((r,i)=>{
-container.innerHTML+=`
-<div class="col-lg-4 col-md-6">
+box.innerHTML="";
+json.values.filter(r=>r[0]&&r[7]).forEach((r,i)=>{
+box.innerHTML+=`
+<div class="col-md-4">
 <div class="member-card">
 <div class="image-container">
 <img src="${r[3]||''}" class="member-image">
-<div class="profile-img"><img src="${r[3]||''}"></div>
 <div class="rank-badge">Rank #${i+1}</div>
+<div class="profile-img"><img src="${r[3]||''}"></div>
 </div>
 <div class="member-info">
-<div class="member-name">${r[0]}</div>
-<div class="points-badge"><i class="fas fa-star"></i> ${r[2]||0} Points</div>
+<h6>${r[0]}</h6>
+<div class="points">${r[2]||0} Points</div>
 <button class="action-btn" onclick="openReceipt('${r[7]}')">View Receipt</button>
 </div>
 </div>
@@ -253,7 +299,7 @@ window.open(`receipt.html?uid=${uid}`,"receipt","width=1100,height=750");
 document.addEventListener("DOMContentLoaded",()=>{
 const m=new Date().getMonth();
 document.getElementById("monthCounter").textContent=((m-9+12)%12)+1;
-fetchData();
+loadData();
 });
 </script>
 
