@@ -1,63 +1,62 @@
 <!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Anjuman Ghulaman-E-Mustafa</title>
 
-    <!-- Bootstrap CSS -->
+    <!-- Bootstrap + Icons -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
     <style>
         :root {
+            --green: #39d52d;
+            --dark: #000;
+            --light: #f5f5f5;
             --primary: #0b4da0;
             --secondary: #0f8a63;
             --accent: #10b981;
-            --dark: #1e293b;
-            --light: #f8fafc;
         }
 
-        /* ================= Base ================= */
+        /* ===== BODY ===== */
         body {
-            background: linear-gradient(135deg,#f8fafc,#e2e8f0);
+            margin: 0;
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
             min-height: 100vh;
         }
 
-        /* ================= Header ================= */
+        /* ===== HEADER (From First Code) ===== */
         .header {
-            background: linear-gradient(135deg,var(--primary),#083a7f);
-            padding: 15px 0;
-            box-shadow: 0 4px 12px rgba(0,0,0,.1);
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 999;
         }
-        .logo img {
-            height: 60px;
-            transition: .3s;
+        .header img {
+            height: 55px;
         }
-        .logo img:hover {
-            transform: scale(1.05);
+        .nav-link {
+            color: #fff !important;
+            margin: 0 8px;
+        }
+        .nav-link.active,
+        .nav-link:hover {
+            color: var(--green) !important;
+            border-bottom: 2px solid var(--green);
         }
 
-        /* ================= Disclaimer ================= */
-        .dis-info {
-            background: linear-gradient(135deg,#fef3c7,#fde68a);
-            border-bottom: 3px solid #f59e0b;
-            padding: 12px 0;
-        }
-
-        /* ================= Page Title ================= */
+        /* ===== MAIN ===== */
         .page-title {
-            margin: 30px 0;
-            padding: 25px;
             background: #fff;
+            margin: 25px auto;
+            padding: 25px;
             border-radius: 16px;
-            box-shadow: 0 6px 20px rgba(0,0,0,.08);
-            border-left: 5px solid var(--secondary);
             text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .08);
+            border-left: 5px solid var(--secondary);
         }
         .page-title h1 {
             color: var(--primary);
@@ -68,20 +67,20 @@
             font-weight: 600;
         }
 
-        /* ================= Middle Head ================= */
+        /* ===== MIDDLE HEAD ===== */
         .middle-head {
             background: #fff;
             padding: 20px;
             border-radius: 12px;
             margin-bottom: 30px;
-            box-shadow: 0 4px 12px rgba(0,0,0,.06);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
             align-items: center;
         }
         .round-status {
-            background: var(--accent);
+            background: var(--green);
             color: #fff;
             padding: 8px 20px;
             border-radius: 50px;
@@ -107,22 +106,22 @@
             transform: translateY(-2px);
         }
 
-        /* ================= Member Card ================= */
+        /* ===== MEMBER CARD (From Second Code) ===== */
         .member-card {
             background: #fff;
             border-radius: 16px;
             overflow: hidden;
             border: 1px solid #e2e8f0;
-            box-shadow: 0 8px 25px rgba(0,0,0,.1);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, .1);
             transition: .35s ease;
             height: 100%;
         }
         .member-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 20px 40px rgba(0,0,0,.12);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .12);
         }
 
-        /* ================= Image Section ================= */
+        /* ===== IMAGE SECTION ===== */
         .image-container {
             position: relative;
             height: 215px;
@@ -133,7 +132,7 @@
             content: "";
             position: absolute;
             inset: 0;
-            background: rgba(255,255,255,0.06);
+            background: rgba(255, 255, 255, 0.06);
             z-index: 1;
         }
         .member-image {
@@ -148,7 +147,7 @@
             transform: scale(1.05);
         }
 
-        /* ================= Profile Image ================= */
+        /* ===== PROFILE IMAGE ===== */
         .profile-img {
             position: absolute;
             bottom: -38px;
@@ -158,8 +157,8 @@
             height: 105px;
             padding: 4px;
             border-radius: 50%;
-            background: linear-gradient(135deg,#22c55e,#3b82f6,#a855f7);
-            box-shadow: 0 0 18px rgba(59,130,246,.6);
+            background: linear-gradient(135deg, #22c55e, #3b82f6, #a855f7);
+            box-shadow: 0 0 18px rgba(59, 130, 246, .6);
             z-index: 3;
         }
         .profile-img img {
@@ -170,12 +169,12 @@
             background: #fff;
         }
 
-        /* ================= Rank Badge ================= */
+        /* ===== RANK BADGE ===== */
         .rank-badge {
             position: absolute;
             top: 14px;
             left: 14px;
-            background: linear-gradient(135deg,var(--primary),#083a7f);
+            background: linear-gradient(135deg, var(--primary), #083a7f);
             color: #fff;
             padding: 7px 16px;
             border-radius: 20px;
@@ -184,7 +183,7 @@
             z-index: 4;
         }
 
-        /* ================= Member Info ================= */
+        /* ===== MEMBER INFO ===== */
         .member-info {
             padding: 58px 20px 25px;
             text-align: center;
@@ -202,21 +201,21 @@
             gap: 8px;
         }
         .points-badge {
-            background: linear-gradient(135deg,#22c55e,#16a34a);
+            background: linear-gradient(135deg, #22c55e, #16a34a);
             color: #fff;
             padding: 6px 18px;
             border-radius: 20px;
             font-weight: 600;
             display: inline-flex;
             gap: 6px;
-            box-shadow: 0 6px 15px rgba(34,197,94,.4);
+            box-shadow: 0 6px 15px rgba(34, 197, 94, .4);
         }
 
-        /* ================= Button ================= */
+        /* ===== BUTTON ===== */
         .action-btn {
             margin-top: 18px;
             width: 100%;
-            background: linear-gradient(135deg,#2563eb,#1e40af);
+            background: linear-gradient(135deg, #2563eb, #1e40af);
             border: none;
             color: #fff;
             padding: 11px;
@@ -226,18 +225,52 @@
         }
         .action-btn:hover {
             transform: translateY(-2px);
-            background: linear-gradient(135deg,#1e40af,#2563eb);
+            background: linear-gradient(135deg, #1e40af, #2563eb);
         }
 
-        /* ================= Footer ================= */
-        .footer {
-            background: var(--dark);
+        /* ===== ENQUIRY BAR (From First Code) ===== */
+        .enquiry-bar {
+            background: #fff;
+            padding: 18px 0;
+            border-top: 1px solid #e5e5e5;
+        }
+        .enquiry-bar h5 {
+            margin: 0;
+            font-weight: 700;
+        }
+        .enquiry-bar p {
+            margin: 0;
+            color: #555;
+        }
+        .enquiry-bar a {
+            background: var(--green);
             color: #fff;
-            padding: 30px 0;
-            margin-top: 50px;
+            padding: 10px 22px;
+            font-weight: 700;
+            border-radius: 4px;
+            text-decoration: none;
         }
 
-        /* ================= Loading Spinner ================= */
+        /* ===== FOOTER (From First Code) ===== */
+        .footer {
+            background: #000;
+            color: #fff;
+            padding: 40px 0;
+        }
+        .footer a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .footer-bottom {
+            background: #111;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        /* ===== LOADING SPINNER (From Second Code) ===== */
         .loading-spinner {
             display: none;
             position: fixed;
@@ -245,7 +278,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.5);
+            background: rgba(0, 0, 0, 0.5);
             z-index: 9999;
             justify-content: center;
             align-items: center;
@@ -263,7 +296,7 @@
             100% { transform: rotate(360deg); }
         }
 
-        /* ================= Responsive ================= */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .middle-head {
                 flex-direction: column;
@@ -289,252 +322,258 @@
             .member-name {
                 font-size: 1.25rem;
             }
+            .nav-link {
+                margin: 0 4px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-8 col-md-10">
-                    <div class="logo">
-                        <a href="index.html">
-                            <img src="https://anjumang.github.io/bareilly/img/logo.png" alt="Anjuman Logo">
-                        </a>
-                    </div>
-                </div>
-                <div class="col-4 col-md-2 text-end">
-                    <button class="btn btn-light d-md-none">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                </div>
+    <!-- ================= HEADER (From First Code) ================= -->
+    <div class="header">
+        <nav class="navbar navbar-expand-lg navbar-dark container">
+            <a class="navbar-brand" href="#">
+                <img src="https://anjumang.github.io/khan/wp-content/uploads/2022/02/logo-blank.png" alt="Anjuman Logo">
+            </a>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="member.html">Member</a></li>
+                    <li class="nav-item"><a class="nav-link" href="fieldwork.html">Field Work</a></li>
+                    <li class="nav-item"><a class="nav-link" href="gallery.html">Gallery</a></li>
+                    <li class="nav-item"><a class="nav-link" href="video.html">Video</a></li>
+                    <li class="nav-item"><a class="nav-link" href="other.html">Other</a></li>
+                    <li class="nav-item"><a class="nav-link" href="join.html">Join Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login.html"><i class="fa fa-user"></i></a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <div class="container py-4">
+        <div class="page-title">
+            <h1>Anjuman Ghulaman-E-Mustafa</h1>
+            <h2>Members-<span class="text-primary">2026</span></h2>
+        </div>
+
+        <div class="middle-head">
+            <div class="round-status">
+                <i class="fas fa-calendar-alt"></i>
+                <span>Month: <strong id="monthCounter">1</strong> / 12</span>
+            </div>
+            <div class="switch-list">
+                <ul>
+                    <li onclick="window.location.href='index.html'">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </li>
+                </ul>
             </div>
         </div>
-    </header>
 
-    <!-- Disclaimer -->
-    <div class="dis-info">
-        <div class="container">
-            <div class="d-flex align-items-center flex-wrap">
-                <i class="fas fa-info-circle text-warning me-2 fs-5"></i>
-                <strong class="me-2">Disclaimer:</strong>
-                <p class="mb-0">In the blessed month of Rabi' al-Awwal, your support can bring new light to the noble works of Anjuman-e-Ghulaman-e-Mustafa...</p>
+        <!-- Members Grid -->
+        <div id="dynamic-data" class="row g-4">
+            <!-- Data will be loaded here -->
+            <div class="col-12 text-center py-5">
+                <div class="spinner mx-auto"></div>
+                <p class="mt-3 text-muted">Loading members data...</p>
             </div>
         </div>
     </div>
 
-    <!-- Main Content -->
-    <main class="inner-content py-4">
+    <!-- ================= ENQUIRY BAR (From First Code) ================= -->
+    <div class="enquiry-bar">
+        <div class="container d-flex justify-content-between align-items-center flex-wrap">
+            <div>
+                <h5>For Any Further Enquiry</h5>
+                <p>If you have any questions, connect with us directly.</p>
+            </div>
+            <a href="join.html">Contact Us</a>
+        </div>
+    </div>
+
+    <!-- ================= FOOTER (From First Code) ================= -->
+    <div class="footer">
         <div class="container">
-            <div class="page-title">
-                <h1 class="display-5">Anjuman Ghulaman-E-Mustafa</h1>
-                <h2 class="h3">Upcoming Members <span class="text-primary">2025</span></h2>
-            </div>
-
-            <div class="middle-head">
-                <div class="round-status">
-                    <i class="fas fa-calendar-alt"></i>
-                    
-                  <span>Month: <strong id="monthCounter">10</strong> / 12</span>
-                    
-                    
+            <div class="row">
+                <div class="col-md-3">
+                    <img src="https://anjumang.github.io/khan/wp-content/uploads/2022/02/logo-blank.png" width="120" alt="Logo">
                 </div>
-                <div class="switch-list">
-                    <ul>
-                        <li onclick="window.location.href='index.html'">
-                            <i class="fas fa-home"></i>
-                            <span>Home</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
 
-            <!-- Members Grid -->
-            <div id="dynamic-data" class="row g-4">
-                <!-- Data will be loaded here -->
-                <div class="col-12 text-center py-5">
-                    <div class="spinner mx-auto"></div>
-                    <p class="mt-3 text-muted">Loading members data...</p>
+                <div class="col-md-3">
+                    <h5>Quick Links</h5>
+                    <a href="#">Home</a>
+                    <a href="join.html">Join Us</a>
+                </div>
+
+                <div class="col-md-3">
+                    <h5>Visitor</h5>
+                    <img src<!-- hitwebcounter Code START -->
+<a href="https://www.hitwebcounter.com/" target="_blank">
+<img src="https://hitwebcounter.com/counter/counter.php?page=21466813&style=0006&nbdigits=5&type=ip&initCount=0" title="Free Tools" Alt="Free Tools"   border="0" /></a>                                    
+                                    
+                                        
+                                          
+                            
+                </div>
+
+                <div class="col-md-3">
+                    <h5>How to Find Us</h5>
+                    <p>Vill. & Post Padarathpur,<br>Bareilly, UP – 243123</p>
+                    <p>📞 7906704691</p>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row align-items-center">
-                <div class="col-md-6">
-                    <h6 class="mb-2"><i class="fas fa-copyright me-2"></i> Copyright - All Rights Reserved</h6>
-                    <div class="sm-text fs-5">अंजुमने गुलामाने मुस्तफा</div>
-                </div>
-                <div class="col-md-6 text-md-end">
-                    <p class="mb-0"><i class="fas fa-heart text-danger me-1"></i> Serving the community since 1990</p>
-                </div>
-            </div>
-        </div>
-    </footer>
+    <div class="footer-bottom">
+        Copyright © अंजुमने गुलामाने मुस्तफा
+    </div>
 
     <!-- Loading Spinner -->
     <div class="loading-spinner" id="loadingSpinner">
         <div class="spinner"></div>
     </div>
 
-    <!-- JavaScript -->
+    <!-- ================= JS ================= -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-/* ================= GOOGLE SHEET CONFIG ================= */
-const sheetId = "1bpj9luw9CALMxGlrsWQ41ZpR5aZtQZvta7iA20me594"; // 2026 sheet
-const apiKey  = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
-const range   = "Sheet1!A2:H"; 
-// A=Name, B=Phone, C=Points, D=Image, H=UID
+        /* ================= GOOGLE SHEET CONFIG ================= */
+        const sheetId = "1bpj9luw9CALMxGlrsWQ41ZpR5aZtQZvta7iA20me594";
+        const apiKey = "AIzaSyChkzAQhEqFR5nD9uBzaVO3hHEAr5z2smU";
+        const range = "Sheet1!A2:H";
+        
+        /* ================= DOM ================= */
+        const container = document.getElementById("dynamic-data");
+        const loadingSpinner = document.getElementById("loadingSpinner");
 
-/* ================= DOM ================= */
-const container = document.getElementById("dynamic-data");
-const loadingSpinner = document.getElementById("loadingSpinner");
-
-/* ================= LOADING ================= */
-function showLoading(){
-    loadingSpinner.style.display = "flex";
-}
-function hideLoading(){
-    loadingSpinner.style.display = "none";
-}
-
-/* ================= RECEIPT (MODAL STYLE - SAME AS WORKING FILE) ================= */
-function openReceipt(uid){
-    showLoading();
-    const url = "https://anjumang.github.io/bareilly/receipt.html?uid=" + encodeURIComponent(uid);
-    const w = 1100;
-    const h = 750;
-    const left = (screen.width - w) / 2;
-    const top = (screen.height - h) / 2;
-
-    const win = window.open(
-        url,
-        "ReceiptPopup",
-        `width=${w},height=${h},top=${top},left=${left},scrollbars=yes,resizable=yes`
-    );
-
-    if(win) win.focus();
-    setTimeout(hideLoading, 500);
-}
-
-/* ================= FETCH DATA ================= */
-async function fetchData(){
-    showLoading();
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
-
-    try{
-        const res = await fetch(url);
-        if(!res.ok) throw new Error("Google Sheets Error");
-
-        const json = await res.json();
-        const data = json.values || [];
-
-        container.innerHTML = "";
-
-        if(data.length === 0){
-            container.innerHTML = `<div class="col-12 text-center py-5">No members found</div>`;
-            hideLoading();
-            return;
+        /* ================= LOADING ================= */
+        function showLoading() {
+            loadingSpinner.style.display = "flex";
+        }
+        
+        function hideLoading() {
+            loadingSpinner.style.display = "none";
         }
 
-        // valid rows (Name + UID required)
-        const members = data
-            .filter(r => r[0] && r[7])
-            .map(r => ({
-                name: r[0],
-                phone: r[1] || "N/A",
-                points: Number(r[2] || 0),
-                image: r[3] || `https://via.placeholder.com/400x250/0b4da0/ffffff?text=${r[0].charAt(0)}`,
-                uid: r[7]
-            }))
-            .sort((a,b) => b.points - a.points);
+        /* ================= RECEIPT FUNCTION ================= */
+        function openReceipt(uid) {
+            showLoading();
+            const w = 1100;
+            const h = 750;
+            const left = (screen.width - w) / 2;
+            const top = (screen.height - h) / 2;
 
-        members.forEach((m, i) => {
-            const rank = i + 1;
+            const win = window.open(
+                `receipt.html?uid=${encodeURIComponent(uid)}`,
+                "ReceiptPopup",
+                `width=${w},height=${h},top=${top},left=${left},scrollbars=yes,resizable=yes`
+            );
 
-            container.innerHTML += `
-            <div class="col-lg-4 col-md-6 col-12">
-                <div class="member-card">
-                    <div class="image-container">
-                        <img src="${m.image}" class="member-image"
-                             onerror="this.src='https://via.placeholder.com/400x250/0b4da0/ffffff?text=${m.name.charAt(0)}'">
+            if (win) win.focus();
+            setTimeout(hideLoading, 500);
+        }
 
-                        <div class="profile-img">
-                            <img src="${m.image}"
-                                 onerror="this.src='https://via.placeholder.com/120/0b4da0/ffffff?text=${m.name.charAt(0)}'">
+        /* ================= FETCH DATA ================= */
+        async function fetchData() {
+            showLoading();
+            const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
+
+            try {
+                const res = await fetch(url);
+                if (!res.ok) throw new Error("Google Sheets Error");
+
+                const json = await res.json();
+                const data = json.values || [];
+
+                container.innerHTML = "";
+
+                if (data.length === 0) {
+                    container.innerHTML = `<div class="col-12 text-center py-5">No members found</div>`;
+                    hideLoading();
+                    return;
+                }
+
+                // valid rows (Name + UID required)
+                const members = data
+                    .filter(r => r[0] && r[7])
+                    .map(r => ({
+                        name: r[0],
+                        phone: r[1] || "N/A",
+                        points: Number(r[2] || 0),
+                        image: r[3] || `https://via.placeholder.com/400x250/0b4da0/ffffff?text=${r[0].charAt(0)}`,
+                        uid: r[7]
+                    }))
+                    .sort((a, b) => b.points - a.points);
+
+                members.forEach((m, i) => {
+                    const rank = i + 1;
+
+                    container.innerHTML += `
+                    <div class="col-lg-4 col-md-6 col-12">
+                        <div class="member-card">
+                            <div class="image-container">
+                                <img src="${m.image}" class="member-image"
+                                     onerror="this.src='https://via.placeholder.com/400x250/0b4da0/ffffff?text=${m.name.charAt(0)}'">
+
+                                <div class="profile-img">
+                                    <img src="${m.image}"
+                                         onerror="this.src='https://via.placeholder.com/120/0b4da0/ffffff?text=${m.name.charAt(0)}'">
+                                </div>
+
+                                <div class="rank-badge">
+                                    <i class="fas fa-crown"></i> Rank #${rank}
+                                </div>
+                            </div>
+
+                            <div class="member-info">
+                                <div class="member-name">${m.name}</div>
+                                <div class="member-phone">
+                                    <i class="fas fa-phone-alt"></i> ${m.phone}
+                                </div>
+                                <div class="points-badge">
+                                    <i class="fas fa-star"></i> ${m.points} Points
+                                </div>
+
+                                <button class="action-btn" onclick="openReceipt('${m.uid}')">
+                                    <i class="fas fa-receipt"></i> View Receipt
+                                </button>
+                            </div>
                         </div>
+                    </div>`;
+                });
 
-                        <div class="rank-badge">
-                            <i class="fas fa-crown"></i> Rank #${rank}
-                        </div>
+                hideLoading();
+
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = `
+                <div class="col-12 text-center py-5">
+                    <div class="alert alert-danger">
+                        <h4>Error loading data</h4>
+                        <button class="btn btn-primary mt-2" onclick="fetchData()">Retry</button>
                     </div>
+                </div>`;
+                hideLoading();
+            }
+        }
 
-                    <div class="member-info">
-                        <div class="member-name">${m.name}</div>
-                        <div class="member-phone">
-                            <i class="fas fa-phone-alt"></i> ${m.phone}
-                        </div>
-                        <div class="points-badge">
-                            <i class="fas fa-star"></i> ${m.points} Points
-                        </div>
-
-                        <button class="action-btn" onclick="openReceipt('${m.uid}')">
-                            <i class="fas fa-receipt"></i> View Receipt
-                        </button>
-                    </div>
-                </div>
-            </div>`;
+        /* ================= INITIALIZE ================= */
+        document.addEventListener("DOMContentLoaded", () => {
+            // Month counter calculation (from first code)
+            const m = new Date().getMonth();
+            document.getElementById("monthCounter").textContent = ((m - 9 + 12) % 12) + 1;
+            
+            // Load data
+            fetchData();
         });
-
-        hideLoading();
-
-    }catch(e){
-        console.error(e);
-        container.innerHTML = `
-        <div class="col-12 text-center py-5">
-            <div class="alert alert-danger">
-                <h4>Error loading data</h4>
-                <button class="btn btn-primary mt-2" onclick="fetchData()">Retry</button>
-            </div>
-        </div>`;
-        hideLoading();
-    }
-}
-
-/* ================= INIT ================= */
-
-</script>
-    
-    <script>
-document.addEventListener("DOMContentLoaded", () => {
-
-    // ===== AUTO MONTH (Oct = 1, Sep = 12) =====
-    const now = new Date();
-    const currentMonth = now.getMonth(); // Jan=0 ... Dec=11
-
-    // Project starts from October (index 9)
-    let projectMonth = currentMonth - 9 + 1;
-    if (projectMonth <= 0) projectMonth += 12;
-
-    const monthEl = document.getElementById("monthCounter");
-    if (monthEl) {
-        monthEl.textContent = projectMonth;
-    }
-
-    // ===== EXISTING DATA LOAD =====
-    if (typeof fetchData === "function") {
-        fetchData();
-    }
-});
-</script>
-
-
-
+    </script>
 </body>
 </html>
