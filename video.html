@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="hi">
 <head>
@@ -629,8 +630,9 @@ Uttar Pradesh (INDIA) - 243123
                 <!-- Iframe -->
                 <iframe id="modalIframe" 
                     src="" 
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                    allowfullscreen>
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    allowfullscreen
+                    referrerpolicy="strict-origin-when-cross-origin">
                 </iframe>
                 
                 <!-- Fallback (dikhega agar iframe fail ho) -->
@@ -721,8 +723,73 @@ Uttar Pradesh (INDIA) - 243123
             let currentYear = '2026';
             let currentVideoId = '';
             let currentVideoTitle = '';
-            let fallbackTimer = null;
+            let isModalOpen = false;
 
+            // ---------- Helper: Extract YouTube ID from URL or ID ----------
+            function extractYouTubeId(input) {
+                if (!input || typeof input !== 'string') return null;
+                const trimmed = input.trim();
+                if (!trimmed) return null;
+
+                // Check if it's a placeholder (starts with YOUR_)
+                if (trimmed.startsWith('YOUR_')) {
+                    return null; // treat as invalid
+                }
+
+                // If it's already a valid 11-char ID (allow letters, numbers, underscore, hyphen)
+                if (/^[A-Za-z0-9_-]{11}$/.test(trimmed)) {
+                    return trimmed;
+                }
+
+                // YouTube watch URL: youtube.com/watch?v=VIDEO_ID
+                const watchMatch = trimmed.match(/[?&]v=([^&]+)/);
+                if (watchMatch) return watchMatch[1];
+
+                // youtu.be/VIDEO_ID
+                const shortMatch = trimmed.match(/youtu\.be\/([^?&]+)/);
+                if (shortMatch) return shortMatch[1];
+
+                // shorts URL: youtube.com/shorts/VIDEO_ID
+                const shortsMatch = trimmed.match(/youtube\.com\/shorts\/([^?&]+)/);
+                if (shortsMatch) return shortsMatch[1];
+
+                // If nothing matches, return null
+                return null;
+            }
+
+            // ---------- Helper: Generate YouTube embed URL ----------
+            function getEmbedUrl(videoId) {
+                if (!videoId) return null;
+                // Ensure it's a clean ID (no extra params)
+                const cleanId = extractYouTubeId(videoId);
+                if (!cleanId) return null;
+                return `https://www.youtube.com/embed/${cleanId}?rel=0&controls=1&modestbranding=1&autoplay=1&playsinline=1`;
+            }
+
+            // ---------- Helper: Get YouTube watch URL ----------
+            function getWatchUrl(videoId) {
+                if (!videoId) return '#';
+                const cleanId = extractYouTubeId(videoId);
+                if (!cleanId) return '#';
+                return `https://www.youtube.com/watch?v=${cleanId}`;
+            }
+
+            // ---------- Helper: Get thumbnail URL ----------
+            function getThumbnail(videoId) {
+                if (!videoId) return '';
+                const cleanId = extractYouTubeId(videoId);
+                if (!cleanId) return ''; // invalid ID -> no thumbnail
+                return `https://img.youtube.com/vi/${cleanId}/hqdefault.jpg`;
+            }
+
+            // ---------- Helper: Check if video ID is valid ----------
+            function isValidVideoId(videoId) {
+                if (!videoId) return false;
+                const cleanId = extractYouTubeId(videoId);
+                return cleanId !== null;
+            }
+
+            // ---------- Escape HTML ----------
             function escapeHtml(str) {
                 if (!str) return '';
                 return str.replace(/[&<>]/g, function(m) {
@@ -733,26 +800,18 @@ Uttar Pradesh (INDIA) - 243123
                 });
             }
 
-            function getThumbnail(videoId) {
-                return `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`;
-            }
-
             // ---------- Open Popup ----------
             function openVideo(videoId, title) {
-                currentVideoId = videoId;
-                currentVideoTitle = title;
-                
-                // Reset fallback
-                modalFallback.classList.remove('show');
-                modalIframe.style.display = 'block';
-                
-                // Set iframe src
-                modalIframe.src = `https://www.youtube.com/embed/${videoId}?rel=0&controls=1&modestbranding=1&autoplay=1`;
-                
-                // Set title
+                // Reset everything first
+                closeVideoInternal(true); // true = keep modal state for reset
+
+                const cleanId = extractYouTubeId(videoId);
+                const isValid = cleanId !== null;
+
+                // Update title
                 modalTitle.textContent = title || '🎥 Video Player';
-                
-                // Set footer
+
+                // Update footer
                 const year = currentYear;
                 const data = videoData[year];
                 if (data) {
@@ -760,44 +819,68 @@ Uttar Pradesh (INDIA) - 243123
                 } else {
                     modalFooter.textContent = '🕌 Dargah-e-Aala Hazrat · Bareilly Shareef';
                 }
-                
-                // Set Watch on YouTube link
-                watchBtn.href = `https://www.youtube.com/watch?v=${videoId}`;
-                
+
+                // Set Watch on YouTube button
+                watchBtn.href = getWatchUrl(videoId);
+
+                // Handle invalid / placeholder IDs
+                if (!isValid) {
+                    // Show fallback for invalid IDs
+                    modalIframe.style.display = 'none';
+                    modalFallback.classList.add('show');
+                    // Update fallback message for placeholder
+                    if (videoId && videoId.startsWith('YOUR_')) {
+                        document.querySelector('#modalFallback h4').textContent = '📹 Video Coming Soon';
+                        document.querySelector('#modalFallback p').textContent = 'This video has not been uploaded yet.';
+                    } else {
+                        document.querySelector('#modalFallback h4').textContent = '⚠️ Invalid Video ID';
+                        document.querySelector('#modalFallback p').textContent = 'The video ID could not be recognized.';
+                    }
+                    modal.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                    isModalOpen = true;
+                    return;
+                }
+
+                // Valid ID: show iframe, hide fallback
+                modalFallback.classList.remove('show');
+                modalIframe.style.display = 'block';
+                modalIframe.src = getEmbedUrl(cleanId);
+
+                // Reset fallback text to default (in case it was changed)
+                document.querySelector('#modalFallback h4').textContent = 'Video Player Configuration Error';
+                document.querySelector('#modalFallback p').textContent = 'This video cannot be played directly on this page.';
+
                 // Show modal
                 modal.classList.add('active');
                 document.body.style.overflow = 'hidden';
-                
-                // Timer: Agar 5 second mein iframe load nahi hua toh fallback dikhao
-                if (fallbackTimer) clearTimeout(fallbackTimer);
-                fallbackTimer = setTimeout(function() {
-                    // Check if iframe is still showing error
-                    // We'll show fallback if video not playing
-                    showFallback();
-                }, 5000);
+                isModalOpen = true;
+
+                // No automatic fallback timer anymore.
+                // If iframe fails to load, user can still click "Watch on YouTube"
             }
 
-            // ---------- Show Fallback ----------
-            function showFallback() {
-                modalFallback.classList.add('show');
-                modalIframe.style.display = 'none';
-                if (fallbackTimer) {
-                    clearTimeout(fallbackTimer);
-                    fallbackTimer = null;
-                }
-            }
-
-            // ---------- Close Popup ----------
-            function closeVideo() {
-                modal.classList.remove('active');
-                document.body.style.overflow = '';
+            // ---------- Close Popup (internal) ----------
+            function closeVideoInternal(skipModalClose = false) {
+                // Stop video and reset iframe
                 modalIframe.src = '';
-                modalFallback.classList.remove('show');
                 modalIframe.style.display = 'block';
-                if (fallbackTimer) {
-                    clearTimeout(fallbackTimer);
-                    fallbackTimer = null;
+                modalFallback.classList.remove('show');
+                
+                // Reset fallback messages to default
+                document.querySelector('#modalFallback h4').textContent = 'Video Player Configuration Error';
+                document.querySelector('#modalFallback p').textContent = 'This video cannot be played directly on this page.';
+
+                if (!skipModalClose) {
+                    modal.classList.remove('active');
+                    document.body.style.overflow = '';
+                    isModalOpen = false;
                 }
+            }
+
+            // ---------- Close Popup (public) ----------
+            function closeVideo() {
+                closeVideoInternal(false);
             }
 
             // ---------- Load videos for a year ----------
@@ -816,14 +899,27 @@ Uttar Pradesh (INDIA) - 243123
 
                 let html = '';
                 data.videos.forEach(video => {
-                    const vid = video.id.trim();
+                    const rawId = video.id ? video.id.trim() : '';
+                    const cleanId = extractYouTubeId(rawId);
+                    const isValid = cleanId !== null;
                     const title = escapeHtml(video.title);
-                    const thumb = getThumbnail(vid);
+                    
+                    // If invalid ID, use a placeholder thumbnail
+                    let thumb = '';
+                    if (isValid) {
+                        thumb = getThumbnail(cleanId);
+                    } else {
+                        // Use a default placeholder image for invalid/coming soon
+                        // We'll use a dark gradient with text overlay via CSS background
+                        thumb = ''; // will be handled by onerror and CSS fallback
+                    }
+
+                    // Data attributes: store original ID and clean ID (if valid)
                     html += `
-                        <div class="video-card" data-video-id="${vid}" data-video-title="${title}">
+                        <div class="video-card" data-video-id="${escapeHtml(rawId)}" data-video-title="${title}" data-valid="${isValid}">
                             <div class="thumbnail-wrapper">
-                                <img src="${thumb}" alt="${title}" loading="lazy" 
-                                     onerror="this.style.display='none'">
+                                ${isValid ? `<img src="${thumb}" alt="${title}" loading="lazy" onerror="this.style.display='none'">` : 
+                                `<div style="width:100%;height:100%;background:linear-gradient(145deg,#1a3a2a,#0a1a0a);display:flex;align-items:center;justify-content:center;color:#f5d742;font-size:1.2rem;font-weight:600;text-align:center;padding:10px;">📹 Coming Soon</div>`}
                                 <div class="play-overlay">
                                     <svg viewBox="0 0 68 68" fill="none">
                                         <circle cx="34" cy="34" r="34" fill="rgba(0,0,0,0.6)" stroke="rgba(255,255,255,0.5)" stroke-width="2"/>
@@ -837,16 +933,18 @@ Uttar Pradesh (INDIA) - 243123
                 });
                 grid.innerHTML = html;
 
+                // Add click listeners
                 document.querySelectorAll('.video-card').forEach(card => {
                     card.addEventListener('click', function() {
-                        const vid = this.dataset.videoId;
+                        const rawId = this.dataset.videoId;
                         const title = this.dataset.videoTitle;
-                        if (vid) {
-                            openVideo(vid, title);
+                        if (rawId) {
+                            openVideo(rawId, title);
                         }
                     });
                 });
 
+                // Update active tab
                 tabs.forEach(btn => btn.classList.remove('active'));
                 tabs.forEach(btn => {
                     if (btn.dataset.year === year) {
@@ -854,6 +952,7 @@ Uttar Pradesh (INDIA) - 243123
                     }
                 });
 
+                // Animation
                 const section = document.getElementById('videoSection');
                 section.classList.remove('fade-in');
                 void section.offsetWidth;
@@ -889,8 +988,12 @@ Uttar Pradesh (INDIA) - 243123
 
             // ---------- Load default ----------
             loadYear('2026');
+
+            // Expose closeVideo to global scope for any edge cases
+            window.closeVideoModal = closeVideo;
         })();
     </script>
 
 </body>
 </html>
+```
