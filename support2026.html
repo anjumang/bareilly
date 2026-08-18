@@ -1,0 +1,603 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Anjuman Ghulaman-E-Mustafa</title>
+
+    <!-- Bootstrap + Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --green: #39d52d;
+            --dark: #000;
+            --light: #f5f5f5;
+            --primary: #0b4da0;
+            --secondary: #0f8a63;
+            --accent: #10b981;
+            --search-shadow: rgba(11, 77, 160, 0.25);
+        }
+
+        /* ===== BODY ===== */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+            min-height: 100vh;
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            position: sticky;
+            top: 0;
+            z-index: 999;
+        }
+        .header img {
+            height: 55px;
+        }
+        .nav-link {
+            color: #fff !important;
+            margin: 0 8px;
+        }
+        .nav-link.active,
+        .nav-link:hover {
+            color: var(--green) !important;
+            border-bottom: 2px solid var(--green);
+        }
+
+        /* ===== MAIN ===== */
+        .page-title {
+            background: #fff;
+            margin: 25px auto;
+            padding: 25px;
+            border-radius: 16px;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, .08);
+            border-left: 5px solid var(--secondary);
+        }
+        .page-title h1 {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        .page-title h2 {
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        /* ===== SEARCH BAR ===== */
+        .search-container {
+            position: relative;
+            margin: 30px auto;
+            max-width: 800px;
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .search-wrapper {
+            position: relative;
+            background: linear-gradient(135deg, #ffffff, #f8fafc);
+            border-radius: 16px;
+            padding: 6px;
+            box-shadow: 
+                0 10px 30px var(--search-shadow),
+                0 4px 6px rgba(0, 0, 0, 0.1),
+                inset 0 1px 1px rgba(255, 255, 255, 0.8);
+            border: 2px solid rgba(11, 77, 160, 0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .search-wrapper:focus-within {
+            transform: translateY(-2px);
+            box-shadow: 
+                0 15px 40px rgba(11, 77, 160, 0.35),
+                0 6px 12px rgba(0, 0, 0, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.9);
+            border-color: var(--primary);
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 20px 60px 20px 50px;
+            font-size: 1.1rem;
+            border: none;
+            background: transparent;
+            color: var(--dark);
+            font-weight: 500;
+            letter-spacing: 0.3px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--primary);
+            font-size: 1.4rem;
+            z-index: 2;
+            transition: all 0.3s ease;
+        }
+
+        .search-wrapper:focus-within .search-icon {
+            color: var(--secondary);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .search-clear {
+            position: absolute;
+            right: 25px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(11, 77, 160, 0.1);
+            color: var(--primary);
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .search-clear.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .search-clear:hover {
+            background: rgba(11, 77, 160, 0.2);
+            transform: translateY(-50%) scale(1.1);
+        }
+
+        .search-stats {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            color: #64748b;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .search-highlight {
+            color: var(--primary);
+            font-weight: 600;
+            background: rgba(11, 77, 160, 0.1);
+            padding: 2px 8px;
+            border-radius: 6px;
+            margin: 0 3px;
+        }
+
+        /* ===== MIDDLE HEAD ===== */
+        .middle-head {
+            background: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, .06);
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .round-status {
+            background: var(--green);
+            color: #fff;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-weight: 600;
+        }
+        .switch-list ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            gap: 15px;
+        }
+        .switch-list li {
+            background: var(--primary);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: .3s;
+        }
+        .switch-list li:hover {
+            background: #083a7f;
+            transform: translateY(-2px);
+        }
+
+        /* ===== MEMBER CARD ===== */
+        .member-card {
+            background: #fff;
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, .1);
+            transition: .35s ease;
+            height: 100%;
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .member-card.hidden {
+            display: none;
+        }
+
+        .member-card.highlight {
+            animation: pulseHighlight 1.5s ease;
+            border: 2px solid var(--primary);
+            box-shadow: 0 12px 35px rgba(11, 77, 160, 0.25);
+        }
+
+        .member-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, .12);
+        }
+
+        /* ===== IMAGE SECTION ===== */
+        .image-container {
+            position: relative;
+            height: 215px;
+            background: #f1f5f9;
+            overflow: visible;
+        }
+        .image-container::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, 0.06);
+            z-index: 1;
+        }
+        .member-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center top;
+            filter: brightness(1.12) contrast(.92) saturate(1.05);
+            transition: transform .5s ease;
+        }
+        .member-card:hover .member-image {
+            transform: scale(1.05);
+        }
+
+        /* ===== PROFILE IMAGE ===== */
+        .profile-img {
+            position: absolute;
+            bottom: -38px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 105px;
+            height: 105px;
+            padding: 4px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #22c55e, #3b82f6, #a855f7);
+            box-shadow: 0 0 18px rgba(59, 130, 246, .6);
+            z-index: 3;
+        }
+        .profile-img img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #fff;
+        }
+
+        /* ===== RANK BADGE ===== */
+        .rank-badge {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            background: linear-gradient(135deg, var(--primary), #083a7f);
+            color: #fff;
+            padding: 7px 16px;
+            border-radius: 20px;
+            font-size: .85rem;
+            font-weight: 600;
+            z-index: 4;
+        }
+
+        /* ===== MEMBER INFO ===== */
+        .member-info {
+            padding: 58px 20px 25px;
+            text-align: center;
+        }
+        .member-name {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--dark);
+        }
+        .member-phone {
+            margin: 10px 0;
+            color: #64748b;
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+        .points-badge {
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: #fff;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-weight: 600;
+            display: inline-flex;
+            gap: 6px;
+            box-shadow: 0 6px 15px rgba(34, 197, 94, .4);
+        }
+
+        /* ===== BUTTON ===== */
+        .action-btn {
+            margin-top: 18px;
+            width: 100%;
+            background: linear-gradient(135deg, #2563eb, #1e40af);
+            border: none;
+            color: #fff;
+            padding: 11px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: .3s;
+        }
+        .action-btn:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(135deg, #1e40af, #2563eb);
+        }
+
+        /* ===== ENQUIRY BAR ===== */
+        .enquiry-bar {
+            background: #fff;
+            padding: 18px 0;
+            border-top: 1px solid #e5e5e5;
+        }
+        .enquiry-bar h5 {
+            margin: 0;
+            font-weight: 700;
+        }
+        .enquiry-bar p {
+            margin: 0;
+            color: #555;
+        }
+        .enquiry-bar a {
+            background: var(--green);
+            color: #fff;
+            padding: 10px 22px;
+            font-weight: 700;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+
+        /* ===== FOOTER ===== */
+        .footer {
+            background: #000;
+            color: #fff;
+            padding: 40px 0;
+        }
+        .footer a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 6px;
+        }
+        .footer-bottom {
+            background: #111;
+            text-align: center;
+            padding: 10px;
+            font-size: 14px;
+        }
+
+        /* ===== LOADING SPINNER ===== */
+        .loading-spinner {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+        }
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes pulseHighlight {
+            0% {
+                box-shadow: 0 0 0 0 rgba(11, 77, 160, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 15px rgba(11, 77, 160, 0);
+            }
+            100% {
+                box-shadow: 0 12px 35px rgba(11, 77, 160, 0.25);
+            }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .middle-head {
+                flex-direction: column;
+            }
+            .image-container {
+                height: 190px;
+            }
+            .profile-img {
+                width: 95px;
+                height: 95px;
+                bottom: -34px;
+            }
+            .search-wrapper {
+                padding: 4px;
+            }
+            .search-input {
+                padding: 18px 55px 18px 45px;
+                font-size: 1rem;
+            }
+            .search-icon {
+                left: 20px;
+                font-size: 1.2rem;
+            }
+            .search-clear {
+                right: 20px;
+                width: 32px;
+                height: 32px;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .image-container {
+                height: 225px;
+            }
+            .member-image {
+                object-position: center 20%;
+                filter: brightness(1.15) contrast(.9) saturate(1.05);
+            }
+            .member-name {
+                font-size: 1.25rem;
+            }
+            .nav-link {
+                margin: 0 4px;
+                font-size: 0.9rem;
+            }
+            .search-container {
+                margin: 20px auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- ================= HEADER ================= -->
+    <div class="header">
+        <nav class="navbar navbar-expand-lg navbar-dark container">
+            <a class="navbar-brand" href="#">
+                <img src="https://anjumang.github.io/khan/wp-content/uploads/2022/02/logo-blank.png" alt="Anjuman Logo">
+            </a>
+            <button class="navbar-toggler" data-bs-toggle="collapse" data-bs-target="#menu">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="menu">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link active" href="#">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="member.html">Member</a></li>
+                    <li class="nav-item"><a class="nav-link" href="fieldwork.html">Field Work</a></li>
+                    <li class="nav-item"><a class="nav-link" href="gallery.html">Gallery</a></li>
+                    <li class="nav-item"><a class="nav-link" href="video.html">Video</a></li>
+                    <li class="nav-item"><a class="nav-link" href="other.html">Other</a></li>
+                    <li class="nav-item"><a class="nav-link" href="join.html">Join Us</a></li>
+                    <li class="nav-item"><a class="nav-link" href="login.html"><i class="fa fa-user"></i></a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <!-- ================= MAIN CONTENT ================= -->
+    <div class="container py-4">
+        <div class="page-title">
+            <h1>Anjuman Ghulaman-E-Mustafa</h1>
+            <h2>कमेटी का हर <span class="text-primary">कदम पे साथ देने वाले साथी </span></h2>
+        </div>
+
+       
+
+        <!-- ================= SEARCH BAR ================= -->
+        <div class="search-container">
+            <div class="search-wrapper">
+                <div class="search-icon">
+                    <i class="fas fa-search"></i>
+                </div>
+                <input type="text" class="search-input" id="searchInput" placeholder="Search member name..." autocomplete="off" aria-label="Search members">
+                <button class="search-clear" id="searchClear" aria-label="Clear search">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="search-stats" id="searchStats"> <span class="search-highlight"></span> </div>
+        </div>
+
+        <!-- Members Grid -->
+        <div id="dynamic-data" class="row g-4">
+            <!-- ====== HARDCODED MEMBERS DATA ====== -->
+            <div class="col-lg-4 col-md-6 col-12">
+                <div class="member-card" data-name="zubair khan ( dardoji )" data-phone="9696835717" data-uid="21">
+                    <div class="image-container">
+
+
+                        <img src="https://anjumang.github.io/bareilly/img/team/
+                        .png" class="member-image" onerror="this.src='https://via.placeholder.com/400x250/0b4da0/ffffff?text=Z'">
+                        <div class="profile-img">
+                            <img src="https://anjumang.github.io/bareilly/img/team/.png" onerror="this.src='https://via.placeholder.com/120/0b4da0/ffffff?text=Z'">
+                        </div>
+
+
+                        <div class="rank-badge"><i class="fas fa-crown"></i> Rank #1</div>
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">Nayab Khan Chacha</div>
+                        <div class="member-phone"><i class="fas fa-phone-alt"></i> 9411882273</div>
+                        <div class="points-badge"><i class="fas fa-star"></i> 17/08/2026</div>
+                        
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4 col-md-6 col-12">
+                <div class="member-card" data-name="nisar khan" data-phone="9761868407" data-uid="31">
+                    <div class="image-container">
+                        <img src="https://anjumang.github.io/bareilly/img/team/.png" class="member-image" onerror="this.src='https://via.placeholder.com/400x250/0b4da0/ffffff?text=N'">
+                        <div class="profile-img">
+                            <img src="https://anjumang.github.io/bareilly/img/team/.png" onerror="this.src='https://via.placeholder.com/120/0b4da0/ffffff?text=N'">
+                        </div>
+                        <div class="rank-badge"><i class="fas fa-crown"></i> Rank #2</div>
+                    </div>
+                    <div class="member-info">
+                        <div class="member-name">Hasnain Bhai</div>
+                        <div class="member-phone"><i class="fas fa-phone-alt"></i> N/A</div>
+                        <div class="points-badge"><i class="fas fa-star"></i> 17/08/2026</div>
+                       
+                    </div>
+                </div>
+            </div>
+
+            
